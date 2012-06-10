@@ -1,0 +1,8 @@
+{
+	"addon":	{
+		"id":	"xenauction",
+		"name":	"XenAuction",
+		"namespace":	"XenAuction",
+		"path":	"library/XenAuction/"
+	}
+}
