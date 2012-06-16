@@ -16,10 +16,22 @@ class XenAuction_TemplateHelpers_Base
 		}
 		
 	}
+	public static function helperBasePath() 
+	{
+		$paths = XenForo_Application::getRequestPaths();
+		return $paths['basePath'];
+	}
 	
 	public static function helperTime()
 	{
 		return time();
+	}
+
+	public static function helperStripHtml($text) 
+	{
+		
+		$text = html_entity_decode($text);
+		return strip_tags($text);
 	}
 	
 }
