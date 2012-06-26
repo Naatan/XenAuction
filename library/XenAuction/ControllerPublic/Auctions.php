@@ -5,12 +5,15 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 	
 	public function actionIndex()
 	{
-		$auctionModel = XenForo_Model::create('XenAuction_Model_Auction');
-		
-		$auctions = $auctionModel->getAuctions(array(
-			'join'		=> XenAuction_Model_Auction::FETCH_USER,
-			'validOnly' => true
-		));
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getAuctions(
+			array(
+				'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE
+			),
+			array(
+				'join'		=> XenAuction_Model_Auction::FETCH_USER
+			)
+		);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
 		   	'auctions'	=> $auctions
@@ -24,6 +27,8 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 	
 	public function actionAdd()
 	{
+		$visitor = XenForo_Visitor::getInstance();
+		
 		$input = $this->_input->filter(array(
 			'title'        		=> XenForo_Input::STRING,
 			'tags'         		=> XenForo_Input::STRING,
@@ -37,6 +42,7 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 		));
 		
 		$data = array(
+			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
 			'message'        	=> $input['message_html'],
 			'tags'           	=> $input['tags'],
@@ -55,6 +61,60 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 			XenForo_ControllerResponse_Redirect::SUCCESS,
 			XenForo_Link::buildPublicLink('auctions')
 		);
+	}
+	
+	public function actionHistory()
+	{
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_list');	
+	}
+	
+	public function actionHistoryAuctions()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getAuctions(
+			array(
+				'user_id' 	=> $visitor->user_id
+			),
+			array(
+				'join'		=> XenAuction_Model_Auction::FETCH_USER
+			)
+		);
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_auctions', array(
+		   	'auctions'	=> $auctions
+		));	
+	}
+	
+	public function actionHistoryBids()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions  		= $auctionModel->getUserBids(
+			array('bid_user_id' => $visitor->user_id, 'is_buyout' => 0),
+			array('join'	=> XenAuction_Model_Auction::FETCH_USER)
+		);
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_bids', array(
+			'auctions'	=> $auctions
+		));	
+	}
+	
+	public function actionHistoryBuyouts()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions  		= $auctionModel->getUserBids(
+			array('bid_user_id' => $visitor->user_id, 'is_buyout' => 1),
+			array('join'	=> XenAuction_Model_Auction::FETCH_USER)
+		);
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_buyouts', array(
+			'auctions'	=> $auctions
+		));	
 	}
 
 	public function actionDetails() 
@@ -126,7 +186,7 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
 		$dw->bulkSet(array(
 			'auction_id' 	=> $auction['auction_id'],
-			'user_id' 		=> $visitor->user_id,
+			'bid_user_id' 	=> $visitor->user_id,
 			'amount'		=> $input['bid']
 		));
 		$dw->save();
@@ -158,7 +218,7 @@ class XenAuction_ControllerPublic_Auctions extends XenForo_ControllerPublic_Abst
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
 		$dw->bulkSet(array(
 			'auction_id' 	=> $auction['auction_id'],
-			'user_id' 		=> $visitor->user_id,
+			'bid_user_id' 	=> $visitor->user_id,
 			'amount'		=> $input['quantity'] * $auction['buy_now'],
 			'quantity'		=> $input['quantity'],
 			'is_buyout' 	=> 1

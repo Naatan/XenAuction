@@ -17,11 +17,11 @@ class XenAuction_DataWriter_Bid extends XenForo_DataWriter
 			'xf_auction_bid' => array(
 				'bid_id'			=> array('type' => self::TYPE_UINT, 'autoIncrement' => true, 'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyBidid')),
 				'auction_id'		=> array('type' => self::TYPE_UINT, 'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
-				'user_id'			=> array('type' => self::TYPE_UINT, 'autoIncrement' => true, 'verification' => array('XenForo_DataWriter_Helper_User', 'verifyUserid')),
+				'bid_user_id'		=> array('type' => self::TYPE_UINT,	'required' => true),
 				'is_buyout'			=> array('type' => self::TYPE_UINT, 'default' => 0),
 				'quantity'			=> array('type' => self::TYPE_UINT, 'default' => NULL),
 				'amount'			=> array('type' => self::TYPE_UINT, 'required' => true),
-				'placement_date'	=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time)
+				'bid_date'			=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time)
 			)
 		);
 	}

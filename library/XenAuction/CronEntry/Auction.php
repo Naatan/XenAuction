@@ -12,6 +12,7 @@ class XenAuction_CronEntry_Auction
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
 		$dw->setExistingData($auction);
 		$dw->bulkSet(array(
+			'status'			=> XenAuction_Model_Auction::STATUS_EXPIRED,
 			'expiration_date' 	=> XenForo_Application::$time
 		));
 		$dw->save();

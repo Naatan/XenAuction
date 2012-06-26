@@ -23,6 +23,12 @@ XenAuction.List.prototype = {
 	{
 
 		$(".auctionItem .timeLeft").each(function() {
+			
+			if ($(this).parents('.status_active').length == 0 || $(this).data('processed'))
+			{
+				return;
+			}
+			
 			var time = $(this).text();
 			var left = time - XenAuction.Config.currentTime;
 			
@@ -47,6 +53,8 @@ XenAuction.List.prototype = {
 			
 			$(this).append($("<div class=amount>").text(Math.floor(p[0])));
 			$(this).append($("<div class=description>").text(p[1]));
+			
+			$(this).data('processed', true);
 			
 		});
 

@@ -15,19 +15,21 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 	{
 		return array(
 			'xf_auction' => array(
-				'auction_id'		=> array('type' => self::TYPE_UINT, 'autoIncrement' => true, 'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
-				'title'				=> array('type' => self::TYPE_STRING, 'required' => true, 'maxLength' => 150),
-				'message'			=> array('type' => self::TYPE_STRING, 'required' => true),
-				'tags'				=> array('type' => self::TYPE_STRING, 'default' => '', 'maxLength' => 255),
-				'image'				=> array('type' => self::TYPE_STRING, 'default' => NULL, 'maxLength' => 50),
-				'min_bid'			=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'buy_now'			=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'bids'				=> array('type' => self::TYPE_UINT, 'default' => 0),
-				'availability'		=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'top_bid'			=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'top_bidder'		=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'placement_date'	=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time),
-				'expiration_date'	=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time + 86400)
+				'auction_id'		=> array('type' => self::TYPE_UINT, 	'autoIncrement' => true, 	'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
+				'user_id'			=> array('type' => self::TYPE_UINT,		'required' => true),
+				'title'				=> array('type' => self::TYPE_STRING, 	'required' => true, 		'maxLength' => 150),
+				'message'			=> array('type' => self::TYPE_STRING, 	'required' => true),
+				'status'			=> array('type' => self::TYPE_STRING, 	'default'  => XenAuction_Model_Auction::STATUS_ACTIVE),
+				'tags'				=> array('type' => self::TYPE_STRING, 	'default'  => '', 			'maxLength' => 255),
+				'image'				=> array('type' => self::TYPE_STRING, 	'default'  => NULL, 		'maxLength' => 50),
+				'min_bid'			=> array('type' => self::TYPE_UINT, 	'default'  => NULL),
+				'buy_now'			=> array('type' => self::TYPE_UINT, 	'default'  => NULL),
+				'bids'				=> array('type' => self::TYPE_UINT, 	'default'  => 0),
+				'availability'		=> array('type' => self::TYPE_UINT, 	'default'  => NULL),
+				'top_bid'			=> array('type' => self::TYPE_UINT, 	'default'  => NULL),
+				'top_bidder'		=> array('type' => self::TYPE_UINT, 	'default'  => NULL),
+				'placement_date'	=> array('type' => self::TYPE_UINT, 	'default'  => XenForo_Application::$time),
+				'expiration_date'	=> array('type' => self::TYPE_UINT, 	'default'  => XenForo_Application::$time + 86400)
 			)
 		);
 	}

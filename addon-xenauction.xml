@@ -18,7 +18,9 @@
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
     <phrase title="auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
+    <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
     <phrase title="auction_title" version_id="0" version_string=""><![CDATA[Auction Title]]></phrase>
     <phrase title="availability" version_id="0" version_string=""><![CDATA[Availability]]></phrase>
@@ -30,11 +32,14 @@
     <phrase title="buying_x" version_id="0" version_string=""><![CDATA[Buying {title}]]></phrase>
     <phrase title="buyout" version_id="0" version_string=""><![CDATA[Buyout]]></phrase>
     <phrase title="buy_now" version_id="0" version_string=""><![CDATA[Buy Now]]></phrase>
+    <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="create_auction" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
     <phrase title="enable_bids" version_id="0" version_string=""><![CDATA[Enable Bids]]></phrase>
     <phrase title="enable_buyouts" version_id="0" version_string=""><![CDATA[Enable Buyouts]]></phrase>
     <phrase title="find_auction" version_id="0" version_string=""><![CDATA[Find Auction]]></phrase>
+    <phrase title="finished" version_id="0" version_string=""><![CDATA[Finished]]></phrase>
+    <phrase title="history" version_id="0" version_string=""><![CDATA[History]]></phrase>
     <phrase title="hours_left" version_id="0" version_string=""><![CDATA[Hours Left]]></phrase>
     <phrase title="keyword_tag" version_id="0" version_string=""><![CDATA[Keyword / Tag]]></phrase>
     <phrase title="minutes_left" version_id="0" version_string=""><![CDATA[Minutes Left]]></phrase>
@@ -53,7 +58,13 @@
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
     <phrase title="won_auction_message" version_id="0" version_string=""><![CDATA[Amount to pay: {top_bid}]]></phrase>
     <phrase title="won_auction_x" version_id="0" version_string=""><![CDATA[Auction Won: {title}]]></phrase>
+    <phrase title="your_auctions" version_id="0" version_string=""><![CDATA[Your Auctions]]></phrase>
     <phrase title="your_bid" version_id="0" version_string=""><![CDATA[Your Bid]]></phrase>
+    <phrase title="your_bids" version_id="0" version_string=""><![CDATA[Your Bids]]></phrase>
+    <phrase title="your_buyouts" version_id="0" version_string=""><![CDATA[Your Buyouts]]></phrase>
+    <phrase title="you_have_no_auctions" version_id="0" version_string=""><![CDATA[You have no active auctions]]></phrase>
+    <phrase title="you_have_no_bids" version_id="0" version_string=""><![CDATA[You have not placed any bids]]></phrase>
+    <phrase title="you_have_no_buyouts" version_id="0" version_string=""><![CDATA[You have not placed any buyouts]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
@@ -308,6 +319,481 @@
 	<div class="icon"></div>
 	{xen:raw $auction.message}
 </div>]]></template>
+    <template title="auction_history_auctions" version_id="0" version_string=""><![CDATA[<div>
+<xen:if is="{$auctions}">
+	<ol class="section auctions">
+	
+		<xen:foreach loop="$auctions" value="$auction">
+			<xen:include template="auction_list_item"/>
+		</xen:foreach>
+		
+	</ol>
+	
+	<script type="text/javascript">
+	<!--
+	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
+	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
+	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
+	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
+	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	new XenAuction.List;
+	-->
+	</script>
+<xen:else/>
+	<div>{xen:phrase you_have_no_auctions}</div>
+</xen:if>
+</div>]]></template>
+    <template title="auction_history_bids" version_id="0" version_string=""><![CDATA[<div>
+<xen:if is="{$auctions}">
+	<table class="auctionHistory">
+		<tbody>
+			
+			<xen:foreach loop="$auctions" value="$auction">
+				
+				<tr class="primaryContent auctionItem status_{$auction.status}">
+					<td class="icon">
+						<div></div>
+					</td>
+					<td class="title">
+						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+					</td>
+					<td class="timeLeft">
+						<xen:if is="{$auction.status} == 'active'">
+							{$auction.expiration_date}
+						<xen:elseif is="{$auction.status} == 'canceled'"/>
+							{xen:phrase canceled}
+						<xen:else/>
+							<xen:if is="{$auction.top_bidder}">
+								{xen:phrase finished}
+							<xen:else/>
+								{xen:phrase expired}
+							</xen:if>		
+						</xen:if>
+					</td>
+					<td class="highestBidder {xen:if '{$auction.username} == {$visitor.username}', 'me', 'notme'}">
+						<xen:if is="{$auction.top_bidder}">
+							{$auction.username}
+						<xen:elseif is=" ! {$auction.min_bid}"/>
+							<div class="availability">
+								<div class="amount">{$auction.availability}</div>
+								<div class="description">{xen:phrase available}</div>
+							</div>
+						<xen:else/>
+							{xen:phrase no_bids}
+						</xen:if>
+					</td>
+					<td class="bid">
+						<ul>
+							<xen:if is="{$auction.status} == 'active'">
+								
+								<xen:if is="{$auction.min_bid}">
+									<xen:if is="{$auction.top_bid}">
+										<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+											<span>{xen:number $auction.top_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+										</li>
+									<xen:else/>
+										<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+											<span>{xen:number $auction.min_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+										</li>
+									</xen:if>
+								</xen:if>
+								<xen:if is="{$auction.buy_now}">
+									<li class="{xen:if '! {$auction.min_bid}', 'single'}">
+										<span>{xen:number $auction.buy_now}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+									</li>
+								</xen:if>
+								
+							<xen:elseif is="{$auction.status} == 'canceled'"/>
+								
+								<li class="single large"><span>{xen:phrase canceled}</span></li>
+								
+							<xen:else/>
+							
+								<li class="single large"><span>{xen:number $auction.amount}</span></li>
+							
+							</xen:if>
+						</ul>
+					</td>
+				</tr>
+				
+			</xen:foreach>
+			
+		</tbody>
+	</table>
+	
+	<script type="text/javascript">
+	<!--
+	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
+	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
+	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
+	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
+	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	new XenAuction.List;
+	-->
+	</script>
+<xen:else/>
+	<div>{xen:phrase you_have_no_bids}</div>
+</xen:if>
+</div>]]></template>
+    <template title="auction_history_buyouts" version_id="0" version_string=""><![CDATA[<div>
+<xen:if is="{$auctions}">
+	<table class="auctionHistory">
+		<tbody>
+			
+			<xen:foreach loop="$auctions" value="$auction">
+				
+				<tr class="primaryContent auctionItem status_{$auction.status}">
+					<td class="icon">
+						<div></div>
+					</td>
+					<td class="title">
+						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+					</td>
+					<td class="timeLeft">
+						<xen:if is="{$auction.status} == 'active'">
+							{$auction.expiration_date}
+						<xen:elseif is="{$auction.status} == 'canceled'"/>
+							{xen:phrase canceled}
+						<xen:else/>
+							<xen:if is="{$auction.top_bidder}">
+								{xen:phrase finished}
+							<xen:else/>
+								{xen:phrase expired}
+							</xen:if>		
+						</xen:if>
+					</td>
+					<td class="purchaseAmount">
+						<dl>
+							<dd>{xen:phrase quantity}:</dd>
+							<dt>{xen:number $auction.quantity}</dt>
+							<dd>{xen:phrase amount_paid}:</dd>
+							<dt>{xen:number $auction.amount}</dt>
+						</dl>
+					</td>
+					<td class="purchaseDate">
+						<div class="DateTime muted">{xen:date {$auction.bid_date}}</div>
+						<div class="DateTime muted">{xen:time {$auction.bid_date}}</div>
+					</td>
+					<td class="bid">
+						<ul>
+							<xen:if is="{$auction.status} == 'active'">
+								
+								<xen:if is="{$auction.min_bid}">
+									<xen:if is="{$auction.top_bid}">
+										<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+											<span>{xen:number $auction.top_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+										</li>
+									<xen:else/>
+										<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+											<span>{xen:number $auction.min_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+										</li>
+									</xen:if>
+								</xen:if>
+								<xen:if is="{$auction.buy_now}">
+									<li class="{xen:if '! {$auction.min_bid}', 'single'}">
+										<span>{xen:number $auction.buy_now}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+									</li>
+								</xen:if>
+								
+							<xen:elseif is="{$auction.status} == 'canceled'"/>
+								
+								<li class="single large"><span>{xen:phrase canceled}</span></li>
+								
+							<xen:else/>
+							
+								<li class="single large"><span>{xen:number $auction.amount}</span></li>
+							
+							</xen:if>
+						</ul>
+					</td>
+				</tr>
+				
+			</xen:foreach>
+			
+		</tbody>
+	</table>
+	
+	<script type="text/javascript">
+	<!--
+	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
+	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
+	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
+	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
+	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	new XenAuction.List;
+	-->
+	</script>
+<xen:else/>
+	<div>{xen:phrase you_have_no_buyouts}</div>
+</xen:if>
+</div>]]></template>
+    <template title="auction_history_list" version_id="0" version_string=""><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+
+<xen:navigation>
+    <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
+</xen:navigation>
+
+
+<xen:require css="auction_list.css" />
+<xen:require css="auction_history_list.css" />
+<xen:require js="js/xenauction/auctions.js" />
+
+<ul class="tabs mainTabs Tabs" data-panes="#HistoryPanes > li" data-history="on">
+	<li class="active"><a href="{$requestPaths.requestUri}#tabAuctions" class="active">{xen:phrase your_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#tabBids">{xen:phrase your_bids}</a></li>
+	<li><a href="{$requestPaths.requestUri}#tabBuyouts">{xen:phrase your_buyouts}</a></li>
+</ul>
+
+<ul id="HistoryPanes">
+	<li id="tabAuctions" data-loadUrl="{xen:link 'auctions/history-auctions'}"></li>
+	<li id="tabBids" data-loadUrl="{xen:link 'auctions/history-bids'}"></li>
+	<li id="tabBuyouts" data-loadUrl="{xen:link 'auctions/history-buyouts'}"></li>
+</ul>]]></template>
+    <template title="auction_history_list.css" version_id="0" version_string=""><![CDATA[.auctionHistory
+{
+	width: 100%;
+}
+
+/* Item widths */
+.auctionItem td
+{
+	padding: 10px 0;
+}
+
+	.auctionItem td.icon
+	{
+		width: 60px;
+		text-align: center;
+	}
+
+	.auctionItem td.timeLeft
+	{
+		width: 150px;
+	}
+
+	.auctionItem td.highestBidder
+	{
+		width: 100px;
+	}
+	
+	.auctionItem td.purchaseAmount
+	{
+		width: 150px;
+	}
+	
+	.auctionItem td.purchaseDate
+	{
+		width: 100px;
+	}
+
+	.auctionItem td.bid
+	{
+		width: 250px;
+	}
+
+/* Styling */
+
+#HistoryPanes > li > div
+{
+	margin: 5px;
+}
+
+.auction_list .titleBar
+{
+	display: none;
+}
+
+.auctionItem .icon > div
+{ 
+	margin: auto;
+	width: 32px;
+	height: 32px;
+	background: url(./data/xenauction/image_t.png) center no-repeat;
+}
+
+.auctionItem td.title h3 
+{
+	font-weight: bold;
+	font-size: 120%;
+}
+
+	.auctionItem td.title h3  a
+	{
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		max-height: 22px;
+	}
+
+.auctionItem td.timeLeft .amount
+{
+	margin-right: 5px;
+}
+
+.auctionItem td.timeLeft .amount, .auctionItem td.timeLeft .description
+{
+	display: inline-block;
+}
+
+.auctionItem td.timeLeft .amount, .auctionItem .availability .amount
+{
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.auctionItem td.timeLeft, .auctionItem td.highestBidder, .auctionItem .availability 
+{
+	text-align: center;
+}
+
+.auctionItem td.highestBidder 
+{
+	font-size: 110%;
+	font-weight: bold;
+}
+
+	.auctionItem td.highestBidder.me
+	{
+		color: green;
+	}
+	
+	.auctionItem td.highestBidder.notme
+	{
+		color: red;
+	}
+	
+.auctionItem td.purchaseAmount dt, .auctionItem td.purchaseAmount dd
+{
+	display: inline-block;
+}
+
+.auctionItem td.purchaseAmount dt
+{
+	clear: right;
+}
+
+.auctionItem td.purchaseAmount dd
+{
+	font-weight: bold;
+}
+
+.auctionItem td.purchaseDate
+{
+	text-align: center;
+}
+
+.auctionItem td.bid
+{
+	text-align: right;
+}
+
+	.auctionItem td.bid span
+	{
+		font-weight: bold;
+	}
+	
+		.auctionItem td.bid > ul > li
+		{
+			display: inline-block;
+			vertical-align: middle;
+			width: 49%;
+			text-align: center;
+		}
+		
+			.auctionItem td.bid > ul > li.single
+			{
+				width: 100%;
+			}
+			
+			.auctionItem td.bid > ul > li.large
+			{
+				font-size: 120%;
+			}
+
+
+
+.auctionCreate
+{
+	padding: 20px;
+	text-align: center;
+}
+
+	.auctionCreate a.callToAction
+	{
+		height: 25px;
+		line-height: 25px;
+	}
+
+	.auctionCreate a.callToAction span
+	{
+		font-size: 14px;
+	}]]></template>
+    <template title="auction_history_list_item" version_id="0" version_string=""><![CDATA[<tr class="primaryContent auctionItem status_{$auction.status}">
+	<td class="icon">
+		<div></div>
+	</td>
+	<td class="title">
+		<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+	</td>
+	<td class="timeLeft">
+		<xen:if is="{$auction.status} == 'active'">
+			{$auction.expiration_date}
+		<xen:elseif is="{$auction.status} == 'canceled'"/>
+			{xen:phrase canceled}
+		<xen:else/>
+			<xen:if is="{$auction.top_bidder}">
+				{xen:phrase finished}
+			<xen:else/>
+				{xen:phrase expired}
+			</xen:if>		
+		</xen:if>
+	</td>
+	<td class="highestBidder {xen:if '{$auction.username} == {$visitor.username}', 'me', 'notme'}">
+		<xen:if is="{$auction.top_bidder}">
+			{$auction.username}
+		<xen:elseif is=" ! {$auction.min_bid}"/>
+			<div class="availability">
+				<div class="amount">{$auction.availability}</div>
+				<div class="description">{xen:phrase available}</div>
+			</div>
+		<xen:else/>
+			{xen:phrase no_bids}
+		</xen:if>
+	</td>
+	<td class="bid">
+		<ul>
+			<xen:if is="{$auction.status} == 'active'">
+				
+				<xen:if is="{$auction.min_bid}">
+					<xen:if is="{$auction.top_bid}">
+						<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+							<span>{xen:number $auction.top_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+						</li>
+					<xen:else/>
+						<li class="{xen:if '! {$auction.buy_now}', 'single'}">
+							<span>{xen:number $auction.min_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+						</li>
+					</xen:if>
+				</xen:if>
+				<xen:if is="{$auction.buy_now}">
+					<li class="{xen:if '! {$auction.min_bid}', 'single'}">
+						<span>{xen:number $auction.buy_now}</span> <a class="OverlayTrigger" href="{xen:link 'auctions/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+					</li>
+				</xen:if>
+				
+			<xen:elseif is="{$auction.status} == 'canceled'"/>
+				
+				<li class="single large"><span>{xen:phrase canceled}</span></li>
+				
+			<xen:else/>
+			
+				<li class="single large"><span>{xen:number $auction.amount}</span></li>
+			
+			</xen:if>
+		</ul>
+	</td>
+</tr>]]></template>
     <template title="auction_list" version_id="0" version_string=""><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
@@ -493,7 +979,7 @@ new XenAuction.List;
     <template title="auction_list_item" version_id="0" version_string=""><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
-<li class="primaryContent auctionItem">
+<li class="primaryContent auctionItem status_{$auction.status}">
 
 	<ul>
 		<li class="icon"><div></div></li>
@@ -502,7 +988,19 @@ new XenAuction.List;
 			<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
 			<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
 		</li>
-		<li class="timeLeft">{$auction.expiration_date}</li>
+		<li class="timeLeft">
+			<xen:if is="{$auction.status} == 'active'">
+				{$auction.expiration_date}
+			<xen:elseif is="{$auction.status} == 'canceled'"/>
+				{xen:phrase canceled}
+			<xen:else/>
+				<xen:if is="{$auction.top_bidder}">
+					{xen:phrase finished}
+				<xen:else/>
+					{xen:phrase expired}
+				</xen:if>		
+			</xen:if>
+		</li>
 		<li class="highestBidder">
 			<xen:if is="{$auction.top_bidder}">
 				<xen:avatar user="$auction" size="s" />
@@ -541,7 +1039,7 @@ new XenAuction.List;
     <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
 	<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
 	<li><a href="{xen:link auctions/create}">{xen:phrase create_auction}</a></li>
-	<li><a href="#">{xen:phrase my_activity}</a></li>
+	<li><a href="{xen:link auctions/history}">{xen:phrase history}</a></li>
 </ul>]]></template>
   </templates>
   <bb_code_media_sites/>

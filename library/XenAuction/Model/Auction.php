@@ -7,6 +7,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 {
 	
 	const FETCH_USER     		= 0x01;
+	
+	const STATUS_ACTIVE 	= 'active';
+	const STATUS_CANCELED 	= 'canceled';
+	const STATUS_EXPIRED 	= 'expired';
+	
 
 	/**
 	 * Get by Auction ID
@@ -47,13 +52,13 @@ class XenAuction_Model_Auction extends XenForo_Model
 	 * 
 	 * @return	array|bool
 	 */
-	public function getAuctions(array $fetchOptions = array())
+	public function getAuctions(array $conditions = array(), array $fetchOptions = array())
 	{
 		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
 		$joinOptions 	= $this->prepareAuctionFetchOptions($fetchOptions);
 
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
-		$whereClause 	= (!empty($fetchOptions['validOnly']) ? 'WHERE auction.expiration_date > \''.time().'\'' : '');
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 
 		return $this->fetchAllKeyed($this->limitQueryResults(
 			'
@@ -61,6 +66,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 					' . $joinOptions['selectFields'] . '
 				FROM xf_auction AS auction
 				' . $joinOptions['joinTables'] . '
+				WHERE
 				' . $whereClause . '
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
@@ -74,20 +80,72 @@ class XenAuction_Model_Auction extends XenForo_Model
 	 * 
 	 * @return	array|bool
 	 */
-	public function getUserBids(array $fetchOptions = array())
+	public function getUserBids(array $conditions = array(), array $fetchOptions = array())
 	{
 		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
+		$joinOptions 	= $this->prepareAuctionFetchOptions($fetchOptions);
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
-
+		
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
+		
 		return $this->fetchAllKeyed($this->limitQueryResults(
 			'
-				SELECT bid.*
+				SELECT *
 				FROM xf_auction_bid AS bid
 				JOIN xf_auction AS auction ON
 					bid.auction_id = auction.auction_id
+				' . $joinOptions['joinTables'] . '
+				WHERE ' . $whereClause . '
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
 		), 'bid_id');
+	}
+	
+	public function prepareAuctionFetchConditions(array $conditions, array &$fetchOptions)
+	{
+		$db = $this->_getDb();
+		$sqlConditions = array();
+
+		if ( isset($conditions['user_id']))
+		{
+			if (is_array($conditions['user_id']))
+			{
+				$sqlConditions[] = 'auction.user_id IN(' . $db->quote($conditions['user_id']) . ')';
+			}
+			else
+			{
+				$sqlConditions[] = 'auction.user_id = ' . $db->quote($conditions['user_id']);
+			}
+		}
+		
+		if ( isset($conditions['bid_user_id']))
+		{
+			if (is_array($conditions['bid_user_id']))
+			{
+				$sqlConditions[] = 'bid.bid_user_id IN(' . $db->quote($conditions['bid_user_id']) . ')';
+			}
+			else
+			{
+				$sqlConditions[] = 'bid.bid_user_id = ' . $db->quote($conditions['bid_user_id']);
+			}
+		}
+		
+		if ( isset($conditions['status']))
+		{
+			$sqlConditions[] = 'auction.status = ' . $db->quote($conditions['status']);
+		}
+		
+		if ( isset($conditions['is_buyout']))
+		{
+			$sqlConditions[] = 'bid.is_buyout = ' . $db->quote($conditions['is_buyout']);
+		}
+		
+		if ( isset($conditions['is_buyout']))
+		{
+			$sqlConditions[] = 'bid.is_buyout = ' . $db->quote($conditions['is_buyout']);
+		}
+		
+		return $this->getConditionsForClause($sqlConditions);
 	}
 	
 	/**
