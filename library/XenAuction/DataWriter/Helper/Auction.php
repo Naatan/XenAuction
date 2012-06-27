@@ -34,13 +34,13 @@ class XenAuction_DataWriter_Helper_Auction
 	
 	public static function verifyAvailability(&$availability, XenForo_DataWriter $dw, $fieldName = false)
 	{
-		if ($dw->get('buy_now') != NULL AND (int) $availability <= 0)
+		if ($dw->isInsert() AND $dw->get('buy_now') != NULL AND (int) $availability <= 0)
 		{
 			$dw->error(new XenForo_Phrase('enter_availability_higher_than_zero'), $fieldName);
 			return false;	
 		}
 		
-		if ($dw->get('min_bid') != NULL AND $dw->get('buy_now') != NULL AND (int) $availability > 1)
+		if ($dw->isInsert() AND $dw->get('min_bid') != NULL AND $dw->get('buy_now') != NULL AND (int) $availability > 1)
 		{
 			$dw->error(new XenForo_Phrase('availability_too_high'), $fieldName);
 			return false;	

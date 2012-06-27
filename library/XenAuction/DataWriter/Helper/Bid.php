@@ -55,13 +55,13 @@ class XenAuction_DataWriter_Helper_Bid
 		return true;
 	}
 	
-	public static function verifyIsBuyout()
+	public static function verifyIsBuyout(&$isBuyout, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		$auction = self::getAuctionForBid($dw);
 		
 		if (
-			($dw->get('is_buyout') == 1 AND $auction['buy_now'] == NULL) OR
-			($dw->get('is_buyout') == 0 AND $auction['min_bid'] == NULL)
+			($isBuyout == 1 AND $auction['buy_now'] == NULL) OR
+			($isBuyout == 0 AND $auction['min_bid'] == NULL)
 		)
 		{
 			$dw->error(new XenForo_Phrase('invalid_buy_action'), $fieldName);
@@ -97,6 +97,12 @@ class XenAuction_DataWriter_Helper_Bid
 		}
 		
 		$auction = self::getAuctionForBid($dw);
+		
+		if ($quantity <= 0)
+		{
+			$dw->error(new XenForo_Phrase('cant_buy_zero'), $fieldName);
+			return false;
+		}
 		
 		if ($quantity > $auction['availability'])
 		{

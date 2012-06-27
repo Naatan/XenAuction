@@ -36,6 +36,7 @@
     <phrase title="buy_now" version_id="0" version_string=""><![CDATA[Buy Now]]></phrase>
     <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
+    <phrase title="cant_buy_zero" version_id="0" version_string=""><![CDATA[Entered quantity is too low]]></phrase>
     <phrase title="create_auction" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
@@ -96,6 +97,8 @@
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.auction_id}"/>
 	
+	<input type="hidden" class="min_bid" value="{xen:if $auction.top_bid, {xen:calc '{$auction.top_bid} + 1'}, $auction.min_bid}"/>
+	
 	<xen:include template="auction_details_content" />
 	
 	<fieldset class="bid">
@@ -115,7 +118,11 @@
 			</dd>
 		</dl>
 
-</form>]]></template>
+</form>
+
+<script type="text/javascript"><!--
+new XenAuction.Bid;
+//--></script>]]></template>
     <template title="auction_bid.css" version_id="0" version_string=""><![CDATA[.auctionBid .icon
 {
 	float: left;
@@ -136,6 +143,9 @@
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.auction_id}"/>
 	
+	<input type="hidden" class="cost" value="{$auction.buy_now}"/>
+	<input type="hidden" class="availability" value="{$auction.availability}"/>
+	
 	<xen:include template="auction_details_content" />
 
 	<fieldset class="bid">
@@ -146,6 +156,8 @@
 					<input type="text" name="quantity" value="1" class="textCtrl autoSize" size="20" maxlength="10" />
 				</dd>
 			</dl>
+		<xen:else/>
+			<input type="hidden" name="quantity" value="1" />
 		</xen:if>
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase availability}:</dt>
@@ -155,7 +167,7 @@
 		</dl>
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase paying}:</dt>
-			<dd>
+			<dd class="paying">
 				{$auction.buy_now}
 			</dd>
 		</dl>
@@ -169,8 +181,13 @@
 			</dd>
 		</dl>
 
-</form>]]></template>
+</form>
+
+<script type="text/javascript"><!--
+new XenAuction.Bid;
+//--></script>]]></template>
     <template title="auction_create" version_id="0" version_string=""><![CDATA[<xen:require css="auction_create.css" />
+<xen:require js="js/xenauction/auctions.js" />
 
 <xen:title>{xen:phrase create_auction}</xen:title>
 
@@ -240,7 +257,7 @@
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase starting_bid}:</dt>
 			<dd>
-				<input type="text" name="starting_bid" class="textCtrl autoSize" size="10" maxlength="10" />
+				<input type="text" name="starting_bid" class="textCtrl autoSize" size="10" maxlength="10" disabled="disabled" />
 				<input type="checkbox" name="bid_enable" id="bid_enable" value="1" /> <label for="bid_enable">{xen:phrase enable_bids}</label>
 			</dd>
 		</dl>
@@ -248,15 +265,15 @@
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase buyout}:</dt>
 			<dd>
-				<input type="text" name="buyout" class="textCtrl autoSize" size="10" maxlength="10" />
+				<input type="text" name="buyout" class="textCtrl autoSize" size="10" maxlength="10" disabled="disabled" />
 				<input type="checkbox" name="buyout_enable" id="buyout_enable" value="1" /> <label for="buyout_enable">{xen:phrase enable_buyouts}</label>
 			</dd>
 		</dl>
 		
-		<dl class="ctrlUnit">
+		<dl class="ctrlUnit" id="availability_wrap" style="display: none;">
 			<dt>{xen:phrase availability}:</dt>
 			<dd>
-				<input type="text" name="availability" class="textCtrl autoSize" placeholder="{xen:phrase 0}" size="10" maxlength="10" />
+				<input type="text" name="availability" class="textCtrl autoSize" placeholder="1" size="10" maxlength="10"/>
 			</dd>
 		</dl>
 		
@@ -275,7 +292,12 @@
 	
 	</xen:hook>
 	
-</form>]]></template>
+</form>
+
+<script type="text/javascript"><!--
+<xen:include template="auction_phrases_js"/>
+new XenAuction.Create;
+//--></script>]]></template>
     <template title="auction_create.css" version_id="0" version_string=""><![CDATA[.auction .summary .icon
 {
 	width: 30px;
@@ -340,11 +362,7 @@
 	
 	<script type="text/javascript">
 	<!--
-	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
-	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
-	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
-	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
-	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	<xen:include template="auction_phrases_js"/>
 	new XenAuction.List;
 	-->
 	</script>
@@ -432,11 +450,7 @@
 	
 	<script type="text/javascript">
 	<!--
-	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
-	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
-	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
-	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
-	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	<xen:include template="auction_phrases_js"/>
 	new XenAuction.List;
 	-->
 	</script>
@@ -524,11 +538,7 @@
 	
 	<script type="text/javascript">
 	<!--
-	XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
-	XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
-	XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
-	XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
-	XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+	<xen:include template="auction_phrases_js"/>
 	new XenAuction.List;
 	-->
 	</script>
@@ -846,11 +856,8 @@
 
 <script type="text/javascript">
 <!--
-XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
-XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
-XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
-XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
-XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+<xen:include template="auction_phrases_js"/>
+
 new XenAuction.List;
 -->
 </script>]]></template>
@@ -1045,6 +1052,14 @@ new XenAuction.List;
 	</ul>
 	
 </li>]]></template>
+    <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
+XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
+XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
+XenAuction.Config.phrases.hoursLeft 	= '{xen:phrase hours_left}';
+XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
+
+XenAuction.Config.phrases.errorInvalidQuantity 	= '{xen:phrase quantity_not_available}';
+XenAuction.Config.phrases.errorBidTooLow 		= '{xen:phrase bid_must_be_higher}';]]></template>
     <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
 	<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
 	<li><a href="{xen:link auction-process/create}">{xen:phrase create_auction}</a></li>

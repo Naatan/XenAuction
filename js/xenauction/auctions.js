@@ -7,6 +7,8 @@ XenAuction.Config = {
 		'minutesLeft': 	'Minutes Left',
 		'hoursLeft': 	'Hours Left',
 		'daysLeft': 	'Days Left',
+		
+		'errorInvalidQuantity': 	'You are trying to buy a higher quantity than there is available'
 	}
 };
 
@@ -60,3 +62,126 @@ XenAuction.List.prototype = {
 
 	}
 };
+
+XenAuction.Bid = function() { this.__construct(); };
+XenAuction.Bid.prototype = {
+	__construct: function()
+	{
+
+		$("input[name=quantity]").keyup(this.onChangeQuantity);
+		$("input[name=bid]").keyup(this.onChangeBid);
+
+	},
+	
+	onChangeBid: function()
+	{
+		$(this).next('.formValidationInlineError').remove();
+		
+		var form = $(this).parents('form.auctionBid');
+		
+		var bid 	= parseInt($(this).val());
+		var minBid 	= parseInt(form.find("input.min_bid").val());
+		
+		if (isNaN(bid) || bid < minBid)
+		{
+			XenAuction.Helpers.showInputError(this, XenAuction.Config.phrases.errorBidTooLow);
+		}
+	},
+	
+	onChangeQuantity: function()
+	{
+		$(this).next('.formValidationInlineError').remove();
+		
+		var form = $(this).parents('form.auctionBid');
+		
+		var quantity 		= $(this).val();
+		var cost 			= form.find("input.cost").val();
+		var availability 	= form.find("input.availability").val();
+		
+		if (isNaN(quantity) || quantity > availability)
+		{
+			XenAuction.Helpers.showInputError(this, XenAuction.Config.phrases.errorInvalidQuantity);
+		}
+		
+		var totalCost = parseInt(quantity) * parseFloat(cost);
+		
+		form.find('dd.paying').text(number_format(totalCost));
+	}
+	
+};
+
+XenAuction.Create = function() { this.__construct(); };
+XenAuction.Create.prototype = {
+	__construct: function()
+	{
+
+		$("input[name=bid_enable]").click(this.toggleEnable);
+		$("input[name=buyout_enable]").click(this.toggleEnable);
+
+	},
+	
+	toggleEnable: function()
+	{
+		
+		if ($(this).is(":checked"))
+		{
+			$(this).prev('input').removeAttr('disabled');
+		}
+		else
+		{
+			$(this).prev('input').attr('disabled', 'disabled');
+		}
+		
+		if ($("#bid_enable").is(":checked"))
+		{
+			$("#availability_wrap").hide();
+			$("#availability_wrap").find("input[name=availability]").val(1);
+		}
+		else if ($("#buyout_enable").is(":checked"))
+		{
+			$("#availability_wrap").show();
+		}
+		
+	},
+	
+}
+
+XenAuction.Helpers = {
+	
+	showInputError: function(input, message)
+	{
+		var error 	= $('<label for="' + $(input).attr('id') + '" class="formValidationInlineError">'+message+'</label>').insertAfter(input);
+		var coords 	= $(input).coords('outer', 'position');
+		error.css({
+			top: coords.top,
+			left: coords.left + coords.width + 10
+		}).show();
+	}
+	
+}
+
+// helpers
+
+function number_format (number, decimals, dec_point, thousands_sep) {
+    // http://kevin.vanzonneveld.net
+    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+    var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+        s = '',
+        toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + Math.round(n * k) / k;
+        };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+}
