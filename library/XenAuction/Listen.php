@@ -21,5 +21,4 @@ class XenAuction_Listen
 		);
 	}
 
-
 }

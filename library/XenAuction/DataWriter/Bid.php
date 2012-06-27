@@ -15,13 +15,33 @@ class XenAuction_DataWriter_Bid extends XenForo_DataWriter
 	{
 		return array(
 			'xf_auction_bid' => array(
-				'bid_id'			=> array('type' => self::TYPE_UINT, 'autoIncrement' => true, 'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyBidid')),
-				'auction_id'		=> array('type' => self::TYPE_UINT, 'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
-				'bid_user_id'		=> array('type' => self::TYPE_UINT,	'required' => true),
-				'is_buyout'			=> array('type' => self::TYPE_UINT, 'default' => 0),
-				'quantity'			=> array('type' => self::TYPE_UINT, 'default' => NULL),
-				'amount'			=> array('type' => self::TYPE_UINT, 'required' => true),
-				'bid_date'			=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time)
+				
+				'bid_id' 		=>
+					array(	'type' => self::TYPE_UINT, 'autoIncrement' => true,
+							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyBidid')),
+					
+				'auction_id'	=>
+					array(	'type' => self::TYPE_UINT,
+							'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
+					
+				'bid_user_id'	=>
+					array(	'type' => self::TYPE_UINT,	'required' => true,
+							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyUserId')),
+				
+				'is_buyout'		=>
+					array(	'type' => self::TYPE_UINT, 'default' => 0,
+							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyIsBuyout')),
+				
+				'quantity'		=>
+					array( 	'type' => self::TYPE_UINT, 'default' => NULL,
+							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyQuantity')),
+				
+				'amount'		=>
+					array(	'type' => self::TYPE_UINT, 'required' => true,
+							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyAmount')),
+				
+				'bid_date'		=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time)
+				
 			)
 		);
 	}
