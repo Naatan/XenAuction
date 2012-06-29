@@ -13,9 +13,19 @@
   <email_templates/>
   <optiongroups/>
   <permissions>
-    <permission_groups/>
-    <permissions/>
-    <interface_groups/>
+    <permission_groups>
+      <permission_group permission_group_id="auctions"/>
+    </permission_groups>
+    <permissions>
+      <permission permission_group_id="auctions" permission_id="bidOnAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
+      <permission permission_group_id="auctions" permission_id="buyoutAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
+      <permission permission_group_id="auctions" permission_id="createAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
+      <permission permission_group_id="auctions" permission_id="searchAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
+      <permission permission_group_id="auctions" permission_id="viewAuctions" permission_type="flag" default_value="unset" interface_group_id="auctions" display_order="1"/>
+    </permissions>
+    <interface_groups>
+      <interface_group interface_group_id="auctions" display_order="1"/>
+    </interface_groups>
   </permissions>
   <phrases>
     <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
@@ -56,6 +66,13 @@
     <phrase title="outbid_message" version_id="0" version_string=""><![CDATA[Outbid by: {username}]]></phrase>
     <phrase title="outbid_on_x" version_id="0" version_string=""><![CDATA[Outbid on: {title}]]></phrase>
     <phrase title="paying" version_id="0" version_string=""><![CDATA[Paying]]></phrase>
+    <phrase title="permission_auctions_bidOnAuctions" version_id="0" version_string=""><![CDATA[Bid On Auctions]]></phrase>
+    <phrase title="permission_auctions_buyoutAuctions" version_id="0" version_string=""><![CDATA[Buyout Auctions]]></phrase>
+    <phrase title="permission_auctions_createAuctions" version_id="0" version_string=""><![CDATA[Create Auctions]]></phrase>
+    <phrase title="permission_auctions_searchAuctions" version_id="0" version_string=""><![CDATA[Search Auctions]]></phrase>
+    <phrase title="permission_auctions_viewAuctions" version_id="0" version_string=""><![CDATA[View Auctions]]></phrase>
+    <phrase title="permission_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
+    <phrase title="permission_interface_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="place_bid" version_id="0" version_string=""><![CDATA[Place Bid]]></phrase>
     <phrase title="quantity" version_id="0" version_string=""><![CDATA[Quantity]]></phrase>
     <phrase title="quantity_not_available" version_id="0" version_string=""><![CDATA[You are trying to buy a higher quantity than there is available]]></phrase>
@@ -827,19 +844,24 @@ new XenAuction.Create;
 </ol>
 
 <xen:sidebar>
-	<div class="section secondaryContent auctionCreate">
-		<a href="{xen:link auction-process/create}" class="callToAction">
-			<span>{xen:phrase create_auction}</span>
-		</a>
-	</div>
-	<div class="section">
-		<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
-			<h3>{xen:phrase find_auction}</h3>
-				
-			<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." results="0" class="textCtrl AutoComplete" data-autoSubmit="true" />
-			<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
-		</form>
-	</div>
+	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
+		<div class="section secondaryContent auctionCreate">
+			<a href="{xen:link auction-process/create}" class="callToAction">
+				<span>{xen:phrase create_auction}</span>
+			</a>
+		</div>
+	</xen:if>
+	
+	<xen:if is="{xen:helper auction, hasPermission, 'searchAuctions'}">
+		<div class="section">
+			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
+				<h3>{xen:phrase find_auction}</h3>
+					
+				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." results="0" class="textCtrl AutoComplete" data-autoSubmit="true" />
+				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+			</form>
+		</div>
+	</xen:if>
 
 	<div class="section">
 		<form action="{xen:link auction-process/expire}" method="POST" class="secondaryContent">

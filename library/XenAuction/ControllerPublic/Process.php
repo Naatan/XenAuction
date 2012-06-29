@@ -65,7 +65,13 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	 */
 	protected function _preDispatch($action)
 	{
-		$this->_assertRegistrationRequired();
+		if (
+			! XenForo_Visitor::getInstance()->hasPermission('auctions', 'viewAuctions') OR
+			! XenForo_Visitor::getInstance()->hasPermission('auctions', 'createAuctions')
+		)
+		{
+			throw new XenForo_ControllerResponse_Exception($this->responseNoPermission());
+		}
 	}
 	
 }

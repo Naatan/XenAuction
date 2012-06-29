@@ -5,6 +5,11 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 	
 	public function actionBid() 
 	{
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'bidOnAuctions'))
+		{
+			return $this->responseNoPermission();
+		}
+		
 		$id 			= $this->_input->filterSingle('id', XenForo_Input::UINT);
 
 		$visitor 		= XenForo_Visitor::getInstance();
@@ -24,6 +29,11 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 
 	public function actionBuyout() 
 	{
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'buyoutAuctions'))
+		{
+			return $this->responseNoPermission();
+		}
+		
 		$id 			= $this->_input->filterSingle('id', XenForo_Input::UINT);
 		
 		$visitor 		= XenForo_Visitor::getInstance();
@@ -43,6 +53,11 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 
 	public function actionPlaceBid() 
 	{
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'bidOnAuctions'))
+		{
+			return $this->responseNoPermission();
+		}
+		
 		$input = $this->_input->filter(array(
 			'id'		=> XenForo_Input::UINT,
 			'bid'		=> XenForo_Input::UINT
@@ -102,6 +117,11 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 
 	public function actionPlaceBuyout() 
 	{
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'buyoutAuctions'))
+		{
+			return $this->responseNoPermission();
+		}
+		
 		$input = $this->_input->filter(array(
 			'id'		=> XenForo_Input::UINT,
 			'quantity'	=> XenForo_Input::UINT
@@ -161,7 +181,10 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 	 */
 	protected function _preDispatch($action)
 	{
-		$this->_assertRegistrationRequired();
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'viewAuctions'))
+		{
+			throw new XenForo_ControllerResponse_Exception($this->responseNoPermission());
+		}
 	}
 	
 }

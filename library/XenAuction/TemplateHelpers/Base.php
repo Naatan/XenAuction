@@ -34,4 +34,10 @@ class XenAuction_TemplateHelpers_Base
 		return strip_tags($text);
 	}
 	
+	public static function helperHasPermission($permission)
+	{
+		$visitor = XenForo_Visitor::getInstance();
+		return $visitor->hasPermission('auctions', $permission);
+	}
+	
 }

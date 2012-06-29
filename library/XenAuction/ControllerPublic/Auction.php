@@ -32,4 +32,17 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		));	
 	}
 	
+	/**
+	 * Enforce registered-users only for all actions in this controller
+	 *
+	 * @see library/XenForo/XenForo_Controller#_preDispatch($action)
+	 */
+	protected function _preDispatch($action)
+	{
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'viewAuctions'))
+		{
+			throw new XenForo_ControllerResponse_Exception($this->responseNoPermission());
+		}
+	}
+	
 }
