@@ -50,6 +50,23 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 		{
 			$this->error(new XenForo_Phrase('must_use_bid_or_buyout'));
 		}
+		
+		$tags = trim($this->get('tags'));
+		
+		if ( ! empty($tags))
+		{
+			if (substr($tags,0,1) != ',')
+			{
+				$tags = ',' . $tags;
+			}
+			
+			if (substr($tags,-1) != ',')
+			{
+				$tags .= ',';
+			}
+		}
+		
+		$this->set('tags', $tags);
 	}
 
 	/**

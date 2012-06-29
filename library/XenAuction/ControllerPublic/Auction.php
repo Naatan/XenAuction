@@ -32,6 +32,28 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		));	
 	}
 	
+	public function actionSearch()
+	{
+		$search = $this->_input->filterSingle('search', XenForo_Input::STRING);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getAuctions(
+			array(
+				'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
+				'title'		=> $search,
+				'tags'		=> $search
+			),
+			array(
+				'join'		=> XenAuction_Model_Auction::FETCH_USER
+			)
+		);
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
+		   	'auctions'	=> $auctions,
+			'search'	=> $search
+		));	
+	}
+	
 	/**
 	 * Enforce registered-users only for all actions in this controller
 	 *

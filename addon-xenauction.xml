@@ -854,16 +854,16 @@ new XenAuction.Create;
 	
 	<xen:if is="{xen:helper auction, hasPermission, 'searchAuctions'}">
 		<div class="section">
-			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
+			<form action="{xen:link auctions/search}" method="post" class="secondaryContent findAuction">
 				<h3>{xen:phrase find_auction}</h3>
 					
-				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." results="0" class="textCtrl AutoComplete" data-autoSubmit="true" />
+				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." value="{$search}" results="0" class="textCtrl" />
 				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 			</form>
 		</div>
 	</xen:if>
 
-	<div class="section">
+<!--	<div class="section">
 		<form action="{xen:link auction-process/expire}" method="POST" class="secondaryContent">
 			<h3>Expire Auction (DEV TOOL)</h3>
 				
@@ -872,7 +872,7 @@ new XenAuction.Create;
 			<input type="id" name="id" placeholder="ID" class="textCtrl"/>
 			<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 		</form>
-	</div>
+	</div>-->
 
 </xen:sidebar>
 
@@ -1022,7 +1022,7 @@ new XenAuction.List;
 	<ul>
 		<li class="icon"><div></div></li>
 		<li class="descriptionWrap">
-			<span class="tags">{$auction.tags}</span>
+			<span class="tags">{xen:helper auction, tags, $auction.tags}</span>
 			<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
 			<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
 		</li>
@@ -1083,9 +1083,13 @@ XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
 XenAuction.Config.phrases.errorInvalidQuantity 	= '{xen:phrase quantity_not_available}';
 XenAuction.Config.phrases.errorBidTooLow 		= '{xen:phrase bid_must_be_higher}';]]></template>
     <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
-	<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
-	<li><a href="{xen:link auction-process/create}">{xen:phrase create_auction}</a></li>
-	<li><a href="{xen:link auction-history}">{xen:phrase history}</a></li>
+	<xen:if is="{xen:helper auction, hasPermission, 'viewAuctions'}">
+		<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
+		<li><a href="{xen:link auction-history}">{xen:phrase history}</a></li>
+	</xen:if>
+	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
+		<li><a href="{xen:link auction-process/create}">{xen:phrase create_auction}</a></li>
+	</xen:if>
 </ul>]]></template>
   </templates>
   <bb_code_media_sites/>

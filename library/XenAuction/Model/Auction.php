@@ -105,6 +105,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 	{
 		$db = $this->_getDb();
 		$sqlConditions = array();
+		$searchConditions = array();
 
 		if ( isset($conditions['user_id']))
 		{
@@ -145,7 +146,34 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$sqlConditions[] = 'bid.is_buyout = ' . $db->quote($conditions['is_buyout']);
 		}
 		
-		return $this->getConditionsForClause($sqlConditions);
+		if ( isset($conditions['title']))
+		{
+			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
+		}
+		
+		if ( isset($conditions['tags']))
+		{
+			$tags = explode(',', $conditions['tags']);
+			
+			foreach ($tags AS $tag)
+			{
+				$searchConditions[] = 'auction.tags LIKE ' . $db->quote(',%'. $tag . '%,');
+			}
+		}
+		
+		if ($sqlConditions)
+		{
+			if ($searchConditions)
+			{
+				$sqlConditions[] = '(' . implode(') OR (', $searchConditions) . ')';
+			}
+			
+			return '(' . implode(') AND (', $sqlConditions) . ')';
+		}
+		else
+		{
+			return '1=1';
+		}
 	}
 	
 	/**

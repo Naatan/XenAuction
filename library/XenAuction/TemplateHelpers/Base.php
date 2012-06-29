@@ -40,4 +40,19 @@ class XenAuction_TemplateHelpers_Base
 		return $visitor->hasPermission('auctions', $permission);
 	}
 	
+	public static function helperTags($tags)
+	{
+		if (substr($tags,0,1) == ',')
+		{
+			$tags = substr($tags, 1);
+		}
+		
+		if (substr($tags,-1) == ',')
+		{
+			$tags = substr($tags, 0, -1);
+		}
+		
+		return $tags;
+	}
+	
 }
