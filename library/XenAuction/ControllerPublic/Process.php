@@ -46,18 +46,6 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		);
 	}
 	
-	public function actionExpire() 
-	{
-		$id = $this->_input->filterSingle('id', XenForo_Input::UINT);
-
-		XenAuction_CronEntry_Auction::runExpireAuction($id);
-
-		return $this->responseRedirect(
-			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auctions')
-		);
-	}
-	
 	/**
 	 * Enforce registered-users only for all actions in this controller
 	 *

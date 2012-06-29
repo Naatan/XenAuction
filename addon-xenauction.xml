@@ -9,7 +9,9 @@
     <listener event_id="init_dependencies" execute_order="10" callback_class="XenAuction_Listen" callback_method="init_dependecies" active="1" description=""/>
     <listener event_id="navigation_tabs" execute_order="10" callback_class="XenAuction_Listen" callback_method="navigation_tabs" active="1" description=""/>
   </code_event_listeners>
-  <cron/>
+  <cron>
+    <entry entry_id="auctions" cron_class="XenAuction_CronEntry_Auction" cron_method="runExpireAuctions" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["-1"]}]]></entry>
+  </cron>
   <email_templates/>
   <optiongroups>
     <group group_id="auctions" display_order="5000" debug_only="0"/>
@@ -62,6 +64,7 @@
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
     <phrase title="cant_buy_zero" version_id="0" version_string=""><![CDATA[Entered quantity is too low]]></phrase>
     <phrase title="create_auction" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
+    <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
     <phrase title="enable_bids" version_id="0" version_string=""><![CDATA[Enable Bids]]></phrase>

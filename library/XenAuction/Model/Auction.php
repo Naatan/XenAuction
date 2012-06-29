@@ -59,7 +59,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
-
+		
 		return $this->fetchAllKeyed($this->limitQueryResults('
 				SELECT auction.*
 					' . $joinOptions['selectFields'] . '
@@ -169,6 +169,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 		if ( isset($conditions['status']))
 		{
 			$sqlConditions[] = 'auction.status = ' . $db->quote($conditions['status']);
+		}
+		
+		if ( isset($conditions['expired']))
+		{
+			$sqlConditions[] = 'auction.expiration_date < ' . time();
 		}
 		
 		if ( isset($conditions['is_buyout']))
