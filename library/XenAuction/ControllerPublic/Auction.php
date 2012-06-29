@@ -5,18 +5,34 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 	
 	public function actionIndex()
 	{
-		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions 		= $auctionModel->getAuctions(
-			array(
-				'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE
-			),
-			array(
-				'join'		=> XenAuction_Model_Auction::FETCH_USER
-			)
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
+		
+		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
+		
+		$fetchConditions = array(
+			'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
+			'title'		=> $search,
+			'tags'		=> $search
 		);
 		
+		$fetchOptions 	= array(
+			'join'		=> XenAuction_Model_Auction::FETCH_USER,
+			'page'		=> $page,
+			'perPage'	=> $perPage
+		);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
+		$total 		 	= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
-		   	'auctions'	=> $auctions
+		   	'auctions'	=> $auctions,
+			'search'	=> $search,
+			'page'		=> $page,
+			'perPage'	=> $perPage,
+			'total'		=> $total
 		));	
 	}
 
@@ -29,28 +45,6 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_details', array(
 		   	'auction'	=> $auction
-		));	
-	}
-	
-	public function actionSearch()
-	{
-		$search = $this->_input->filterSingle('search', XenForo_Input::STRING);
-		
-		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions 		= $auctionModel->getAuctions(
-			array(
-				'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
-				'title'		=> $search,
-				'tags'		=> $search
-			),
-			array(
-				'join'		=> XenAuction_Model_Auction::FETCH_USER
-			)
-		);
-		
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
-		   	'auctions'	=> $auctions,
-			'search'	=> $search
 		));	
 	}
 	

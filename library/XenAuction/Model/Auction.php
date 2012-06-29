@@ -60,8 +60,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 
-		return $this->fetchAllKeyed($this->limitQueryResults(
-			'
+		return $this->fetchAllKeyed($this->limitQueryResults('
 				SELECT auction.*
 					' . $joinOptions['selectFields'] . '
 				FROM xf_auction AS auction
@@ -71,6 +70,20 @@ class XenAuction_Model_Auction extends XenForo_Model
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
 		), 'auction_id');
+	}
+	
+	public function getAuctionCount(array $conditions = array(), array $fetchOptions = array())
+	{
+		$joinOptions 	= $this->prepareAuctionFetchOptions($fetchOptions);
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
+		
+		return $this->_getDb()->fetchOne('
+			SELECT COUNT(auction.auction_id)
+			FROM xf_auction AS auction
+			' . $joinOptions['joinTables'] . '
+			WHERE
+			' . $whereClause . '
+		');
 	}
 	
 	/**
@@ -99,6 +112,28 @@ class XenAuction_Model_Auction extends XenForo_Model
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
 		), 'bid_id');
+	}
+	
+	/**
+	 * Get list of bids for user
+	 * 
+	 * @param	array			$fetchOptions
+	 * 
+	 * @return	array|bool
+	 */
+	public function getUserBidCount(array $conditions = array(), array $fetchOptions = array())
+	{
+		$joinOptions 	= $this->prepareAuctionFetchOptions($fetchOptions);
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
+		
+		return $this->_getDb()->fetchOne('
+			SELECT COUNT(bid.bid_id)
+			FROM xf_auction_bid AS bid
+			JOIN xf_auction AS auction ON
+				bid.auction_id = auction.auction_id
+			' . $joinOptions['joinTables'] . '
+			WHERE ' . $whereClause . '
+		');
 	}
 	
 	public function prepareAuctionFetchConditions(array $conditions, array &$fetchOptions)
@@ -146,12 +181,12 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$sqlConditions[] = 'bid.is_buyout = ' . $db->quote($conditions['is_buyout']);
 		}
 		
-		if ( isset($conditions['title']))
+		if ( ! empty($conditions['title']))
 		{
 			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
 		}
 		
-		if ( isset($conditions['tags']))
+		if ( ! empty($conditions['tags']))
 		{
 			$tags = explode(',', $conditions['tags']);
 			

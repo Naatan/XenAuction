@@ -146,6 +146,37 @@ XenAuction.Create.prototype = {
 	
 }
 
+XenAuction.HistoryPanes = function() { this.__construct(); };
+XenAuction.HistoryPanes.prototype = {
+	__construct: function()
+	{
+
+		this.$tabs = new XenForo.Tabs($('#HistoryTabs'));
+		this.removePagesFromUrls();
+
+	},
+	
+	removePagesFromUrls: function()
+	{
+		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)page\=\d*/);
+		
+		this.$tabs.$panes.each(function()
+		{
+			var url = $(this).data('loadUrl');
+			url = url.replace(regex, '');
+			$(this).data('loadUrl', url);
+		});
+		
+		
+		$("#HistoryTabs > li > a").each(function()
+		{
+			var url = $(this).attr("href");
+			url = url.replace(/(?:\?|\&|\%3F|\&amp\;)page\=\d*/, '');
+			$(this).attr("href", url);
+		});
+	}
+}
+
 XenAuction.Helpers = {
 	
 	showInputError: function(input, message)

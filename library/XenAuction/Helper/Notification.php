@@ -5,9 +5,10 @@ class XenAuction_Helper_Notification
 
 	public static function sendNotification($userId, XenForo_Phrase $title, XenForo_Phrase $message) 
 	{
-			// TODO: Make sender id configurable
+			$options 	= XenForo_Application::get('options');
+		
 			$userModel 	= XenForo_Model::create('XenForo_Model_User');
-			$sender 	= $userModel->getUserById(1);
+			$sender 	= $userModel->getUserById($options->auctionNotificationSender);
 
 			$title 		= $title->render();
 			$message 	= $message->render();

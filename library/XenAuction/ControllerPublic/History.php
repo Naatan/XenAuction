@@ -5,55 +5,97 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 	
 	public function actionIndex()
 	{
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_list');	
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_list', array(
+			'page'	=> $this->_input->filterSingle('page', XenForo_Input::UINT)
+		));	
 	}
 	
 	public function actionAuctions()
 	{
 		$visitor 		= XenForo_Visitor::getInstance();
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
-		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions 		= $auctionModel->getAuctions(
-			array(
-				'user_id' 	=> $visitor->user_id
-			),
-			array(
-				'join'		=> XenAuction_Model_Auction::FETCH_USER
-			)
+		$fetchConditions = array(
+			'user_id' 	=> $visitor->user_id
 		);
 		
+		$fetchOptions 	= array(
+			'join'		=> XenAuction_Model_Auction::FETCH_USER,
+			'page'		=> $page,
+			'perPage'	=> $perPage
+		);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
+		$total 			= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_auctions', array(
-		   	'auctions'	=> $auctions
+		   	'auctions'	=> $auctions,
+			'page'		=> $page,
+			'perPage'	=> $perPage,
+			'total'		=> $total
 		));	
 	}
 	
 	public function actionBids()
 	{
 		$visitor 		= XenForo_Visitor::getInstance();
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
-		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions  		= $auctionModel->getUserBids(
-			array('bid_user_id' => $visitor->user_id, 'is_buyout' => 0),
-			array('join'	=> XenAuction_Model_Auction::FETCH_USER)
+		$fetchConditions = array(
+			'bid_user_id' 	=> $visitor->user_id,
+			'is_buyout' 	=> 0
 		);
 		
+		$fetchOptions 	= array(
+			'join'		=> XenAuction_Model_Auction::FETCH_USER,
+			'page'		=> $page,
+			'perPage'	=> $perPage
+		);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
+		$total 		 	= $auctionModel->getUserBidCount($fetchConditions, $fetchOptions);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_bids', array(
-			'auctions'	=> $auctions
+			'auctions'	=> $auctions,
+			'page'		=> $page,
+			'perPage'	=> $perPage,
+			'total'		=> $total
 		));	
 	}
 	
 	public function actionBuyouts()
 	{
 		$visitor 		= XenForo_Visitor::getInstance();
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
-		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions  		= $auctionModel->getUserBids(
-			array('bid_user_id' => $visitor->user_id, 'is_buyout' => 1),
-			array('join'	=> XenAuction_Model_Auction::FETCH_USER)
+		$fetchConditions = array(
+			'bid_user_id' 	=> $visitor->user_id,
+			'is_buyout' 	=> 1
 		);
 		
+		$fetchOptions 	= array(
+			'join'		=> XenAuction_Model_Auction::FETCH_USER,
+			'page'		=> $page,
+			'perPage'	=> $perPage
+		);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
+		$total 		 	= $auctionModel->getUserBidCount($fetchConditions, $fetchOptions);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_buyouts', array(
-			'auctions'	=> $auctions
+			'auctions'	=> $auctions,
+			'page'		=> $page,
+			'perPage'	=> $perPage,
+			'total'		=> $total
 		));	
 	}
 	

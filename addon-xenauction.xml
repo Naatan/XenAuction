@@ -11,7 +11,21 @@
   </code_event_listeners>
   <cron/>
   <email_templates/>
-  <optiongroups/>
+  <optiongroups>
+    <group group_id="auctions" display_order="5000" debug_only="0"/>
+    <option option_id="auctionNotificationSender" edit_format="textbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>100</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="1"/>
+    </option>
+    <option option_id="auctionsPerPage" edit_format="spinbox" data_type="unsigned_numeric" can_backup="1">
+      <default_value>15</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="200"/>
+    </option>
+  </optiongroups>
   <permissions>
     <permission_groups>
       <permission_group permission_group_id="auctions"/>
@@ -63,6 +77,12 @@
     <phrase title="must_use_bid_or_buyout" version_id="0" version_string=""><![CDATA[You have to select either a bid or a buyout value]]></phrase>
     <phrase title="my_activity" version_id="0" version_string=""><![CDATA[My Activity]]></phrase>
     <phrase title="no_bids" version_id="0" version_string=""><![CDATA[No bids]]></phrase>
+    <phrase title="option_auctionNotificationSender" version_id="0" version_string=""><![CDATA[User ID that sends notifications]]></phrase>
+    <phrase title="option_auctionNotificationSender_explain" version_id="0" version_string=""><![CDATA[Enter the ID of the user that will be used to send auction notifications. Note that this user should NOT participate in any other part of the auctions (eg. bidding, buying and creating auctions).]]></phrase>
+    <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
+    <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
+    <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
+    <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
     <phrase title="outbid_message" version_id="0" version_string=""><![CDATA[Outbid by: {username}]]></phrase>
     <phrase title="outbid_on_x" version_id="0" version_string=""><![CDATA[Outbid on: {title}]]></phrase>
     <phrase title="paying" version_id="0" version_string=""><![CDATA[Paying]]></phrase>
@@ -369,6 +389,11 @@ new XenAuction.Create;
 </div>]]></template>
     <template title="auction_history_auctions" version_id="0" version_string=""><![CDATA[<div>
 <xen:if is="{$auctions}">
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
 	<ol class="section auctions">
 	
 		<xen:foreach loop="$auctions" value="$auction">
@@ -376,6 +401,10 @@ new XenAuction.Create;
 		</xen:foreach>
 		
 	</ol>
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
 	
 	<script type="text/javascript">
 	<!--
@@ -389,6 +418,11 @@ new XenAuction.Create;
 </div>]]></template>
     <template title="auction_history_bids" version_id="0" version_string=""><![CDATA[<div>
 <xen:if is="{$auctions}">
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_bids" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
 	<table class="auctionHistory">
 		<tbody>
 			
@@ -465,6 +499,10 @@ new XenAuction.Create;
 		</tbody>
 	</table>
 	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_bids" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
 	<script type="text/javascript">
 	<!--
 	<xen:include template="auction_phrases_js"/>
@@ -477,6 +515,11 @@ new XenAuction.Create;
 </div>]]></template>
     <template title="auction_history_buyouts" version_id="0" version_string=""><![CDATA[<div>
 <xen:if is="{$auctions}">
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
 	<table class="auctionHistory">
 		<tbody>
 			
@@ -553,6 +596,10 @@ new XenAuction.Create;
 		</tbody>
 	</table>
 	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
 	<script type="text/javascript">
 	<!--
 	<xen:include template="auction_phrases_js"/>
@@ -574,17 +621,23 @@ new XenAuction.Create;
 <xen:require css="auction_history_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
-<ul class="tabs mainTabs Tabs" data-panes="#HistoryPanes > li" data-history="on">
-	<li class="active"><a href="{$requestPaths.requestUri}#tabAuctions" class="active">{xen:phrase your_auctions}</a></li>
-	<li><a href="{$requestPaths.requestUri}#tabBids">{xen:phrase your_bids}</a></li>
-	<li><a href="{$requestPaths.requestUri}#tabBuyouts">{xen:phrase your_buyouts}</a></li>
+<ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
+	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>
 </ul>
 
 <ul id="HistoryPanes">
-	<li id="tabAuctions" data-loadUrl="{xen:link 'auction-history/auctions'}"></li>
-	<li id="tabBids" data-loadUrl="{xen:link 'auction-history/bids'}"></li>
-	<li id="tabBuyouts" data-loadUrl="{xen:link 'auction-history/buyouts'}"></li>
-</ul>]]></template>
+	<li id="_auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
+	<li id="_bids" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
+	<li id="_buyouts" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
+</ul>
+
+<script type="text/javascript"><!--
+$(document).ready(function() {
+	new XenAuction.HistoryPanes;
+});
+//--></script>]]></template>
     <template title="auction_history_list.css" version_id="0" version_string=""><![CDATA[.auctionHistory
 {
 	width: 100%;
@@ -835,6 +888,10 @@ new XenAuction.Create;
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
+<div class="pageNavLinkGroup">
+	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
+</div>
+
 <ol class="section auctions">
 
 	<xen:foreach loop="$auctions" value="$auction">
@@ -842,6 +899,10 @@ new XenAuction.Create;
 	</xen:foreach>
 	
 </ol>
+
+<div class="pageNavLinkGroup">
+	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
+</div>
 
 <xen:sidebar>
 	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
@@ -854,7 +915,7 @@ new XenAuction.Create;
 	
 	<xen:if is="{xen:helper auction, hasPermission, 'searchAuctions'}">
 		<div class="section">
-			<form action="{xen:link auctions/search}" method="post" class="secondaryContent findAuction">
+			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
 				<h3>{xen:phrase find_auction}</h3>
 					
 				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." value="{$search}" results="0" class="textCtrl" />
