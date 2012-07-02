@@ -16,7 +16,7 @@
   <optiongroups>
     <group group_id="auctions" display_order="5000" debug_only="0"/>
     <option option_id="auctionNotificationSender" edit_format="textbox" data_type="unsigned_integer" can_backup="1">
-      <default_value>100</default_value>
+      <default_value>1</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="auctions" display_order="1"/>
@@ -70,6 +70,7 @@
     <phrase title="enable_bids" version_id="0" version_string=""><![CDATA[Enable Bids]]></phrase>
     <phrase title="enable_buyouts" version_id="0" version_string=""><![CDATA[Enable Buyouts]]></phrase>
     <phrase title="enter_availability_higher_than_zero" version_id="0" version_string=""><![CDATA[Please enter an availability higher than zero]]></phrase>
+    <phrase title="expires_in" version_id="0" version_string=""><![CDATA[Expires in]]></phrase>
     <phrase title="find_auction" version_id="0" version_string=""><![CDATA[Find Auction]]></phrase>
     <phrase title="finished" version_id="0" version_string=""><![CDATA[Finished]]></phrase>
     <phrase title="history" version_id="0" version_string=""><![CDATA[History]]></phrase>
@@ -226,7 +227,7 @@ new XenAuction.Bid;
 <script type="text/javascript"><!--
 new XenAuction.Bid;
 //--></script>]]></template>
-    <template title="auction_create" version_id="0" version_string=""><![CDATA[<xen:require css="auction_create.css" />
+    <template title="auction_create" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <xen:title>{xen:phrase create_auction}</xen:title>
@@ -272,25 +273,11 @@ new XenAuction.Bid;
 		<legend>{xen:phrase details}</legend>
 		
 		<dl class="ctrlUnit">
-			<dt>{xen:phrase expires}:</dt>
+			<dt>{xen:phrase expires_in}:</dt>
 			<dd>
-				<select name="expires[month]" class="textCtrl autoSize">
-					<option value="0">&nbsp;</option>
-					<option value="1">{xen:phrase month_1}</option>
-					<option value="2">{xen:phrase month_2}</option>
-					<option value="3">{xen:phrase month_3}</option>
-					<option value="4">{xen:phrase month_4}</option>
-					<option value="5">{xen:phrase month_5}</option>
-					<option value="6">{xen:phrase month_6}</option>
-					<option value="7">{xen:phrase month_7}</option>
-					<option value="8">{xen:phrase month_8}</option>
-					<option value="9">{xen:phrase month_9}</option>
-					<option value="10">{xen:phrase month_10}</option>
-					<option value="11">{xen:phrase month_11}</option>
-					<option value="12">{xen:phrase month_12}</option>
-				</select>
-				<input type="text" name="expires[day]" class="textCtrl autoSize" placeholder="{xen:phrase day}" size="2" maxlength="2" />
-				<input type="text" name="expires[year]" class="textCtrl autoSize" placeholder="{xen:phrase year}" size="4" maxlength="4" />
+				<input type="text" name="expires" class="textCtrl autoSize" value="3" size="5" maxlength="5" />
+				&nbsp;
+				{xen:phrase days}
 			</dd>
 		</dl>
 		

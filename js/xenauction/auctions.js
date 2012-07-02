@@ -53,7 +53,7 @@ XenAuction.List.prototype = {
 			
 			$(this).html("");
 			
-			$(this).append($("<div class=amount>").text(Math.floor(p[0])));
+			$(this).append($("<div class=amount>").text(Math.ceil(p[0])));
 			$(this).append($("<div class=description>").text(p[1]));
 			
 			$(this).data('processed', true);

@@ -23,7 +23,7 @@ class XenAuction_DataWriter_Helper_Auction
 	
 	public static function verifyExpirationDate(&$time, XenForo_DataWriter $dw, $fieldName = false)
 	{
-		if ($time > time())
+		if ($time > time() OR (time() - $time) < 3600)
 		{
 			return true;
 		}

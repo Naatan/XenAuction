@@ -16,7 +16,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'title'        		=> XenForo_Input::STRING,
 			'tags'         		=> XenForo_Input::STRING,
 			'message_html' 		=> XenForo_Input::STRING,
-			'expires'      		=> XenForo_Input::ARRAY_SIMPLE,
+			'expires'      		=> XenForo_Input::UINT,
 			'starting_bid' 		=> XenForo_Input::UINT,
 			'buyout'       		=> XenForo_Input::UINT,
 			'availability' 		=> XenForo_Input::UINT,
@@ -32,7 +32,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,
 			'buy_now'        	=> $input['buyout_enable'] ? $input['buyout'] : NULL,
 			'availability'   	=> $input['buyout_enable'] ? $input['availability'] : NULL,
-			'expiration_date'	=> mktime(0,0,0, (int) $input['expires']['month'], (int) $input['expires']['day'], (int) $input['expires']['year'])
+			'expiration_date'	=> time() + ((int) $input['expires'] * 86400)
 		);
 		
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
