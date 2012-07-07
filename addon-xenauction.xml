@@ -71,6 +71,7 @@
     <phrase title="enable_buyouts" version_id="0" version_string=""><![CDATA[Enable Buyouts]]></phrase>
     <phrase title="enter_availability_higher_than_zero" version_id="0" version_string=""><![CDATA[Please enter an availability higher than zero]]></phrase>
     <phrase title="expires_in" version_id="0" version_string=""><![CDATA[Expires in]]></phrase>
+    <phrase title="filter_by_tag" version_id="0" version_string=""><![CDATA[Filter by tag]]></phrase>
     <phrase title="find_auction" version_id="0" version_string=""><![CDATA[Find Auction]]></phrase>
     <phrase title="finished" version_id="0" version_string=""><![CDATA[Finished]]></phrase>
     <phrase title="history" version_id="0" version_string=""><![CDATA[History]]></phrase>
@@ -103,6 +104,7 @@
     <phrase title="requested_auction_not_found" version_id="0" version_string=""><![CDATA[Could not find the requested auction]]></phrase>
     <phrase title="requested_bid_not_found" version_id="0" version_string=""><![CDATA[Requested bid not found]]></phrase>
     <phrase title="seconds_left" version_id="0" version_string=""><![CDATA[Seconds Left]]></phrase>
+    <phrase title="select_one" version_id="0" version_string=""><![CDATA[Select One]]></phrase>
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
     <phrase title="summary" version_id="0" version_string=""><![CDATA[Summary]]></phrase>
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
@@ -919,6 +921,25 @@ $(document).ready(function() {
 				<h3>{xen:phrase find_auction}</h3>
 					
 				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." value="{$search}" results="0" class="textCtrl" />
+				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+			</form>
+		</div>
+	</xen:if>
+	
+	<xen:if is="{$tags}">	
+		<div class="section">
+			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
+				<h3>{xen:phrase filter_by_tag}</h3>
+
+				<select name="tag">
+					<option value="-1">{xen:phrase select_one}</option>
+					<xen:foreach loop="$tags" value="$tag">
+						<option>{$tag}</option>
+					</xen:foreach>
+				</select>
+				
+				<input type="submit" value="{xen:phrase filter}"/>
+
 				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 			</form>
 		</div>

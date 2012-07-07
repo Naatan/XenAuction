@@ -197,7 +197,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 			
 			foreach ($tags AS $tag)
 			{
-				$searchConditions[] = 'auction.tags LIKE ' . $db->quote(',%'. $tag . '%,');
+				$searchConditions[] = 'auction.tags LIKE ' . $db->quote('%,%'. $tag . '%,%');
 			}
 		}
 		

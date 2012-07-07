@@ -52,6 +52,8 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		
 		$dw->save();
 		
+		XenAuction_Helper_Tags::add(explode(',', $input['tags']));
+		
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
 			XenForo_Link::buildPublicLink('auctions')

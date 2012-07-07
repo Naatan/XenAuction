@@ -10,12 +10,18 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
 		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
+		$tag 			= $this->_input->filterSingle('tag', XenForo_Input::STRING);
 		
 		$fetchConditions = array(
 			'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
 			'title'		=> $search,
 			'tags'		=> $search
 		);
+		
+		if ( ! empty($tag))
+		{
+			$fetchConditions['tags'] = $tag;
+		}
 		
 		$fetchOptions 	= array(
 			'join'		=> XenAuction_Model_Auction::FETCH_USER,
@@ -28,6 +34,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$total 		 	= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
+			'tags'		=> XenAuction_Helper_Tags::get(),
 		   	'auctions'	=> $auctions,
 			'search'	=> $search,
 			'page'		=> $page,
