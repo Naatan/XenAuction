@@ -236,9 +236,15 @@ new XenAuction.Bid;
     <xen:breadcrumb href="{xen:link 'auction-process/create'}">{xen:phrase create_auction}</xen:breadcrumb>
 </xen:navigation>
 
-<form action="{xen:link 'auction-process/add'}" method="post"
+<!--<form action="{xen:link 'auction-process/add'}" method="post"
 	class="xenForm AutoValidator auction"
 	data-redirect="on"
+	enctype="multipart/form-data"
+>-->
+
+<form action="{xen:link 'auction-process/add'}" method="post"
+	class="xenForm auction"
+	enctype="multipart/form-data"
 >
 
 	<xen:hook name="auction_create">
@@ -248,13 +254,7 @@ new XenAuction.Bid;
 		<dd><input type="text" name="tags" class="textCtrl" id="ctrl_tags" maxlength="255" /></dd>
 	</dl>	
 
-	<fieldset class="summary">
-		
-		<legend>{xen:phrase summary}</legend>
-		
-		<a href="#">
-			<span class="icon img s" style="background-image: url('{$xenOptions.boardUrl}/data/xenauction/image.png')"></span>
-		</a>
+	<div class="summary">
 		
 		<dl class="ctrlUnit fullWidth surplusLabel">
 			<dt><label for="ctrl_title_thread_create">{xen:phrase title}:</label></dt>
@@ -266,11 +266,16 @@ new XenAuction.Bid;
 			<dt></dt>
 			<dd>{xen:raw $editorTemplate}</dd>
 		</dl>
-	</fieldset>
+	</div>
 	
-	<fieldset class="details">
+	<div class="details">
 		
-		<legend>{xen:phrase details}</legend>
+		<h3 class="textHeading">{xen:phrase details}</h3>
+		
+		<dl class="ctrlUnit">
+			<dt>Image:</dt>
+			<dd><input type="file" name="image" /></dd>
+		</dl>
 		
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase expires_in}:</dt>
@@ -304,7 +309,7 @@ new XenAuction.Bid;
 			</dd>
 		</dl>
 		
-	</fieldset>
+	</div>
 	
 	<!-- slot: after_editor -->
 
@@ -325,7 +330,7 @@ new XenAuction.Bid;
 <xen:include template="auction_phrases_js"/>
 new XenAuction.Create;
 //--></script>]]></template>
-    <template title="auction_create.css" version_id="0" version_string=""><![CDATA[.auction .summary .icon
+    <template title="auction_create.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auction .summary .icon
 {
 	width: 30px;
 	height: 30px;
@@ -337,8 +342,13 @@ new XenAuction.Create;
 
 .textCtrl.titleCtrl
 {
-	margin-left: 10px !important;
-	width: {xen:calc "{xen:property formWidth} - 40 - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px !important;
+	margin-left: 30px !important;
+	width: {xen:calc "{xen:property formWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px !important;
+}
+
+.auction .details
+{
+	margin-top: 30px;
 }
 
 .auction .details .ctrlUnit dt
@@ -373,24 +383,47 @@ new XenAuction.Create;
 	<xen:include template="auction_details_content" />
 
 </form>]]></template>
-    <template title="auction_details_content" version_id="0" version_string=""><![CDATA[<div class="message">
-	<div class="icon"></div>
-	{xen:raw $auction.message}
+    <template title="auction_details.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auctionDetails .message
+{
+	min-height: 170px;
+}
+
+.auctionDetails .auctionImage
+{
+	float: right;
+	margin: 10px;
+	
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+}]]></template>
+    <template title="auction_details_content" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_details.css" />
+
+<div class="auctionDetails">
+
+	<div class="message">
+		{xen:helper auction, image, $auction, 'n', false, false}
+		{xen:raw $auction.message}
+	</div>
+
 </div>]]></template>
-    <template title="auction_history_auctions" version_id="0" version_string=""><![CDATA[<div>
+    <template title="auction_history_auctions" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
 		<xen:pagenav link="auction-history#_auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
-	<ol class="section auctions">
+	<table class="auctions">
 	
-		<xen:foreach loop="$auctions" value="$auction">
-			<xen:include template="auction_list_item"/>
-		</xen:foreach>
+		<tbody>
+			<xen:foreach loop="$auctions" value="$auction">
+				<xen:include template="auction_list_item"/>
+			</xen:foreach>
+		</tbody>
 		
-	</ol>
+	</table>
 	
 	<div class="pageNavLinkGroup">
 		<xen:pagenav link="auction-history#_auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
@@ -406,7 +439,7 @@ new XenAuction.Create;
 	<div>{xen:phrase you_have_no_auctions}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_bids" version_id="0" version_string=""><![CDATA[<div>
+    <template title="auction_history_bids" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -420,7 +453,7 @@ new XenAuction.Create;
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						<div></div>
+						{xen:helper auction, image, $auction, 't', true}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -503,7 +536,7 @@ new XenAuction.Create;
 	<div>{xen:phrase you_have_no_bids}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_buyouts" version_id="0" version_string=""><![CDATA[<div>
+    <template title="auction_history_buyouts" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -517,7 +550,7 @@ new XenAuction.Create;
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						<div></div>
+						{xen:helper auction, image, $auction, 't', true}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -600,7 +633,7 @@ new XenAuction.Create;
 	<div>{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="0" version_string=""><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -618,9 +651,9 @@ new XenAuction.Create;
 </ul>
 
 <ul id="HistoryPanes">
-	<li id="_auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
-	<li id="_bids" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
-	<li id="_buyouts" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
+	<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
+	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
+	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
 </ul>
 
 <script type="text/javascript"><!--
@@ -628,75 +661,67 @@ $(document).ready(function() {
 	new XenAuction.HistoryPanes;
 });
 //--></script>]]></template>
-    <template title="auction_history_list.css" version_id="0" version_string=""><![CDATA[.auctionHistory
+    <template title="auction_history_list.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
 
 /* Item widths */
-.auctionItem td
+.bidbuyHistory .auctionItem td
 {
 	padding: 10px 0;
 }
 
-	.auctionItem td.icon
+	.bidbuyHistory .auctionItem td.icon
 	{
 		width: 60px;
 		text-align: center;
 	}
 
-	.auctionItem td.timeLeft
+	.bidbuyHistory .auctionItem td.timeLeft
 	{
 		width: 150px;
 	}
 
-	.auctionItem td.highestBidder
+	.bidbuyHistory .auctionItem td.highestBidder
 	{
 		width: 100px;
 	}
 	
-	.auctionItem td.purchaseAmount
+	.bidbuyHistory .auctionItem td.purchaseAmount
 	{
 		width: 150px;
 	}
 	
-	.auctionItem td.purchaseDate
+	.bidbuyHistory .auctionItem td.purchaseDate
 	{
 		width: 100px;
 	}
 
-	.auctionItem td.bid
+	.bidbuyHistory .auctionItem td.bid
 	{
 		width: 250px;
 	}
 
 /* Styling */
 
-#HistoryPanes > li > div
+.bidbuyHistory > li > div
 {
 	margin: 5px;
 }
 
-.auction_list .titleBar
+.bidbuyHistory .auction_list .titleBar
 {
 	display: none;
 }
 
-.auctionItem .icon > div
-{ 
-	margin: auto;
-	width: 32px;
-	height: 32px;
-	background: url(./data/xenauction/image_t.png) center no-repeat;
-}
-
-.auctionItem td.title h3 
+.bidbuyHistory .auctionItem td.title h3 
 {
 	font-weight: bold;
 	font-size: 120%;
 }
 
-	.auctionItem td.title h3  a
+	.bidbuyHistory .auctionItem td.title h3  a
 	{
 		display: block;
 		overflow: hidden;
@@ -705,74 +730,74 @@ $(document).ready(function() {
 		max-height: 22px;
 	}
 
-.auctionItem td.timeLeft .amount
+.bidbuyHistory .auctionItem td.timeLeft .amount
 {
 	margin-right: 5px;
 }
 
-.auctionItem td.timeLeft .amount, .auctionItem td.timeLeft .description
+.bidbuyHistory .auctionItem td.timeLeft .amount, .bidbuyHistory .auctionItem td.timeLeft .description
 {
 	display: inline-block;
 }
 
-.auctionItem td.timeLeft .amount, .auctionItem .availability .amount
+.bidbuyHistory .auctionItem td.timeLeft .amount, .bidbuyHistory .auctionItem .availability .amount
 {
 	font-size: 110%;
 	font-weight: bold;
 }
 
-.auctionItem td.timeLeft, .auctionItem td.highestBidder, .auctionItem .availability 
+.bidbuyHistory .auctionItem td.timeLeft, .bidbuyHistory .auctionItem td.highestBidder, .bidbuyHistory .auctionItem .availability 
 {
 	text-align: center;
 }
 
-.auctionItem td.highestBidder 
+.bidbuyHistory .auctionItem td.highestBidder 
 {
 	font-size: 110%;
 	font-weight: bold;
 }
 
-	.auctionItem td.highestBidder.me
+	.bidbuyHistory .auctionItem td.highestBidder.me
 	{
 		color: green;
 	}
 	
-	.auctionItem td.highestBidder.notme
+	.bidbuyHistory .auctionItem td.highestBidder.notme
 	{
 		color: red;
 	}
 	
-.auctionItem td.purchaseAmount dt, .auctionItem td.purchaseAmount dd
+.bidbuyHistory .auctionItem td.purchaseAmount dt, .bidbuyHistory .auctionItem td.purchaseAmount dd
 {
 	display: inline-block;
 }
 
-.auctionItem td.purchaseAmount dt
+.bidbuyHistory .auctionItem td.purchaseAmount dt
 {
 	clear: right;
 }
 
-.auctionItem td.purchaseAmount dd
+.bidbuyHistory .auctionItem td.purchaseAmount dd
 {
 	font-weight: bold;
 }
 
-.auctionItem td.purchaseDate
+.bidbuyHistory .auctionItem td.purchaseDate
 {
 	text-align: center;
 }
 
-.auctionItem td.bid
+.bidbuyHistory .auctionItem td.bid
 {
 	text-align: right;
 }
 
-	.auctionItem td.bid span
+	.bidbuyHistory .auctionItem td.bid span
 	{
 		font-weight: bold;
 	}
 	
-		.auctionItem td.bid > ul > li
+		.bidbuyHistory .auctionItem td.bid > ul > li
 		{
 			display: inline-block;
 			vertical-align: middle;
@@ -780,34 +805,15 @@ $(document).ready(function() {
 			text-align: center;
 		}
 		
-			.auctionItem td.bid > ul > li.single
+			.bidbuyHistory .auctionItem td.bid > ul > li.single
 			{
 				width: 100%;
 			}
 			
-			.auctionItem td.bid > ul > li.large
+			.bidbuyHistory .auctionItem td.bid > ul > li.large
 			{
 				font-size: 120%;
-			}
-
-
-
-.auctionCreate
-{
-	padding: 20px;
-	text-align: center;
-}
-
-	.auctionCreate a.callToAction
-	{
-		height: 25px;
-		line-height: 25px;
-	}
-
-	.auctionCreate a.callToAction span
-	{
-		font-size: 14px;
-	}]]></template>
+			}]]></template>
     <template title="auction_history_list_item" version_id="0" version_string=""><![CDATA[<tr class="primaryContent auctionItem status_{$auction.status}">
 	<td class="icon">
 		<div></div>
@@ -873,7 +879,7 @@ $(document).ready(function() {
 		</ul>
 	</td>
 </tr>]]></template>
-    <template title="auction_list" version_id="0" version_string=""><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
+    <template title="auction_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
@@ -882,13 +888,17 @@ $(document).ready(function() {
 	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
 </div>
 
-<ol class="section auctions">
-
-	<xen:foreach loop="$auctions" value="$auction">
-		<xen:include template="auction_list_item"/>
-	</xen:foreach>
+<table class="section auctions">
 	
-</ol>
+	<tbody>
+
+		<xen:foreach loop="$auctions" value="$auction">
+			<xen:include template="auction_list_item"/>
+		</xen:foreach>
+	
+	</tbody>
+		
+</table>
 
 <div class="pageNavLinkGroup">
 	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
@@ -934,66 +944,62 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="0" version_string=""><![CDATA[/* Item widths */
-.auctionItem
+    <template title="auction_list.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[table.auctions
 {
-	padding: 10px 0;
+	width: 100%;
 }
 
-.auctionItem > ul > li
+/* Item widths */
+
+.auctions .auctionItem > td
 {
-	display: inline-block;
+	padding: 10px 0;
 	vertical-align: middle;
 }
 
-	.auctionItem li.icon
+	.auctions .auctionItem td.icon
 	{
-		width: 10%;
+		width: 70px;
 		text-align: center;
 	}
 
-	.auctionItem li.descriptionWrap
+	.auctions .auctionItem td.timeLeft
 	{
-		width: 40%;
+		width: 100px;
 	}
 
-	.auctionItem li.timeLeft
+	.auctions .auctionItem td.highestBidder
 	{
-		width: 15%;
+		width: 95px;
 	}
 
-	.auctionItem li.highestBidder
+	.auctions .auctionItem td.bid
 	{
-		width: 14%;
-	}
-
-	.auctionItem li.bid
-	{
-		width: 18%;
+		width: 130px;
 	}
 
 /* Styling */
 
-.auction_list .titleBar
+.auctions .auction_list .titleBar
 {
 	display: none;
 }
 
-.auctionItem .icon > div
+.auctions .auctionItem .icon > img
 { 
-	margin: auto;
-	width: 48px;
-	height: 48px;
-	background: url(./data/xenauction/image_s.png) center no-repeat;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
 }
 
-.auctionItem li.descriptionWrap h3 
+.auctions .auctionItem td.descriptionWrap h3 
 {
 	font-weight: bold;
 	font-size: 120%;
 }
 
-	.auctionItem li.descriptionWrap h3  a
+	.auctions .auctionItem td.descriptionWrap h3  a
 	{
 		display: block;
 		overflow: hidden;
@@ -1002,35 +1008,35 @@ new XenAuction.List;
 		max-height: 22px;
 	}
 
-.auctionItem li.descriptionWrap .tags
+.auctions .auctionItem td.descriptionWrap .tags
 {
 	float: right;
 	font-size: 90%;
 	color: {xen:property dimmedTextColor};
 }
 
-.auctionItem li.timeLeft .amount, .auctionItem .availability .amount
+.auctions .auctionItem td.timeLeft .amount, .auctions .auctionItem .availability .amount
 {
 	font-size: 110%;
 	font-weight: bold;
 }
 
-.auctionItem li.timeLeft, .auctionItem li.highestBidder, .auctionItem .availability 
+.auctions .auctionItem td.timeLeft, .auctions .auctionItem td.highestBidder, .auctions .auctionItem .availability 
 {
 	text-align: center;
 }
 
-.auctionItem li.highestBidder .img
+.auctions .auctionItem td.highestBidder .img
 {
 	margin: auto;
 }
 
-.auctionItem li.bid
+.auctions .auctionItem td.bid
 {
 	text-align: right;
 }
 
-	.auctionItem li.bid span
+	.auctions .auctionItem td.bid span
 	{
 		display: block;
 		float: left;
@@ -1039,12 +1045,12 @@ new XenAuction.List;
 		font-weight: bold;
 	}
 
-		.auctionItem li.bid > ul > li:last-child
+		.auctions .auctionItem td.bid > ul > li:last-child
 		{
 			border-top: 1px solid {xen:property primaryLighterStill};
 		}
 
-		.auctionItem li.bid > ul > li:first-child
+		.auctions .auctionItem td.bid > ul > li:first-child
 		{
 			border-top: 0px !important;
 		}
@@ -1065,50 +1071,49 @@ new XenAuction.List;
 	{
 		font-size: 14px;
 	}]]></template>
-    <template title="auction_list_item" version_id="0" version_string=""><![CDATA[<xen:require css="auction_list.css" />
+    <template title="auction_list_item" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
-<li class="primaryContent auctionItem status_{$auction.status}">
-
-	<ul>
-		<li class="icon"><div></div></li>
-		<li class="descriptionWrap">
-			<span class="tags">{xen:helper auction, tags, $auction.tags}</span>
-			<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
-			<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
-		</li>
-		<li class="timeLeft">
-			<xen:if is="{$auction.status} == 'active'">
-				{$auction.expiration_date}
+<tr class="primaryContent auctionItem status_{$auction.status}">
+	
+	<td class="icon">{xen:helper auction, image, $auction, 's', true}</td>
+	<td class="descriptionWrap">
+		<span class="tags">{xen:helper auction, tags, $auction.tags}</span>
+		<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+		<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
+	</td>
+	<td class="timeLeft">
+		<xen:if is="{$auction.status} == 'active'">
+			{$auction.expiration_date}
 			<xen:elseif is="{$auction.status} == 'canceled'"/>
 				{xen:phrase canceled}
-			<xen:else/>
+				<xen:else/>
 				<xen:if is="{$auction.top_bidder}">
 					{xen:phrase finished}
-				<xen:else/>
+					<xen:else/>
 					{xen:phrase expired}
 				</xen:if>		
 			</xen:if>
-		</li>
-		<li class="highestBidder">
-			<xen:if is="{$auction.top_bidder}">
-				<xen:avatar user="$auction" size="s" />
+	</td>
+	<td class="highestBidder">
+		<xen:if is="{$auction.top_bidder}">
+			<xen:avatar user="$auction" size="s" />
 			<xen:elseif is=" ! {$auction.min_bid}"/>
 				<div class="availability">
 					<div class="amount">{$auction.availability}</div>
 					<div class="description">{xen:phrase available}</div>
 				</div>
-			<xen:else/>
+				<xen:else/>
 				{xen:phrase no_bids}
 			</xen:if>
-		</li>
-		<li class="bid">
-			<ul>
-				<xen:if is="{$auction.min_bid}">
-					<xen:if is="{$auction.top_bid}">
-						<li>
-							<span>{xen:number $auction.top_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
-						</li>
+	</td>
+	<td class="bid">
+		<ul>
+			<xen:if is="{$auction.min_bid}">
+				<xen:if is="{$auction.top_bid}">
+					<li>
+						<span>{xen:number $auction.top_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+					</li>
 					<xen:else/>
 						<li>
 							<span>{xen:number $auction.min_bid}</span> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
@@ -1121,10 +1126,9 @@ new XenAuction.List;
 					</li>
 				</xen:if>
 			</ul>
-		</li>
-	</ul>
+	</td>
 	
-</li>]]></template>
+</tr>]]></template>
     <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
 XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
 XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';

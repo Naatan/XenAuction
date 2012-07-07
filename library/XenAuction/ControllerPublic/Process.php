@@ -12,6 +12,17 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	{
 		$visitor = XenForo_Visitor::getInstance();
 		
+		$upload  = XenForo_Upload::getUploadedFile('image');
+		
+		if ($upload)
+		{
+			$imagePath = XenAuction_DataWriter_Helper_Auction::saveImage($upload);
+		}
+		else
+		{
+			$imagePath = NULL;
+		}
+		
 		$input = $this->_input->filter(array(
 			'title'        		=> XenForo_Input::STRING,
 			'tags'         		=> XenForo_Input::STRING,
@@ -27,6 +38,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		$data = array(
 			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
+			'image'				=> $imagePath,
 			'message'        	=> $input['message_html'],
 			'tags'           	=> $input['tags'],
 			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,

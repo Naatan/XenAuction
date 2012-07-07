@@ -49,7 +49,7 @@ class XenAuction_Install
 			  `message` mediumtext NOT NULL,
 			  `status` enum('active','canceled','expired') DEFAULT NULL,
 			  `tags` varchar(255) DEFAULT NULL,
-			  `image` varchar(50) NOT NULL DEFAULT '',
+			  `image` varchar(50) DEFAULT NULL,
 			  `min_bid` int(10) unsigned DEFAULT NULL,
 			  `buy_now` int(10) unsigned DEFAULT NULL,
 			  `bids` smallint(5) unsigned NOT NULL DEFAULT '0',
