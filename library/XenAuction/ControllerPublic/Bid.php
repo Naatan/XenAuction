@@ -167,6 +167,13 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		$message	= new XenForo_Phrase('bought_auction_message', $auction);
 
 		XenAuction_Helper_Notification::sendNotification($visitor['user_id'], $title, $message);
+		
+		$auction 	= $auctionModel->getAuctionById($input['id']);
+		
+		if ($auction['availability'] == 0)
+		{
+			XenAuction_CronEntry_Auction::runExpireAuction($auction);
+		}
 
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
