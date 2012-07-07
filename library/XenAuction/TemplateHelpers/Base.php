@@ -52,7 +52,7 @@ class XenAuction_TemplateHelpers_Base
 			$tags = substr($tags, 0, -1);
 		}
 		
-		return $tags;
+		return implode(', ', explode(',', $tags));
 	}
 	
 	public static function helperImage(array $auction, $size = 'n', $link = false, $showEmpty = true)

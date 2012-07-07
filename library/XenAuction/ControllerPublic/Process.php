@@ -35,12 +35,16 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'buyout_enable'		=> XenForo_Input::UINT
 		));
 		
+		$tags = $input['tags'];
+		$tags = array_unique(array_filter($tags));
+		$tags = array_map(create_function('$a', 'return trim($a);'), $tags);
+		
 		$data = array(
 			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
 			'image'				=> $imagePath,
 			'message'        	=> $input['message_html'],
-			'tags'           	=> $input['tags'],
+			'tags'           	=> implode(',', $tags),
 			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,
 			'buy_now'        	=> $input['buyout_enable'] ? $input['buyout'] : NULL,
 			'availability'   	=> $input['buyout_enable'] ? $input['availability'] : NULL,
