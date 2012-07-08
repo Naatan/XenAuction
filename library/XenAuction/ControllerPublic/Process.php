@@ -35,7 +35,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'buyout_enable'		=> XenForo_Input::UINT
 		));
 		
-		$tags = $input['tags'];
+		$tags = explode(',', $input['tags']);
 		$tags = array_unique(array_filter($tags));
 		$tags = array_map(create_function('$a', 'return trim($a);'), $tags);
 		
