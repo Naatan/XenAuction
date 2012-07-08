@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 1)" version_id="2" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 2)" version_id="3" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -410,7 +410,7 @@ new XenAuction.Create;
 	</div>
 
 </div>]]></template>
-    <template title="auction_history_auctions" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
+    <template title="auction_history_auctions" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -438,10 +438,10 @@ new XenAuction.Create;
 	-->
 	</script>
 <xen:else/>
-	<div>{xen:phrase you_have_no_auctions}</div>
+	<div class="emptyResults">{xen:phrase you_have_no_auctions}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_bids" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
+    <template title="auction_history_bids" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -535,10 +535,10 @@ new XenAuction.Create;
 	-->
 	</script>
 <xen:else/>
-	<div>{xen:phrase you_have_no_bids}</div>
+	<div class="emptyResults">{xen:phrase you_have_no_bids}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_buyouts" version_id="1" version_string="1.0 Beta 1"><![CDATA[<div>
+    <template title="auction_history_buyouts" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -632,7 +632,7 @@ new XenAuction.Create;
 	-->
 	</script>
 <xen:else/>
-	<div>{xen:phrase you_have_no_buyouts}</div>
+	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
     <template title="auction_history_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
@@ -663,7 +663,7 @@ $(document).ready(function() {
 	new XenAuction.HistoryPanes;
 });
 //--></script>]]></template>
-    <template title="auction_history_list.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auctionHistory
+    <template title="auction_history_list.css" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -815,7 +815,12 @@ $(document).ready(function() {
 			.bidbuyHistory .auctionItem td.bid > ul > li.large
 			{
 				font-size: 120%;
-			}]]></template>
+			}
+
+#HistoryPanes .emptyResults
+{
+	margin: 20px;
+}]]></template>
     <template title="auction_history_list_item" version_id="0" version_string=""><![CDATA[<tr class="primaryContent auctionItem status_{$auction.status}">
 	<td class="icon">
 		<div></div>
@@ -965,7 +970,7 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[table.auctions
+    <template title="auction_list.css" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[table.auctions
 {
 	width: 100%;
 }
@@ -1078,12 +1083,12 @@ new XenAuction.List;
 
 .auctionCreate
 {
-	padding: 20px;
 	text-align: center;
 }
 
 	.auctionCreate a.callToAction
 	{
+		margin: 15px auto;
 		height: 25px;
 		line-height: 25px;
 	}
