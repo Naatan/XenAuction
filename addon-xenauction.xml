@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 2)" version_id="3" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 3)" version_id="4" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -51,6 +51,7 @@ inputclass=Elastic</edit_format_params>
     </interface_groups>
   </permissions>
   <phrases>
+    <phrase title="advanced" version_id="0" version_string=""><![CDATA[Advanced]]></phrase>
     <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
     <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
@@ -80,6 +81,7 @@ inputclass=Elastic</edit_format_params>
 {payment_address}
 
 And be sure to include your purchase id: #{bid_id}]]></phrase>
+    <phrase title="copies_to_create" version_id="0" version_string=""><![CDATA[Copies to create]]></phrase>
     <phrase title="create_auction" global_cache="1" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
     <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
@@ -254,7 +256,7 @@ new XenAuction.Bid;
 <script type="text/javascript"><!--
 new XenAuction.Bid;
 //--></script>]]></template>
-    <template title="auction_create" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_create.css" />
+    <template title="auction_create" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <xen:title>{xen:phrase create_auction}</xen:title>
@@ -333,6 +335,16 @@ new XenAuction.Bid;
 			<dt>{xen:phrase availability}:</dt>
 			<dd>
 				<input type="text" name="availability" class="textCtrl autoSize" placeholder="1" size="10" maxlength="10"/>
+			</dd>
+		</dl>
+		
+		<h3 class="textHeading">{xen:phrase advanced}</h3>
+		
+		<dl class="ctrlUnit" id="availability_wrap">
+			<dt>{xen:phrase copies_to_create}:</dt>
+			<dd>
+				<input type="text" name="batch" class="textCtrl autoSize" placeholder="1" size="10" maxlength="10"/><br/>
+				<em><small>This is a temporary solution for batch creating auctions, it will be replaced in the final version.</small></em>
 			</dd>
 		</dl>
 		

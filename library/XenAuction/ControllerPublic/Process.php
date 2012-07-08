@@ -28,12 +28,19 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'tags'         		=> XenForo_Input::STRING,
 			'message_html' 		=> XenForo_Input::STRING,
 			'expires'      		=> XenForo_Input::UINT,
+			'batch'      		=> XenForo_Input::UINT,
 			'starting_bid' 		=> XenForo_Input::UINT,
 			'buyout'       		=> XenForo_Input::UINT,
 			'availability' 		=> XenForo_Input::UINT,
 			'bid_enable'   		=> XenForo_Input::UINT,
 			'buyout_enable'		=> XenForo_Input::UINT
 		));
+		
+		$batch = is_numeric($input['batch']) ? $input['batch'] : 1;
+		if ($batch < 1)
+		{
+			$batch = 1;
+		}
 		
 		$tags = explode(',', $input['tags']);
 		$tags = array_unique(array_filter($tags));
@@ -51,10 +58,12 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'expiration_date'	=> time() + ((int) $input['expires'] * 86400)
 		);
 		
-		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
-		$dw->bulkSet($data);
-		
-		$dw->save();
+		for ($c=0;$c<$batch; $c++)
+		{
+			$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+			$dw->bulkSet($data);
+			$dw->save();
+		}
 		
 		XenAuction_Helper_Tags::add(explode(',', $input['tags']));
 		
