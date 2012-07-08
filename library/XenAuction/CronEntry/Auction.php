@@ -31,10 +31,17 @@ class XenAuction_CronEntry_Auction
 
 		if ($auction['top_bidder'])
 		{
+			$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+			$bid 			= $auctionModel->getTopBid($auction['auction_id']);
+			$args 			= array_merge($auction, $bid);
+			
+			$paymentAddress = array('payment_address' => XenForo_Application::get('options')->auctionPaymentAddress);
+			
 			$title 		= new XenForo_Phrase('won_auction_x', $auction);
-			$message	= new XenForo_Phrase('won_auction_message', $auction);
+			$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));
+			$message	= new XenForo_Phrase('won_auction_message', array_merge($args, array('complete_purchase' => $complete)));
 
-			XenAuction_Helper_Notification::sendNotification($auction['top_bidder'], $title, $message);
+			XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
 		}
 
 	}

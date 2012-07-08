@@ -21,6 +21,13 @@
       <sub_options></sub_options>
       <relation group_id="auctions" display_order="1"/>
     </option>
+    <option option_id="auctionPaymentAddress" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>rows=4
+inputclass=Elastic</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="300"/>
+    </option>
     <option option_id="auctionsPerPage" edit_format="spinbox" data_type="unsigned_numeric" can_backup="1">
       <default_value>15</default_value>
       <edit_format_params></edit_format_params>
@@ -45,9 +52,9 @@
   </permissions>
   <phrases>
     <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
-    <phrase title="auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
+    <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
-    <phrase title="auction_list" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
+    <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
     <phrase title="auction_title" version_id="0" version_string=""><![CDATA[Auction Title]]></phrase>
     <phrase title="availability" version_id="0" version_string=""><![CDATA[Availability]]></phrase>
     <phrase title="availability_too_high" version_id="0" version_string=""><![CDATA[You can't use an availability higher than 1 if you are also allowing bids]]></phrase>
@@ -55,7 +62,12 @@
     <phrase title="bid" version_id="0" version_string=""><![CDATA[Bid]]></phrase>
     <phrase title="bidding_on_x" version_id="0" version_string=""><![CDATA[Bidding on {title}]]></phrase>
     <phrase title="bid_must_be_higher" version_id="0" version_string=""><![CDATA[Your bid must be higher than the current bid]]></phrase>
-    <phrase title="bought_auction_message" version_id="0" version_string=""><![CDATA[Amount to pay: {buy_now}]]></phrase>
+    <phrase title="bought_auction_message" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Thank you for purchasing [i]{title}[/i].
+
+[b]Quantity:[/b] {quantity}
+[b]Cost:[/b] {amount}
+
+{complete_purchase}]]></phrase>
     <phrase title="bought_auction_x" version_id="0" version_string=""><![CDATA[Auction Bought: {title}]]></phrase>
     <phrase title="buying_x" version_id="0" version_string=""><![CDATA[Buying {title}]]></phrase>
     <phrase title="buyout" version_id="0" version_string=""><![CDATA[Buyout]]></phrase>
@@ -63,7 +75,12 @@
     <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
     <phrase title="cant_buy_zero" version_id="0" version_string=""><![CDATA[Entered quantity is too low]]></phrase>
-    <phrase title="create_auction" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
+    <phrase title="complete_purchase" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[To complete your purchase, please send your payment to 
+
+{payment_address}
+
+And be sure to include your purchase id: #{bid_id}]]></phrase>
+    <phrase title="create_auction" global_cache="1" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
     <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
@@ -74,7 +91,7 @@
     <phrase title="filter_by_tag" version_id="0" version_string=""><![CDATA[Filter by tag]]></phrase>
     <phrase title="find_auction" version_id="0" version_string=""><![CDATA[Find Auction]]></phrase>
     <phrase title="finished" version_id="0" version_string=""><![CDATA[Finished]]></phrase>
-    <phrase title="history" version_id="0" version_string=""><![CDATA[History]]></phrase>
+    <phrase title="history" global_cache="1" version_id="0" version_string=""><![CDATA[History]]></phrase>
     <phrase title="hours_left" version_id="0" version_string=""><![CDATA[Hours Left]]></phrase>
     <phrase title="invalid_buy_action" version_id="0" version_string=""><![CDATA[Action not allowed on this type of auction]]></phrase>
     <phrase title="keyword_tag" version_id="0" version_string=""><![CDATA[Keyword / Tag]]></phrase>
@@ -84,11 +101,15 @@
     <phrase title="no_bids" version_id="0" version_string=""><![CDATA[No bids]]></phrase>
     <phrase title="option_auctionNotificationSender" version_id="0" version_string=""><![CDATA[User ID that sends notifications]]></phrase>
     <phrase title="option_auctionNotificationSender_explain" version_id="0" version_string=""><![CDATA[Enter the ID of the user that will be used to send auction notifications. Note that this user should NOT participate in any other part of the auctions (eg. bidding, buying and creating auctions).]]></phrase>
+    <phrase title="option_auctionPaymentAddress" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Payment Address]]></phrase>
+    <phrase title="option_auctionPaymentAddress_explain" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Enter the address that purchasers are supposed to send their payments to]]></phrase>
     <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
-    <phrase title="outbid_message" version_id="0" version_string=""><![CDATA[Outbid by: {username}]]></phrase>
+    <phrase title="outbid_message" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url] by [i]{username}[/i]. 
+
+The new top bid is: {top_bid}.]]></phrase>
     <phrase title="outbid_on_x" version_id="0" version_string=""><![CDATA[Outbid on: {title}]]></phrase>
     <phrase title="paying" version_id="0" version_string=""><![CDATA[Paying]]></phrase>
     <phrase title="permission_auctions_bidOnAuctions" version_id="0" version_string=""><![CDATA[Bid On Auctions]]></phrase>
@@ -108,7 +129,11 @@
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
     <phrase title="summary" version_id="0" version_string=""><![CDATA[Summary]]></phrase>
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
-    <phrase title="won_auction_message" version_id="0" version_string=""><![CDATA[Amount to pay: {top_bid}]]></phrase>
+    <phrase title="won_auction_message" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Congratulations! You have won [i]{title}[/i].
+
+[b]Your winning bid (cost):[/b] {top_bid}
+
+{complete_purchase}]]></phrase>
     <phrase title="won_auction_x" version_id="0" version_string=""><![CDATA[Auction Won: {title}]]></phrase>
     <phrase title="your_auctions" version_id="0" version_string=""><![CDATA[Your Auctions]]></phrase>
     <phrase title="your_bid" version_id="0" version_string=""><![CDATA[Your Bid]]></phrase>
@@ -128,12 +153,12 @@
   </route_prefixes>
   <style_properties/>
   <templates>
-    <template title="auction_bid" version_id="0" version_string=""><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_bid" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{xen:phrase bidding_on_x, 'title={$auction.title}'}</xen:title>
 
 <xen:navigation>
-    <xen:breadcrumb href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase palce_bid}</xen:breadcrumb>
+    <xen:breadcrumb href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</xen:breadcrumb>
 </xen:navigation>
 
 <form action="{xen:link 'auction-bid/place-bid', '', 'id={$auction.auction_id}'}" class="xenForm formOverlay auctionBid" method="post">
@@ -371,21 +396,33 @@ new XenAuction.Create;
 {
 	width: 100px;
 }]]></template>
-    <template title="auction_details" version_id="0" version_string=""><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_details" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions'}">{xen:phrase auctions}</xen:breadcrumb>
-    <xen:breadcrumb href="{xen:link 'auctions/bid', '', 'id={$auction.auction_id}'}">{xen:phrase palce_bid}</xen:breadcrumb>
+    <xen:breadcrumb href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</xen:breadcrumb>
 </xen:navigation>
 
 <form class="xenForm formOverlay auctionBid">
 
 	<xen:include template="auction_details_content" />
 
+	<dl class="ctrlUnit submitUnit {xen:if '{$auction.min_bid} && {$auction.buy_now}', 'doubleButtons'}">
+			<dt></dt>
+			<dd>
+				<xen:if is="{$auction.min_bid}">
+					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+				</xen:if>
+				<xen:if is="{$auction.buy_now}">
+					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+				</xen:if>
+			</dd>
+		</dl>
+	
 </form>]]></template>
-    <template title="auction_details.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auctionDetails .message
+    <template title="auction_details.css" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[.auctionDetails .message
 {
 	min-height: 170px;
 }
@@ -399,6 +436,11 @@ new XenAuction.Create;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	-khtml-border-radius: 4px;
+}
+
+dl.doubleButtons dt
+{
+	width: {xen:calc '{xen:property overlayCtrlUnitLabelWidth} - {xen:property ctrlUnitLabel.padding-left} - {xen:property ctrlUnitLabel.padding-right} - 50'}px !important;
 }]]></template>
     <template title="auction_details_content" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_details.css" />
 

@@ -12,6 +12,7 @@ class XenAuction_Helper_Notification
 
 			$title 		= $title->render();
 			$message 	= $message->render();
+			$message 	= str_replace('&amp;', '&', $message);
 
 			$conversationDw = XenForo_DataWriter::create('XenForo_DataWriter_ConversationMaster');
 			$conversationDw->setExtraData(XenForo_DataWriter_ConversationMaster::DATA_ACTION_USER, $sender);

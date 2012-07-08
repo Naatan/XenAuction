@@ -102,9 +102,15 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		{
 			$userModel 	= XenForo_Model::create('XenForo_Model_User');
 			$outbidUser = $userModel->getUserById($auction['top_bidder']);
+			
+			$args = array(
+				'link'	=> XenForo_Link::buildPublicLink('full:auctions/details', null, array('id' => $auction['auction_id']))
+			);
+			$args = array_merge($outbidUser, $args);
+			$args = array_merge($auction, $args);
 
 			$title 		= new XenForo_Phrase('outbid_on_x', $auction);
-			$message	= new XenForo_Phrase('outbid_message', $outbidUser);
+			$message	= new XenForo_Phrase('outbid_message', $args);
 
 			XenAuction_Helper_Notification::sendNotification($outbidUser['user_id'], $title, $message);
 		}
@@ -149,6 +155,8 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		}
 		
 		$dw->save();
+		
+		$bid = $dw->getMergedData();
 
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
 		$dw->setExistingData($auction);
@@ -162,9 +170,19 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		}
 
 		$dw->save();
-
+		
+		$args = array(
+			'quantity' 	=> $input['quantity'],
+			'amount'	=> $input['quantity'] * $auction['buy_now'],
+			'bid_id'	=> $bid['bid_id']
+		);
+		$args = array_merge($auction, $args);
+		
+		$paymentAddress = array('payment_address' => XenForo_Application::get('options')->auctionPaymentAddress);
+		
 		$title 		= new XenForo_Phrase('bought_auction_x', $auction);
-		$message	= new XenForo_Phrase('bought_auction_message', $auction);
+		$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));
+		$message	= new XenForo_Phrase('bought_auction_message', array_merge($args, array('complete_purchase' => $complete)));
 
 		XenAuction_Helper_Notification::sendNotification($visitor['user_id'], $title, $message);
 		

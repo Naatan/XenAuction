@@ -34,7 +34,11 @@ XenAuction.List.prototype = {
 			var time = $(this).text();
 			var left = time - XenAuction.Config.currentTime;
 			
-			if (left < 60)
+			if (left < 0)
+			{
+				$(this).parents(".auctionItem").hide();
+			}
+			else if (left < 60)
 			{
 				var p = [left, XenAuction.Config.phrases.secondsLeft];
 			}

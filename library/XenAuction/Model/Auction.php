@@ -44,6 +44,26 @@ class XenAuction_Model_Auction extends XenForo_Model
 			WHERE bid_id = ?
 		', $idBid);
 	}
+	
+	/**
+	 * Get top bid for auction
+	 * 
+	 * @param	int			$auctionId
+	 * 
+	 * @return	array|bool
+	 */
+	public function getTopBid($auctionId)
+	{
+		return $this->_getDb()->fetchRow('
+			SELECT *
+			FROM xf_auction_bid
+			WHERE
+				auction_id = ? AND
+				is_buyout = 0
+			ORDER BY amount DESC
+			LIMIT 1
+		', $auctionId);
+	}
 
 	/**
 	 * Get list of auctions
