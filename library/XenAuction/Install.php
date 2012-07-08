@@ -22,7 +22,7 @@ class XenAuction_Install
 			self::createStructure();
 		}
 		
-		if ($existingAddOn['version_id'] < 4)
+		if ($existingAddOn AND $existingAddOn['version_id'] < 4)
 		{
 			self::update4();
 		}
@@ -59,7 +59,7 @@ class XenAuction_Install
 	protected static function createStructure()
 	{
 		XenForo_Application::getDb()->query("
-			CREATE TABLE `xf_auction` (
+			CREATE TABLE IF NOT EXISTS `xf_auction` (
 			  `auction_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `user_id` int(10) unsigned NOT NULL,
 			  `title` varchar(150) NOT NULL DEFAULT '',
@@ -81,7 +81,7 @@ class XenAuction_Install
 		");
 		
 		XenForo_Application::getDb()->query("
-			CREATE TABLE `xf_auction_bid` (
+			CREATE TABLE IF NOT EXISTS `xf_auction_bid` (
 			  `bid_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `auction_id` int(10) unsigned NOT NULL,
 			  `bid_user_id` int(10) unsigned NOT NULL,
