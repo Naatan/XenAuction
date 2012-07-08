@@ -73,13 +73,27 @@ class XenAuction_TemplateHelpers_Base
 		$image 	= empty($auction['image']) ? 'image' : $auction['image'];
 		$out 	= sprintf('<img src="%s/xenauction/%s_%s.jpg" class="auctionImage" />', $path, $image, $size);
 		
-		if ($link)
+		if ($link AND ! empty($auction['image']))
 		{
 			$link 	= sprintf("%s/xenauction/%s_l.jpg", $path, $image);
 			$out 	= sprintf('<a href="%s" class="auctionImageLink" target="_blank">%s</a>', $link, $out);
 		}
 		
 		return $out;
+	}
+	
+	public static function helperLink($link, $args = '')
+	{
+		$options 	= array();
+		$args 		= explode(',', $args);
+		
+		foreach ($args AS $arg)
+		{
+			$arg 				= explode('=', $arg);
+			$options[$arg[0]] 	= $arg[1];
+		}
+		
+		return XenForo_Link::buildPublicLink($link, '', $options);
 	}
 	
 }

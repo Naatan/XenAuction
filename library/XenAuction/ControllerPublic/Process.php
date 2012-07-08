@@ -73,6 +73,38 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		);
 	}
 	
+	public function actionArchive()
+	{
+		$id 		= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		$visitor 	= XenForo_Visitor::getInstance();
+		
+		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auction     	= $auctionModel->getAuctionById($id);
+		
+		if ($visitor->user_id != $auction['user_id'])
+		{
+			return $this->responseNoPermission();
+		}
+		
+		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+		$dw->setExistingData($auction);
+		$dw->set('archived', 1);
+		
+		$dw->preSave();
+
+		if ($dwErrors = $dw->getErrors())
+		{
+			return $this->responseError($dwErrors);
+		}
+		
+		$dw->save();
+		
+		return $this->responseRedirect(
+			XenForo_ControllerResponse_Redirect::SUCCESS,
+			XenForo_Link::buildPublicLink('auction-history')
+		);
+	}
+	
 	/**
 	 * Enforce registered-users only for all actions in this controller
 	 *

@@ -16,9 +16,11 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		$options 		= XenForo_Application::get('options');
 		$perPage 	 	= $options->auctionsPerPage;
 		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
+		$archived 		= $this->_input->filterSingle('archived', XenForo_Input::UINT);
 		
 		$fetchConditions = array(
-			'user_id' 	=> $visitor->user_id
+			'user_id' 	=> $visitor->user_id,
+			'archived'	=> $archived ? true : false
 		);
 		
 		$fetchOptions 	= array(

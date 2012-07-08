@@ -53,6 +53,8 @@ inputclass=Elastic</edit_format_params>
   <phrases>
     <phrase title="advanced" version_id="0" version_string=""><![CDATA[Advanced]]></phrase>
     <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
+    <phrase title="archived_auctions" version_id="0" version_string=""><![CDATA[Archived Auctions]]></phrase>
+    <phrase title="archive_auction" version_id="0" version_string=""><![CDATA[Archive Auction]]></phrase>
     <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
@@ -408,7 +410,7 @@ new XenAuction.Create;
 {
 	width: 100px;
 }]]></template>
-    <template title="auction_details" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_details" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
 
@@ -421,14 +423,19 @@ new XenAuction.Create;
 
 	<xen:include template="auction_details_content" />
 
-	<dl class="ctrlUnit submitUnit {xen:if '{$auction.min_bid} && {$auction.buy_now}', 'doubleButtons'}">
+	<dl class="ctrlUnit submitUnit {xen:if "{$auction.status}=='active' && {$auction.min_bid} && {$auction.buy_now}", 'doubleButtons'}">
 			<dt></dt>
 			<dd>
-				<xen:if is="{$auction.min_bid}">
-					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+				<xen:if is="{$auction.status}=='active'">
+					<xen:if is="{$auction.min_bid}">
+						<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+					</xen:if>
+					<xen:if is="{$auction.buy_now}">
+						<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+					</xen:if>
 				</xen:if>
-				<xen:if is="{$auction.buy_now}">
-					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
+				<xen:if is="{$auction.status}!='active' && {$auction.archived}!=1 && {$visitor.user_id}=={$auction.user_id}">
+					<a class="OverlayTrigger button primary" href="{xen:link 'auction-process/archive', '', 'id={$auction.auction_id}'}">{xen:phrase archive_auction}</a>
 				</xen:if>
 			</dd>
 		</dl>
@@ -454,12 +461,12 @@ dl.doubleButtons dt
 {
 	width: {xen:calc '{xen:property overlayCtrlUnitLabelWidth} - {xen:property ctrlUnitLabel.padding-left} - {xen:property ctrlUnitLabel.padding-right} - 50'}px !important;
 }]]></template>
-    <template title="auction_details_content" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_details.css" />
+    <template title="auction_details_content" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_details.css" />
 
 <div class="auctionDetails">
 
 	<div class="message">
-		{xen:helper auction, image, $auction, 'n', false, false}
+		{xen:helper auction, image, $auction, 'n', 0, 0}
 		{xen:raw $auction.message}
 	</div>
 
@@ -495,7 +502,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_auctions}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_bids" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
+    <template title="auction_history_bids" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -509,7 +516,7 @@ dl.doubleButtons dt
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						{xen:helper auction, image, $auction, 't', true}
+						{xen:helper auction, image, $auction, 't', 1}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -592,7 +599,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_bids}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_buyouts" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
+    <template title="auction_history_buyouts" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -606,7 +613,7 @@ dl.doubleButtons dt
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						{xen:helper auction, image, $auction, 't', true}
+						{xen:helper auction, image, $auction, 't', 1}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -689,7 +696,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -702,12 +709,14 @@ dl.doubleButtons dt
 
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_auctionsArchive" class="active">{xen:phrase archived_auctions}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>
 </ul>
 
 <ul id="HistoryPanes">
 	<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
+	<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}"></li>
 	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
 	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
 </ul>
@@ -1151,12 +1160,12 @@ new XenAuction.List;
 	{
 		font-size: 14px;
 	}]]></template>
-    <template title="auction_list_item" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:require css="auction_list.css" />
+    <template title="auction_list_item" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <tr class="primaryContent auctionItem status_{$auction.status}">
 	
-	<td class="icon">{xen:helper auction, image, $auction, 's', true}</td>
+	<td class="icon">{xen:helper auction, image, $auction, 's', 1}</td>
 	<td class="descriptionWrap">
 		<span class="tags">{xen:helper auction, tags, $auction.tags}</span>
 		<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>

@@ -39,7 +39,8 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 			'search'	=> $search,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
-			'total'		=> $total
+			'total'		=> $total,
+			'visitor' 	=> XenForo_Visitor::getInstance()->toArray()
 		));	
 	}
 

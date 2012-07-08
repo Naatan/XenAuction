@@ -22,6 +22,23 @@ class XenAuction_Install
 			self::createStructure();
 		}
 		
+		if ($existingAddOn['version_id'] < 4)
+		{
+			self::update4();
+		}
+		
+	}
+	
+	/**
+	 * 1.0 Beta 2 (build 3) Update
+	 * 
+	 * @return	void							
+	 */
+	protected static function update4()
+	{
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction` ADD `archived` SMALLINT(1)  NOT NULL  DEFAULT '0'  AFTER `status`
+		");
 	}
 	
 	/**
@@ -48,6 +65,7 @@ class XenAuction_Install
 			  `title` varchar(150) NOT NULL DEFAULT '',
 			  `message` mediumtext NOT NULL,
 			  `status` enum('active','canceled','expired') DEFAULT NULL,
+			  `archived` smallint(1) NOT NULL DEFAULT '0',
 			  `tags` varchar(255) DEFAULT NULL,
 			  `image` varchar(50) DEFAULT NULL,
 			  `min_bid` int(10) unsigned DEFAULT NULL,

@@ -206,6 +206,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$sqlConditions[] = 'bid.is_buyout = ' . $db->quote($conditions['is_buyout']);
 		}
 		
+		if ( isset($conditions['archived']))
+		{
+			$sqlConditions[] = 'auction.archived = ' . $db->quote($conditions['archived'] ? 1 : 0);
+		}
+		
 		if ( ! empty($conditions['title']))
 		{
 			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
