@@ -37,6 +37,7 @@ XenAuction.List.prototype = {
 			if (left < 0)
 			{
 				$(this).parents(".auctionItem").hide();
+				return;
 			}
 			else if (left < 60)
 			{
