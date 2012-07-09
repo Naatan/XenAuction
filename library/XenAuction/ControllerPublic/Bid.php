@@ -88,6 +88,8 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		$dw->setExistingData($auction);
 		$dw->set('top_bid', 	$input['bid']);
 		$dw->set('top_bidder',	$visitor->user_id);
+		$dw->set('bids',		$auction['bids'] + 1);
+		$dw->set('sales',		$auction['sales'] + 1);
 
 		$dw->preSave();
 
@@ -104,7 +106,8 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			$outbidUser = $userModel->getUserById($auction['top_bidder']);
 			
 			$args = array(
-				'link'	=> XenForo_Link::buildPublicLink('full:auctions/details', null, array('id' => $auction['auction_id']))
+				'top_bidder'	=> $visitor->username,
+				'link'			=> XenForo_Link::buildPublicLink('full:auctions/details', null, array('id' => $auction['auction_id']))
 			);
 			$args = array_merge($outbidUser, $args);
 			$args = array_merge($auction, $args);
@@ -161,6 +164,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
 		$dw->setExistingData($auction);
 		$dw->set('availability', 	$auction['availability'] - $input['quantity']);
+		$dw->set('sales',			$auction['sales'] + $input['quantity']);
 		
 		$dw->preSave();
 

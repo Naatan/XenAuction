@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 4)" version_id="5" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 5)" version_id="6" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -72,17 +72,21 @@ inputclass=Elastic</edit_format_params>
 
 {complete_purchase}]]></phrase>
     <phrase title="bought_auction_x" version_id="0" version_string=""><![CDATA[Auction Bought: {title}]]></phrase>
+    <phrase title="buyer" version_id="0" version_string=""><![CDATA[Buyer]]></phrase>
     <phrase title="buying_x" version_id="0" version_string=""><![CDATA[Buying {title}]]></phrase>
     <phrase title="buyout" version_id="0" version_string=""><![CDATA[Buyout]]></phrase>
     <phrase title="buy_now" version_id="0" version_string=""><![CDATA[Buy Now]]></phrase>
     <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
     <phrase title="cant_buy_zero" version_id="0" version_string=""><![CDATA[Entered quantity is too low]]></phrase>
+    <phrase title="completed" version_id="0" version_string=""><![CDATA[Completed]]></phrase>
+    <phrase title="complete_auction" version_id="0" version_string=""><![CDATA[Complete Auction]]></phrase>
     <phrase title="complete_purchase" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[To complete your purchase, please send your payment to 
 
 {payment_address}
 
 And be sure to include your purchase id: #{bid_id}]]></phrase>
+    <phrase title="complete_sale" version_id="0" version_string=""><![CDATA[Complete Sale]]></phrase>
     <phrase title="copies_to_create" version_id="0" version_string=""><![CDATA[Copies to create]]></phrase>
     <phrase title="create_auction" global_cache="1" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
     <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
@@ -111,11 +115,12 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
-    <phrase title="outbid_message" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url] by [i]{username}[/i]. 
+    <phrase title="outbid_message" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url] by [i]{top_bidder}[/i]. 
 
 The new top bid is: {top_bid}.]]></phrase>
     <phrase title="outbid_on_x" version_id="0" version_string=""><![CDATA[Outbid on: {title}]]></phrase>
     <phrase title="paying" version_id="0" version_string=""><![CDATA[Paying]]></phrase>
+    <phrase title="pending" version_id="0" version_string=""><![CDATA[Pending]]></phrase>
     <phrase title="permission_auctions_bidOnAuctions" version_id="0" version_string=""><![CDATA[Bid On Auctions]]></phrase>
     <phrase title="permission_auctions_buyoutAuctions" version_id="0" version_string=""><![CDATA[Buyout Auctions]]></phrase>
     <phrase title="permission_auctions_createAuctions" version_id="0" version_string=""><![CDATA[Create Auctions]]></phrase>
@@ -128,11 +133,20 @@ The new top bid is: {top_bid}.]]></phrase>
     <phrase title="quantity_not_available" version_id="0" version_string=""><![CDATA[You are trying to buy a higher quantity than there is available]]></phrase>
     <phrase title="requested_auction_not_found" version_id="0" version_string=""><![CDATA[Could not find the requested auction]]></phrase>
     <phrase title="requested_bid_not_found" version_id="0" version_string=""><![CDATA[Requested bid not found]]></phrase>
+    <phrase title="sales" version_id="0" version_string=""><![CDATA[Sales]]></phrase>
+    <phrase title="sale_not_found" version_id="0" version_string=""><![CDATA[Could not find the requested sale]]></phrase>
+    <phrase title="sale_x_completed" version_id="0" version_string=""><![CDATA[Sale completed: {title}]]></phrase>
     <phrase title="seconds_left" version_id="0" version_string=""><![CDATA[Seconds Left]]></phrase>
     <phrase title="select_one" version_id="0" version_string=""><![CDATA[Select One]]></phrase>
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
     <phrase title="summary" version_id="0" version_string=""><![CDATA[Summary]]></phrase>
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
+    <phrase title="type" version_id="0" version_string=""><![CDATA[Type]]></phrase>
+    <phrase title="user_field_auctionConfirmMessage" global_cache="1" version_id="0" version_string=""><![CDATA[Default Auction Confirmation Message]]></phrase>
+    <phrase title="user_field_auctionConfirmMessage_desc" version_id="0" version_string=""><![CDATA[The confirmation message to be send to the winner of the auction when you archive the relevant auction. You can use the following tags: {username}, {title}, {link}, {price}, {quantity}]]></phrase>
+    <phrase title="user_field_auctionEnableConfirm" global_cache="1" version_id="0" version_string=""><![CDATA[Send Auction Confirmation Message]]></phrase>
+    <phrase title="user_field_auctionEnableConfirm_choice_1" global_cache="1" version_id="0" version_string=""><![CDATA[Enabled]]></phrase>
+    <phrase title="user_field_auctionEnableConfirm_desc" version_id="0" version_string=""><![CDATA[Automatically sends a confirmation message to the winner of your auctions when you archive the relevant auction.]]></phrase>
     <phrase title="won_auction_message" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Congratulations! You have won [i]{title}[/i].
 
 [b]Your winning bid (cost):[/b] {top_bid}
@@ -258,6 +272,38 @@ new XenAuction.Bid;
 <script type="text/javascript"><!--
 new XenAuction.Bid;
 //--></script>]]></template>
+    <template title="auction_complete" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<xen:require css="auction_complete.css" />
+
+<xen:title>{xen:phrase complete_sale}: {$auction.title}</xen:title>
+
+<xen:navigation>
+    <xen:breadcrumb href="{xen:link 'auctions'}">{xen:phrase auctions}</xen:breadcrumb>
+    <xen:breadcrumb href="{xen:link 'auction-process/complete', '', 'id={$auction.bid_id}'}">{xen:phrase complete_sale}</xen:breadcrumb>
+</xen:navigation>
+
+<form action="{xen:link 'auction-process/markComplete', '', 'id={$auction.bid_id}'}" class="xenForm formOverlay auctionComplete" method="post">
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	<input type="hidden" name="id" value="{$auction.bid_id}"/>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase buyer}:</dt>
+		<dd>{$auction.username}</dd>
+	</dl>
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase message}:</dt>
+		<dd>
+			<textarea name="message" id="message" class="textCtrl Elastic" style="overflow: hidden; width: 100%; height: 200px; ">{$message}</textarea>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<dd>
+				<input type="submit" value="{xen:phrase complete_sale}" class="button primary"/>
+			</dd>
+		</dl>
+	
+</form>]]></template>
     <template title="auction_create" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
@@ -696,7 +742,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -710,6 +756,7 @@ dl.doubleButtons dt
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_auctionsArchive" class="active">{xen:phrase archived_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_sales">{xen:phrase sales}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>
 </ul>
@@ -717,6 +764,7 @@ dl.doubleButtons dt
 <ul id="HistoryPanes">
 	<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
 	<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}"></li>
+	<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}"></li>
 	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
 	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
 </ul>
@@ -726,7 +774,7 @@ $(document).ready(function() {
 	new XenAuction.HistoryPanes;
 });
 //--></script>]]></template>
-    <template title="auction_history_list.css" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[.auctionHistory
+    <template title="auction_history_list.css" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -755,7 +803,7 @@ $(document).ready(function() {
 	
 	.bidbuyHistory .auctionItem td.purchaseAmount
 	{
-		width: 150px;
+		width: 180px;
 	}
 	
 	.bidbuyHistory .auctionItem td.purchaseDate
@@ -839,11 +887,13 @@ $(document).ready(function() {
 
 .bidbuyHistory .auctionItem td.purchaseAmount dt
 {
+	width: 49%;
 	clear: right;
 }
 
 .bidbuyHistory .auctionItem td.purchaseAmount dd
 {
+	width: 49%;
 	font-weight: bold;
 }
 
@@ -949,6 +999,76 @@ $(document).ready(function() {
 		</ul>
 	</td>
 </tr>]]></template>
+    <template title="auction_history_sales" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<div>
+<xen:if is="{$auctions}">
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
+	<table class="auctionHistory">
+		<tbody>
+			
+			<xen:foreach loop="$auctions" value="$auction">
+				
+				<tr class="primaryContent auctionItem status_{$auction.status}">
+					<td class="icon">
+						{xen:helper auction, image, $auction, 't', 1}
+					</td>
+					<td class="title">
+						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+					</td>
+					<td class="status">
+						<div class="muted">
+							<xen:if is="{$auction.completed}">
+								{xen:phrase completed}
+							<xen:else/>
+								<a href="{xen:link auction-process/complete, '', 'id={$auction.bid_id}'}" class="OverlayTrigger">
+									{xen:phrase pending}
+								</a>
+							</xen:if>
+						</div>
+					</td>
+					<td class="purchaseAmount">
+						<dl>
+							<xen:if is="{$auction.is_buyout}">
+								<dd>{xen:phrase type}:</dd>
+								<dt>{xen:phrase buyout}</dt>
+								<dd>{xen:phrase quantity}:</dd>
+								<dt>{xen:number $auction.quantity}</dt>
+							<xen:else/>
+								<dd>{xen:phrase type}:</dd>
+								<dt>{xen:phrase bid}</dt>
+							</xen:if>
+							<dd>{xen:phrase amount_paid}:</dd>
+							<dt>{xen:number $auction.amount}</dt>
+						</dl>
+					</td>
+					<td class="purchaseDate">
+						<div class="DateTime muted">{xen:date {$auction.bid_date}}</div>
+						<div class="DateTime muted">{xen:time {$auction.bid_date}}</div>
+					</td>
+				</tr>
+				
+			</xen:foreach>
+			
+		</tbody>
+	</table>
+	
+	<div class="pageNavLinkGroup">
+		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+	</div>
+	
+	<script type="text/javascript">
+	<!--
+	<xen:include template="auction_phrases_js"/>
+	new XenAuction.List;
+	-->
+	</script>
+<xen:else/>
+	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
+</xen:if>
+</div>]]></template>
     <template title="auction_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />

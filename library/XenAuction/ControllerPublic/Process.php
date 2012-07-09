@@ -5,7 +5,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	
 	public function actionCreate()
 	{
-		return $this->responseView('XenAuction_ViewPublic_Auction_Create', 'auction_create', array());
+		return $this->responseView('XenAuction_ViewPublic_Auction_Create', 'auction_create');
 	}
 	
 	public function actionAdd()
@@ -98,6 +98,90 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		}
 		
 		$dw->save();
+		
+		return $this->responseRedirect(
+			XenForo_ControllerResponse_Redirect::SUCCESS,
+			XenForo_Link::buildPublicLink('auction-history')
+		);
+	}
+	
+	public function actionComplete()
+	{
+		$visitor 	= XenForo_Visitor::getInstance();
+		if ( ! isset($visitor->customFields['auctionEnableConfirm']) OR $visitor->customFields['auctionEnableConfirm'][1] != 1)
+		{
+			return $this->actionMarkComplete();
+		}
+		
+		$id 			= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		
+		$fetchOptions	= array('join'	 => array(XenAuction_Model_Auction::FETCH_USER, XenAuction_Model_Auction::FETCH_BID));
+		$fetchConditions= array('bid_id' => $id);
+		
+		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auction     	= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
+		
+		if ( ! $auction)
+		{
+			return $this->responseError(new XenForo_Phrase('sale_not_found'), 404);
+		}
+		
+		$auction = current($auction);
+		
+		$message = isset($visitor->customFields['auctionConfirmMessage']) ? $visitor->customFields['auctionConfirmMessage'] : '';
+		if ( ! empty($message))
+		{
+			$message = preg_replace('|\{([a-z]*?)\}|e', '"".$auction["$1"].""', $message);
+		}
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_complete', array(
+			'auction'	=> $auction,
+			'message'	=> $message
+		));	
+	}
+	
+	public function actionMarkComplete()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		$id 			= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		$message 		= $this->_input->filterSingle('message', XenForo_Input::STRING);
+		
+		$fetchOptions	= array('join'	 => array(XenAuction_Model_Auction::FETCH_BID));
+		$fetchConditions= array('bid_id' => $id);
+		
+		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auction     	= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
+		
+		if ( ! $auction)
+		{
+			return $this->responseError(new XenForo_Phrase('sale_not_found'), 404);
+		}
+		
+		$auction = current($auction);
+		
+		if ($visitor->user_id != $auction['user_id'])
+		{
+			return $this->responseNoPermission();
+		}
+		
+		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+		$dw->setExistingData($auction);
+		$dw->set('completed', 1);
+		
+		$dw->preSave();
+
+		if ($dwErrors = $dw->getErrors())
+		{
+			return $this->responseError($dwErrors);
+		}
+		
+		$dw->save();
+		
+		if ( ! empty($message))
+		{
+			$title = new XenForo_Phrase('sale_x_completed', $auction);
+			XenAuction_Helper_Notification::sendNotification($auction['bid_user_id'], $title, $message, $visitor->toArray());
+		}
 		
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,

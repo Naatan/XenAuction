@@ -29,6 +29,7 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 				'min_bid'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
 				'buy_now'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
 				'bids'				=> array('type' => self::TYPE_UINT, 		'default'  => 0),
+				'sales'				=> array('type' => self::TYPE_UINT, 		'default'  => 0),
 				
 				'availability'		=>
 					array(	'type' => self::TYPE_UINT, 		'default'  => NULL,

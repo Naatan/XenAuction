@@ -27,6 +27,11 @@ class XenAuction_Install
 			self::update4();
 		}
 		
+		if ($existingAddOn AND $existingAddOn['version_id'] < 6)
+		{
+			self::update6();
+		}
+		
 	}
 	
 	/**
@@ -39,6 +44,34 @@ class XenAuction_Install
 		XenForo_Application::getDb()->query("
 			ALTER TABLE `xf_auction` ADD `archived` SMALLINT(1)  NOT NULL  DEFAULT '0'  AFTER `status`
 		");
+	}
+	
+	/**
+	 * 1.0 Beta 2 (build 5) Update
+	 * 
+	 * @return	void							
+	 */
+	protected static function update6()
+	{
+		XenForo_Application::getDb()->query("
+			INSERT INTO `xf_user_field` (`field_id`, `display_group`, `display_order`, `field_type`, `field_choices`, `match_type`, `match_regex`, `match_callback_class`, `match_callback_method`, `max_length`, `required`, `show_registration`, `user_editable`, `viewable_profile`, `viewable_message`, `display_template`)
+			VALUES
+				('auctionConfirmMessage', 'preferences', 5001, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, ''),
+				('auctionEnableConfirm', 'preferences', 5000, 'checkbox', X'613A313A7B693A313B733A373A22456E61626C6564223B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, '');
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction` ADD `sales` SMALLINT(5)  UNSIGNED  NOT NULL  DEFAULT '0'  AFTER `bids`
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction_bid` ADD `completed` TINYINT(1)  UNSIGNED  NOT NULL  DEFAULT '0'  AFTER `amount`
+		");
+		
+		XenForo_Application::getDb()->query("
+			UPDATE `xf_auction` SET `sales`=1 WHERE `auction_id` IN (SELECT `auction_id` FROM `xf_auction_bid`)
+		");
+
 	}
 	
 	/**
@@ -59,7 +92,7 @@ class XenAuction_Install
 	protected static function createStructure()
 	{
 		XenForo_Application::getDb()->query("
-			CREATE TABLE IF NOT EXISTS `xf_auction` (
+			CREATE TABLE `xf_auction` (
 			  `auction_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `user_id` int(10) unsigned NOT NULL,
 			  `title` varchar(150) NOT NULL DEFAULT '',
@@ -71,6 +104,7 @@ class XenAuction_Install
 			  `min_bid` int(10) unsigned DEFAULT NULL,
 			  `buy_now` int(10) unsigned DEFAULT NULL,
 			  `bids` smallint(5) unsigned NOT NULL DEFAULT '0',
+			  `sales` smallint(5) unsigned NOT NULL DEFAULT '0',
 			  `availability` smallint(5) unsigned DEFAULT NULL,
 			  `top_bid` int(10) unsigned DEFAULT NULL,
 			  `top_bidder` int(10) unsigned DEFAULT NULL,
@@ -81,17 +115,20 @@ class XenAuction_Install
 		");
 		
 		XenForo_Application::getDb()->query("
-			CREATE TABLE IF NOT EXISTS `xf_auction_bid` (
+			CREATE TABLE `xf_auction_bid` (
 			  `bid_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `auction_id` int(10) unsigned NOT NULL,
 			  `bid_user_id` int(10) unsigned NOT NULL,
 			  `is_buyout` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			  `quantity` smallint(5) unsigned DEFAULT NULL,
 			  `amount` int(10) unsigned NOT NULL,
+			  `completed` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			  `bid_date` int(10) unsigned NOT NULL,
 			  PRIMARY KEY (`bid_id`)
 			) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8
 		");
+		
+		self::update6();
 	}
 	
 	/**
@@ -107,6 +144,10 @@ class XenAuction_Install
 		
 		XenForo_Application::getDb()->query("
 			DROP TABLE IF EXISTS `xf_auction_bid`
+		");
+		
+		XenForo_Application::getDb()->query("
+			DELETE FROM `xf_user_field` WHERE `field_id` = 'auctionConfirmMessage' OR `field_id` = 'auctionEnableConfirm' LIMIT 2
 		");
 	}
 	

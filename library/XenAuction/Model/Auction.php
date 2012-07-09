@@ -6,7 +6,8 @@
 class XenAuction_Model_Auction extends XenForo_Model
 {
 	
-	const FETCH_USER     		= 0x01;
+	const FETCH_USER     		= 'user';
+	const FETCH_BID     		= 'bid';
 	
 	const STATUS_ACTIVE 	= 'active';
 	const STATUS_CANCELED 	= 'canceled';
@@ -17,14 +18,19 @@ class XenAuction_Model_Auction extends XenForo_Model
 	 * Get by Auction ID
 	 * 
 	 * @param	int			$idAuction
+	 * @param 	array 		$fetchOptions
 	 * 
 	 * @return	array|bool
 	 */
-	public function getAuctionById($idAuction)
+	public function getAuctionById($idAuction, array $fetchOptions = array())
 	{
+		$joinOptions = $this->prepareAuctionFetchOptions($fetchOptions);
+		
 		return $this->_getDb()->fetchRow('
-			SELECT *
-			FROM xf_auction
+			SELECT auction.*
+				' . $joinOptions['selectFields'] . '
+			FROM xf_auction AS auction
+				' . $joinOptions['joinTables'] . '
 			WHERE auction_id = ?
 		', $idAuction);
 	}
@@ -79,7 +85,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
-		
+
 		return $this->fetchAllKeyed($this->limitQueryResults('
 				SELECT auction.*
 					' . $joinOptions['selectFields'] . '
@@ -186,6 +192,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 			}
 		}
 		
+		if ( isset($conditions['bid_id']))
+		{
+			$sqlConditions[] = 'bid.bid_id = ' . $db->quote($conditions['bid_id']);
+		}
+		
 		if ( isset($conditions['status']))
 		{
 			$sqlConditions[] = 'auction.status = ' . $db->quote($conditions['status']);
@@ -194,6 +205,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 		if ( isset($conditions['expired']))
 		{
 			$sqlConditions[] = 'auction.expiration_date < ' . time();
+		}
+		
+		if ( isset($conditions['has_sales']))
+		{
+			$sqlConditions[] = 'auction.sales > 0';
 		}
 		
 		if ( isset($conditions['is_buyout']))
@@ -253,9 +269,31 @@ class XenAuction_Model_Auction extends XenForo_Model
 		$selectFields = '';
 		$joinTables = '';
 
-		if (!empty($fetchOptions['join']))
+		if ( ! empty($fetchOptions['join']))
 		{
-			if ($fetchOptions['join'] & self::FETCH_USER)
+			if ( ! is_array($fetchOptions['join']))
+			{
+				$fetchOptions['join'] = array($fetchOptions['join']);
+			}
+			
+			if (in_array(self::FETCH_BID, $fetchOptions['join']))
+			{
+				$selectFields .= ',
+					bid.*';
+				$joinTables .= '
+					LEFT JOIN xf_auction_bid AS bid ON
+						(bid.auction_id = auction.auction_id)';
+			}
+			
+			if (in_array(self::FETCH_USER, $fetchOptions['join']) AND in_array(self::FETCH_BID, $fetchOptions['join']))
+			{
+				$selectFields .= ',
+					user.*';
+				$joinTables .= '
+					JOIN xf_user AS user ON
+						(user.user_id = bid.bid_user_id)';
+			}
+			else if (in_array(self::FETCH_USER, $fetchOptions['join']))
 			{
 				$selectFields .= ',
 					user.*';

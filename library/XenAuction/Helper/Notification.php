@@ -3,16 +3,29 @@
 class XenAuction_Helper_Notification
 {
 
-	public static function sendNotification($userId, XenForo_Phrase $title, XenForo_Phrase $message) 
+	public static function sendNotification($userId, XenForo_Phrase $title, $message, $sender = false) 
 	{
 			$options 	= XenForo_Application::get('options');
 		
-			$userModel 	= XenForo_Model::create('XenForo_Model_User');
-			$sender 	= $userModel->getUserById($options->auctionNotificationSender);
+			if ( ! $sender)
+			{
+				$userModel 	= XenForo_Model::create('XenForo_Model_User');
+				$sender 	= $userModel->getUserById($options->auctionNotificationSender);
+				$delete 	= true;
+			}
+			else
+			{
+				$delete = false;
+			}
 
 			$title 		= $title->render();
-			$message 	= $message->render();
-			$message 	= str_replace('&amp;', '&', $message);
+			
+			if ($message instanceof XenForo_Phrase)
+			{
+				$message = $message->render();
+			}
+			
+			$message = str_replace('&amp;', '&', $message);
 
 			$conversationDw = XenForo_DataWriter::create('XenForo_DataWriter_ConversationMaster');
 			$conversationDw->setExtraData(XenForo_DataWriter_ConversationMaster::DATA_ACTION_USER, $sender);
@@ -29,15 +42,18 @@ class XenAuction_Helper_Notification
 
 			$conversationDw->save();
 
-			$conversation = $conversationDw->getMergedData();
-
-			$db = XenForo_Application::getDb();
-
-			$conversationModel = XenForo_Model::create('XenForo_Model_Conversation');
-			$conversationModel->deleteConversationForUser($conversation['conversation_id'], $sender['user_id'], 'deleted');
-			$db->delete('xf_conversation_recipient',
-				'conversation_id = ' . $conversation['conversation_id'] . ' AND user_id = ' . $sender['user_id']
-			);
+			if ($delete)
+			{
+				$conversation = $conversationDw->getMergedData();
+	
+				$db = XenForo_Application::getDb();
+	
+				$conversationModel = XenForo_Model::create('XenForo_Model_Conversation');
+				$conversationModel->deleteConversationForUser($conversation['conversation_id'], $sender['user_id'], 'deleted');
+				$db->delete('xf_conversation_recipient',
+					'conversation_id = ' . $conversation['conversation_id'] . ' AND user_id = ' . $sender['user_id']
+				);
+			}
 	}
 
 }
