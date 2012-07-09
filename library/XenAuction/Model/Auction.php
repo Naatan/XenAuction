@@ -112,6 +112,63 @@ class XenAuction_Model_Auction extends XenForo_Model
 		');
 	}
 	
+	public function getSales($userId, array $fetchOptions = array())
+	{
+		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
+
+		$selectFields 	= '';
+		$joinTables 	= '';
+		
+		if (in_array(self::FETCH_USER, $fetchOptions['join']))
+		{
+			$selectFields = ',user.*';
+			$joinTables .= '
+				JOIN xf_user AS user ON
+					(user.user_id = bid.bid_user_id)';
+		}
+		
+		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
+		
+		return $this->fetchAllKeyed($this->limitQueryResults('
+				SELECT bid.*, auction.*
+					' . $selectFields . '
+				FROM xf_auction_bid bid
+				JOIN xf_auction auction ON 
+					auction.auction_id = bid.auction_id AND
+					auction.user_id = ' . $this->_getDb()->quote($userId) . '
+				' . $joinTables . '
+				WHERE
+					bid.is_buyout = 1 OR
+					auction.status = \'expired\'
+				' . $orderClause . '
+			', $limitOptions['limit'], $limitOptions['offset']
+		), 'auction_id');
+	}
+	
+	public function getSalesCount($userId, array $fetchOptions = array())
+	{
+		$joinTables 	= '';
+		if (in_array(self::FETCH_USER, $fetchOptions['join']))
+		{
+			$joinTables .= '
+				JOIN xf_user AS user ON
+					(user.user_id = bid.bid_user_id)';
+		}
+		
+		return $this->_getDb()->fetchOne('
+				SELECT COUNT(bid.bid_id)
+				FROM xf_auction_bid bid
+				JOIN xf_auction auction ON 
+					auction.auction_id = bid.auction_id AND
+					auction.user_id = ' . $this->_getDb()->quote($userId) . '
+				' . $joinTables . '
+				WHERE
+					bid.is_buyout = 1 OR
+					auction.status = \'expired\'
+			'
+		);
+	}
+	
 	/**
 	 * Get list of bids for user
 	 * 

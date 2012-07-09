@@ -108,21 +108,15 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		$perPage 	 	= $options->auctionsPerPage;
 		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
-		$fetchConditions = array(
-			'status'		=> XenAuction_Model_Auction::STATUS_EXPIRED,
-			'user_id'		=> $visitor->user_id,
-			'has_sales' 	=> true
-		);
-		
 		$fetchOptions 	= array(
-			'join'		=> array(XenAuction_Model_Auction::FETCH_USER, XenAuction_Model_Auction::FETCH_BID),
+			'join'		=> array(XenAuction_Model_Auction::FETCH_USER),
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-		$auctions  		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
-		$total 		 	= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
+		$auctions  		= $auctionModel->getSales($visitor->user_id, $fetchOptions);
+		$total 		 	= $auctionModel->getSalesCount($visitor->user_id, $fetchOptions);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_sales', array(
 			'auctions'	=> $auctions,
