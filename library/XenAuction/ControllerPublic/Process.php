@@ -131,7 +131,8 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		$message = isset($visitor->customFields['auctionConfirmMessage']) ? $visitor->customFields['auctionConfirmMessage'] : '';
 		if ( ! empty($message))
 		{
-			$message = preg_replace('|\{([a-z]*?)\}|e', '"".$auction["$1"].""', $message);
+			$auction['link'] 	= XenForo_Link::buildPublicLink('auctions/details', '', array('id' => $auction['auction_id']));
+			$message 			= preg_replace('|\{([a-z]*?)\}|e', '"".$auction["$1"].""', $message);
 		}
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_complete', array(
