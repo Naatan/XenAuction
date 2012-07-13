@@ -5,7 +5,10 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	
 	public function actionCreate()
 	{
-		return $this->responseView('XenAuction_ViewPublic_Auction_Create', 'auction_create');
+		$tagModel = XenForo_Model::create('XenAuction_Model_Tag');
+		return $this->responseView('XenAuction_ViewPublic_Auction_Create', 'auction_create', array(
+			'allTags'	=> $tagModel->getTags()
+		));
 	}
 	
 	public function actionAdd()
@@ -25,7 +28,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		
 		$input = $this->_input->filter(array(
 			'title'        		=> XenForo_Input::STRING,
-			'tags'         		=> XenForo_Input::STRING,
+			'tags'         		=> XenForo_Input::ARRAY_SIMPLE,
 			'message_html' 		=> XenForo_Input::STRING,
 			'expires'      		=> XenForo_Input::UINT,
 			'batch'      		=> XenForo_Input::UINT,
@@ -42,30 +45,30 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			$batch = 1;
 		}
 		
-		$tags = explode(',', $input['tags']);
-		$tags = array_unique(array_filter($tags));
-		$tags = array_map(create_function('$a', 'return trim($a);'), $tags);
-		
 		$data = array(
 			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
 			'image'				=> $imagePath,
 			'message'        	=> $input['message_html'],
-			'tags'           	=> implode(',', $tags),
 			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,
 			'buy_now'        	=> $input['buyout_enable'] ? $input['buyout'] : NULL,
 			'availability'   	=> $input['buyout_enable'] ? $input['availability'] : NULL,
 			'expiration_date'	=> time() + ((int) $input['expires'] * 86400)
 		);
 		
+		$tags 		= array_unique(array_filter($input['tags']));
+		$tagModel 	= XenForo_Model::create('XenAuction_Model_Tag');
+		
 		for ($c=0;$c<$batch; $c++)
 		{
 			$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
 			$dw->bulkSet($data);
 			$dw->save();
+			
+			$data = $dw->getMergedData();
+			
+			$tagModel->addTagToAuction($tags, $data['auction_id']);
 		}
-		
-		XenAuction_Helper_Tags::add(explode(',', $input['tags']));
 		
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,

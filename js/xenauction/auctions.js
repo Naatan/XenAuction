@@ -18,6 +18,10 @@ XenAuction.List.prototype = {
 	{
 
 		this.parseTimeleft();
+		
+		$(document).ready(function() {
+			$(".chzn-select").chosen();
+		});
 
 	},
 
@@ -122,6 +126,7 @@ XenAuction.Create.prototype = {
 
 		$("input[name=bid_enable]").click(this.toggleEnable);
 		$("input[name=buyout_enable]").click(this.toggleEnable);
+		$(".chzn-select").chosen({allow_option_creation: true});
 
 	},
 	

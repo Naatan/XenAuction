@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 2 (build 9)" version_id="10" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 3 (build 1)" version_id="11" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -79,6 +79,7 @@ inputclass=Elastic</edit_format_params>
     <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
     <phrase title="cant_buy_zero" version_id="0" version_string=""><![CDATA[Entered quantity is too low]]></phrase>
+    <phrase title="choose_tags" version_id="0" version_string=""><![CDATA[Choose Tags]]></phrase>
     <phrase title="completed" version_id="0" version_string=""><![CDATA[Completed]]></phrase>
     <phrase title="complete_auction" version_id="0" version_string=""><![CDATA[Complete Auction]]></phrase>
     <phrase title="complete_purchase" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[To complete your purchase, please send your payment to 
@@ -106,6 +107,7 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="minutes_left" version_id="0" version_string=""><![CDATA[Minutes Left]]></phrase>
     <phrase title="must_use_bid_or_buyout" version_id="0" version_string=""><![CDATA[You have to select either a bid or a buyout value]]></phrase>
     <phrase title="my_activity" version_id="0" version_string=""><![CDATA[My Activity]]></phrase>
+    <phrase title="no_auctions_found" version_id="0" version_string=""><![CDATA[No auctions were found]]></phrase>
     <phrase title="no_bids" version_id="0" version_string=""><![CDATA[No bids]]></phrase>
     <phrase title="option_auctionNotificationSender" version_id="0" version_string=""><![CDATA[User ID that sends notifications]]></phrase>
     <phrase title="option_auctionNotificationSender_explain" version_id="0" version_string=""><![CDATA[Enter the ID of the user that will be used to send auction notifications. Note that this user should NOT participate in any other part of the auctions (eg. bidding, buying and creating auctions).]]></phrase>
@@ -171,7 +173,7 @@ The new top bid is: ${top_bid}.]]></phrase>
   </route_prefixes>
   <style_properties/>
   <templates>
-    <template title="auction_bid" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_bid" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{xen:phrase bidding_on_x, 'title={$auction.title}'}</xen:title>
 
@@ -191,7 +193,7 @@ The new top bid is: ${top_bid}.]]></phrase>
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase your_bid}:</dt>
 			<dd>
-				<input type="text" name="bid" value="{xen:if $auction.top_bid, {xen:calc '{$auction.top_bid} + 1'}, $auction.min_bid}" class="textCtrl autoSize" size="20" maxlength="10" />
+				$ <input type="text" name="bid" value="{xen:if $auction.top_bid, {xen:calc '{$auction.top_bid} + 1'}, $auction.min_bid}" class="textCtrl autoSize" size="20" maxlength="10" />
 			</dd>
 		</dl>
 
@@ -217,7 +219,7 @@ new XenAuction.Bid;
 	background: url(./data/xenauction/image_s.png) center no-repeat;
 	margin: 5px 10px;
 }]]></template>
-    <template title="auction_buyout" version_id="0" version_string=""><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_buyout" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{xen:phrase buying_x, 'title={$auction.title}'}</xen:title>
 
@@ -254,7 +256,7 @@ new XenAuction.Bid;
 		<dl class="ctrlUnit">
 			<dt>{xen:phrase paying}:</dt>
 			<dd class="paying">
-				{$auction.buy_now}
+				${$auction.buy_now}
 			</dd>
 		</dl>
 
@@ -304,8 +306,10 @@ new XenAuction.Bid;
 		</dl>
 	
 </form>]]></template>
-    <template title="auction_create" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[<xen:require css="auction_create.css" />
+    <template title="auction_create" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
+<xen:require css="auction_tags.css" />
 <xen:require js="js/xenauction/auctions.js" />
+<xen:require js="js/chosen/chosen.jquery.js" />
 
 <xen:title>{xen:phrase create_auction}</xen:title>
 
@@ -328,7 +332,13 @@ new XenAuction.Bid;
 		
 	<dl class="ctrlUnit">
 		<dt><label for="ctrl_tags">{xen:phrase tags}:</label></dt>
-		<dd><input type="text" name="tags" class="textCtrl" id="ctrl_tags" maxlength="255" /></dd>
+		<dd class="tagContainer">
+			<select name="tags[]" class="chzn-select" multiple="multiple" data-placeholder="{xen:phrase choose_tags}" style="width: {xen:calc '{xen:property formWidth} - {xen:property ctrlUnitLabelWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - {xen:property ctrlUnitEdgeSpacer}'}px">
+				<xen:foreach loop="$allTags" value="$tag">
+					<option value="{$tag.tag_id}">{$tag.name}</option>
+				</xen:foreach>
+			</select>
+		</dd>
 	</dl>	
 
 	<div class="summary">
@@ -417,7 +427,7 @@ new XenAuction.Bid;
 <xen:include template="auction_phrases_js"/>
 new XenAuction.Create;
 //--></script>]]></template>
-    <template title="auction_create.css" version_id="1" version_string="1.0 Beta 1"><![CDATA[.auction .summary .icon
+    <template title="auction_create.css" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[.auction .summary .icon
 {
 	width: 30px;
 	height: 30px;
@@ -455,7 +465,19 @@ new XenAuction.Create;
 .ctrlUnit.double dd
 {
 	width: 100px;
-}]]></template>
+}
+
+/*
+.auction .chzn-container, .auction .tags
+{
+	width: {xen:calc "{xen:property formWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px;
+}
+
+	.xenOverlay .auction .chzn-container, .xenOverlay .auction .tags
+	{
+		width: {xen:calc "{xen:property overlayFormWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px;
+	}
+*/]]></template>
     <template title="auction_details" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
@@ -517,7 +539,7 @@ dl.doubleButtons dt
 	</div>
 
 </div>]]></template>
-    <template title="auction_history_auctions" version_id="2" version_string="1.0 Beta 2 (build 1)"><![CDATA[<div>
+    <template title="auction_history_auctions" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -1041,26 +1063,34 @@ $(document).ready(function() {
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_list" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
+    <template title="auction_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
+<xen:require css="auction_tags.css" />
+<xen:require js="js/chosen/chosen.jquery.js" />
 
 <div class="pageNavLinkGroup">
 	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
 </div>
 
-<table class="section auctions">
-	
-	<tbody>
-
-		<xen:foreach loop="$auctions" value="$auction">
-			<xen:include template="auction_list_item"/>
-		</xen:foreach>
-	
-	</tbody>
+<xen:if is="{$auctions}">
+	<table class="section auctions">
 		
-</table>
+		<tbody>
+	
+			<xen:foreach loop="$auctions" value="$auction">
+				<xen:include template="auction_list_item"/>
+			</xen:foreach>
+		
+		</tbody>
+			
+	</table>
+<xen:else/>
+	<div class="emptyResults">
+		{xen:phrase no_auctions_found}
+	</div>
+</xen:if>
 
 <div class="pageNavLinkGroup">
 	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
@@ -1080,41 +1110,29 @@ $(document).ready(function() {
 			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
 				<h3>{xen:phrase find_auction}</h3>
 					
-				<input type="search" name="search" placeholder="{xen:phrase keyword_tag}..." value="{$search}" results="0" class="textCtrl" />
+				<input type="search" name="search" placeholder="{xen:phrase keywords}..." value="{$search}" results="0" class="textCtrl" />
 				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 			</form>
 		</div>
 	</xen:if>
 	
-	<xen:if is="{$tags}">	
-		<div class="section">
-			<form action="{xen:link auctions}" method="post" class="secondaryContent findAuction">
+	<xen:if is="{$allTags}">	
+		<div class="section filterTags">
+			<form action="{xen:link auctions}" method="post" class="secondaryContent filterTag">
 				<h3>{xen:phrase filter_by_tag}</h3>
 
-				<select name="tag">
-					<option value="-1">{xen:phrase select_one}</option>
-					<xen:foreach loop="$tags" value="$tag">
-						<option>{$tag}</option>
+				<select name="tags[]" class="chzn-select" multiple="multiple" style="width: 100%;" data-placeholder="{xen:phrase choose_tags}">
+					<xen:foreach loop="$allTags" value="$tag">
+						<option value="{$tag.tag_id}" {xen:if {$selTags.{$tag.tag_id}}, "selected='selected'"}>{$tag.name}</option>
 					</xen:foreach>
 				</select>
 				
-				<input type="submit" value="{xen:phrase filter}"/>
+				<input type="submit" value="{xen:phrase filter}" class="button"/>
 
 				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 			</form>
 		</div>
 	</xen:if>
-
-<!--	<div class="section">
-		<form action="{xen:link auction-process/expire}" method="POST" class="secondaryContent">
-			<h3>Expire Auction (DEV TOOL)</h3>
-				
-			<p>You can see the auction ID by clicking on a title and checking the "id=xxx" portion in the url</p>
-
-			<input type="id" name="id" placeholder="ID" class="textCtrl"/>
-			<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
-		</form>
-	</div>-->
 
 </xen:sidebar>
 
@@ -1125,7 +1143,7 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[table.auctions
+    <template title="auction_list.css" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[table.auctions
 {
 	width: 100%;
 }
@@ -1256,18 +1274,34 @@ new XenAuction.List;
 	.auctionCreate a.callToAction span
 	{
 		font-size: 14px;
-	}]]></template>
-    <template title="auction_list_item" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[<xen:require css="auction_list.css" />
+	}
+
+.sidebar input[name="search"]
+{
+	height: 27px;
+	width: 100%;
+}
+
+.sidebar .filterTags
+{
+	text-align: center;
+}
+
+.sidebar .chzn-container
+{
+	text-align: left;
+}]]></template>
+    <template title="auction_list_item" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <tr class="primaryContent auctionItem status_{$auction.status}">
 	
 	<td class="icon">{xen:helper auction, image, $auction, 's', 1}</td>
 	<td class="descriptionWrap">
-		<span class="tags">{xen:helper auction, tags, $auction.tags}</span>
+		<span class="tags">{xen:helper auction, tags, {$tags.{$auction.auction_id}}}</span>
 		<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
 		<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
-</td>
+	</td>
 	<td class="timeLeft">
 		<xen:if is="{$auction.status} == 'active'">
 			{$auction.expiration_date}
@@ -1323,6 +1357,360 @@ XenAuction.Config.phrases.daysLeft 		= '{xen:phrase days_left}';
 
 XenAuction.Config.phrases.errorInvalidQuantity 	= '{xen:phrase quantity_not_available}';
 XenAuction.Config.phrases.errorBidTooLow 		= '{xen:phrase bid_must_be_higher}';]]></template>
+    <template title="auction_tags.css" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[/* @group Base */
+.chzn-container {
+  font-size: 13px;
+  position: relative;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+.chzn-container .chzn-drop {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-top: 0;
+  position: absolute;
+  top: 38px;
+  left: 0;
+  -webkit-box-shadow: 0 4px 5px rgba(0,0,0,.15);
+  -moz-box-shadow   : 0 4px 5px rgba(0,0,0,.15);
+  -o-box-shadow     : 0 4px 5px rgba(0,0,0,.15);
+  box-shadow        : 0 4px 5px rgba(0,0,0,.15);
+  z-index: 999;
+}
+/* @end */
+
+/* @group Single Chosen */
+.chzn-container-single .chzn-single {
+  background-color: #fff;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(0.5, white));
+  background-image: -webkit-linear-gradient(center bottom, #eeeeee 0%, white 50%);
+  background-image: -moz-linear-gradient(center bottom, #eeeeee 0%, white 50%);
+  background-image: -o-linear-gradient(top, #eeeeee 0%,#ffffff 50%);
+  background-image: -ms-linear-gradient(top, #eeeeee 0%,#ffffff 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#ffffff',GradientType=0 );
+  background-image: linear-gradient(top, #eeeeee 0%,#ffffff 50%);
+  -webkit-border-radius: 4px;
+  -moz-border-radius   : 4px;
+  border-radius        : 4px;
+  -moz-background-clip   : padding;
+  -webkit-background-clip: padding-box;
+  background-clip        : padding-box;
+  border: 1px solid #aaa;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 0 0 8px;
+  color: #444;
+  text-decoration: none;
+}
+.chzn-container-single .chzn-single span {
+  margin-right: 26px;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.chzn-container-single .chzn-single abbr {
+  display: block;
+  position: absolute;
+  right: 26px;
+  top: 8px;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) right top no-repeat;
+}
+.chzn-container-single .chzn-single abbr:hover {
+  background-position: right -11px;
+}
+.chzn-container-single .chzn-single div {
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius   : 0 4px 4px 0;
+  border-radius        : 0 4px 4px 0;
+  -moz-background-clip   : padding;
+  -webkit-background-clip: padding-box;
+  background-clip        : padding-box;
+  background: #ccc;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #ccc), color-stop(0.6, #eee));
+  background-image: -webkit-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+  background-image: -moz-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+  background-image: -o-linear-gradient(bottom, #ccc 0%, #eee 60%);
+  background-image: -ms-linear-gradient(top, #cccccc 0%,#eeeeee 60%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#eeeeee',GradientType=0 );
+  background-image: linear-gradient(top, #cccccc 0%,#eeeeee 60%);
+  border-left: 1px solid #aaa;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  height: 100%;
+  width: 18px;
+}
+.chzn-container-single .chzn-single div b {
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 0 1px;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.chzn-container-single .chzn-search {
+  padding: 3px 4px;
+  position: relative;
+  margin: 0;
+  white-space: nowrap;
+  z-index: 1010;
+}
+.chzn-container-single .chzn-search input {
+  background: #fff url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px;
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  margin: 1px 0;
+  padding: 4px 20px 4px 5px;
+  outline: 0;
+  border: 1px solid #aaa;
+  font-family: sans-serif;
+  font-size: 1em;
+}
+.chzn-container-single .chzn-drop {
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius   : 0 0 4px 4px;
+  border-radius        : 0 0 4px 4px;
+  -moz-background-clip   : padding;
+  -webkit-background-clip: padding-box;
+  background-clip        : padding-box;
+}
+/* @end */
+
+.chzn-container-single-nosearch .chzn-search input {
+  position: absolute;
+  left: -9000px;
+}
+
+/* @group Multi Chosen */
+.chzn-container-multi .chzn-choices {
+	{xen:property textCtrl}
+  cursor: text;
+  overflow: hidden;
+  height: auto !important;
+  height: 1%;
+  position: relative;
+}
+.chzn-container-multi .chzn-choices li {
+  float: left;
+  list-style: none;
+}
+.chzn-container-multi .chzn-choices .search-field {
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+}
+.chzn-container-multi .chzn-choices .search-field input {
+  color: #666;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 5px;
+  margin: 1px 0;
+  outline: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow   : none;
+  -o-box-shadow     : none;
+  box-shadow        : none;
+}
+.chzn-container-multi .chzn-choices .search-field .default {
+  color: #999;
+}
+.chzn-container-multi .chzn-choices .search-choice {
+  -webkit-border-radius: 3px;
+  -moz-border-radius   : 3px;
+  border-radius        : 3px;
+  -moz-background-clip   : padding;
+  -webkit-background-clip: padding-box;
+  background-clip        : padding-box;
+  background-color: #e4e4e4;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e4e4e4), color-stop(0.7, #eeeeee));
+  background-image: -webkit-linear-gradient(center bottom, #e4e4e4 0%, #eeeeee 70%);
+  background-image: -moz-linear-gradient(center bottom, #e4e4e4 0%, #eeeeee 70%);
+  background-image: -o-linear-gradient(bottom, #e4e4e4 0%, #eeeeee 70%);
+  background-image: -ms-linear-gradient(top, #e4e4e4 0%,#eeeeee 70%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4e4e4', endColorstr='#eeeeee',GradientType=0 );
+  background-image: linear-gradient(top, #e4e4e4 0%,#eeeeee 70%);
+  color: #333;
+  border: 1px solid #b4b4b4;
+  line-height: 13px;
+  padding: 3px 19px 3px 6px;
+  margin: 3px 0 3px 5px;
+  position: relative;
+}
+.chzn-container-multi .chzn-choices .search-choice span {
+  cursor: default;
+}
+.chzn-container-multi .chzn-choices .search-choice-focus {
+  background: #d4d4d4;
+}
+.chzn-container-multi .chzn-choices .search-choice .search-choice-close {
+  display: block;
+  position: absolute;
+  right: 3px;
+  top: 4px;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+  background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) right top no-repeat;
+}
+.chzn-container-multi .chzn-choices .search-choice .search-choice-close:hover {
+  background-position: right -11px;
+}
+.chzn-container-multi .chzn-choices .search-choice-focus .search-choice-close {
+  background-position: right -11px;
+}
+/* @end */
+
+/* @group Results */
+.chzn-container .chzn-results {
+  margin: 0 4px 4px 0;
+  max-height: 190px;
+  padding: 0 0 0 4px;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.chzn-container-multi .chzn-results {
+  margin: -1px 0 0;
+  padding: 0;
+}
+.chzn-container .chzn-results li {
+  display: none;
+  line-height: 80%;
+  padding: 7px 7px 8px;
+  margin: 0;
+  list-style: none;
+}
+.chzn-container .chzn-results .active-result {
+  cursor: pointer;
+  display: list-item;
+}
+.chzn-container .chzn-results .highlighted {
+  background: #3875d7;
+  color: #fff;
+}
+.chzn-container .chzn-results li em {
+  background: #feffde;
+  font-style: normal;
+}
+.chzn-container .chzn-results .highlighted em {
+  background: transparent;
+}
+.chzn-container .chzn-results .no-results {
+  background: #f4f4f4;
+  display: list-item;
+}
+.chzn-container .chzn-results .group-result {
+  cursor: default;
+  color: #999;
+  font-weight: bold;
+}
+.chzn-container .chzn-results .group-option {
+  padding-left: 20px;
+}
+.chzn-container-multi .chzn-drop .result-selected {
+  display: none;
+}
+/* @end */
+
+/* @group Active  */
+.chzn-container-active .chzn-single {
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);
+  -moz-box-shadow   : 0 0 5px rgba(0,0,0,.3);
+  -o-box-shadow     : 0 0 5px rgba(0,0,0,.3);
+  box-shadow        : 0 0 5px rgba(0,0,0,.3);
+  border: 1px solid #5897fb;
+}
+.chzn-container-active .chzn-single-with-drop {
+  border: 1px solid #aaa;
+  -webkit-box-shadow: 0 1px 0 #fff inset;
+  -moz-box-shadow   : 0 1px 0 #fff inset;
+  -o-box-shadow     : 0 1px 0 #fff inset;
+  box-shadow        : 0 1px 0 #fff inset;
+  background-color: #eee;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, white), color-stop(0.5, #eeeeee));
+  background-image: -webkit-linear-gradient(center bottom, white 0%, #eeeeee 50%);
+  background-image: -moz-linear-gradient(center bottom, white 0%, #eeeeee 50%);
+  background-image: -o-linear-gradient(bottom, white 0%, #eeeeee 50%);
+  background-image: -ms-linear-gradient(top, #ffffff 0%,#eeeeee 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 );
+  background-image: linear-gradient(top, #ffffff 0%,#eeeeee 50%);
+  -webkit-border-bottom-left-radius : 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomleft : 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-left-radius : 0;
+  border-bottom-right-radius: 0;
+}
+.chzn-container-active .chzn-single-with-drop div {
+  background: transparent;
+  border-left: none;
+}
+.chzn-container-active .chzn-single-with-drop div b {
+  background-position: -18px 1px;
+}
+.chzn-container-active .chzn-choices {
+		{xen:property textCtrlFocus}
+}
+.chzn-container-active .chzn-choices .search-field input {
+  color: #111 !important;
+}
+/* @end */
+
+/* @group Disabled Support */
+.chzn-disabled {
+  cursor: default;
+  opacity:0.5 !important;
+}
+.chzn-disabled .chzn-single {
+  cursor: default;
+}
+.chzn-disabled .chzn-choices .search-choice .search-choice-close {
+  cursor: default;
+}
+
+/* @group Right to Left */
+.chzn-rtl { direction:rtl;text-align: right; }
+.chzn-rtl .chzn-single { padding-left: 0; padding-right: 8px; }
+.chzn-rtl .chzn-single span { margin-left: 26px; margin-right: 0; }
+.chzn-rtl .chzn-single div { 
+  left: 0; right: auto; 
+  border-left: none; border-right: 1px solid #aaaaaa;
+  -webkit-border-radius: 4px 0 0 4px;
+  -moz-border-radius   : 4px 0 0 4px;
+  border-radius        : 4px 0 0 4px; 
+}
+.chzn-rtl .chzn-choices li { float: right; }
+.chzn-rtl .chzn-choices .search-choice { padding: 3px 6px 3px 19px; margin: 3px 5px 3px 0; }
+.chzn-rtl .chzn-choices .search-choice .search-choice-close { left: 5px; right: auto; background-position: right top;}
+.chzn-rtl.chzn-container-single .chzn-results { margin-left: 4px; margin-right: 0; padding-left: 0; padding-right: 4px; }
+.chzn-rtl .chzn-results .group-option { padding-left: 0; padding-right: 20px; }
+.chzn-rtl.chzn-container-active .chzn-single-with-drop div { border-right: none; }
+.chzn-rtl .chzn-search input {
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, #ffffff;
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);  
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  padding: 4px 5px 4px 20px;
+}
+/* @end */
+]]></template>
     <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
 	<xen:if is="{xen:helper auction, hasPermission, 'viewAuctions'}">
 		<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>

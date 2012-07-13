@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Model for xensso_master_assoc table
+ * Model for xenauction tables
  */
 class XenAuction_Model_Auction extends XenForo_Model
 {
@@ -259,6 +259,12 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$sqlConditions[] = 'auction.status = ' . $db->quote($conditions['status']);
 		}
 		
+		if ( isset($conditions['tag']))
+		{
+			$tags = is_array($conditions['tag']) ? $conditions['tag'] : array($conditions['tag']);
+			$sqlConditions[] = 'auction.auction_id IN (SELECT auction_id FROM xf_auction_tag_rel WHERE tag_id IN (' . $db->quote($tags) . '))';
+		}
+		
 		if ( isset($conditions['expired']))
 		{
 			$sqlConditions[] = 'auction.expiration_date < ' . time();
@@ -288,17 +294,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 		{
 			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
 		}
-		
-		if ( ! empty($conditions['tags']))
-		{
-			$tags = explode(',', $conditions['tags']);
-			
-			foreach ($tags AS $tag)
-			{
-				$searchConditions[] = 'auction.tags LIKE ' . $db->quote('%,%'. $tag . '%,%');
-			}
-		}
-		
+
 		if ($sqlConditions)
 		{
 			if ($searchConditions)

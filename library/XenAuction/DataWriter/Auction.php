@@ -24,7 +24,6 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 				'message'			=> array('type' => self::TYPE_STRING, 		'required' => true),
 				'status'			=> array('type' => self::TYPE_STRING, 		'default'  => XenAuction_Model_Auction::STATUS_ACTIVE),
 				'archived'			=> array('type' => self::TYPE_UINT, 		'default'  => 0),
-				'tags'				=> array('type' => self::TYPE_STRING, 		'default'  => '', 			'maxLength' => 255),
 				'image'				=> array('type' => self::TYPE_STRING, 		'default'  => NULL, 		'maxLength' => 50),
 				'min_bid'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
 				'buy_now'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
@@ -53,22 +52,6 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 			$this->error(new XenForo_Phrase('must_use_bid_or_buyout'));
 		}
 		
-		$tags = trim($this->get('tags'));
-		
-		if ( ! empty($tags))
-		{
-			if (substr($tags,0,1) != ',')
-			{
-				$tags = ',' . $tags;
-			}
-			
-			if (substr($tags,-1) != ',')
-			{
-				$tags .= ',';
-			}
-		}
-		
-		$this->set('tags', $tags);
 	}
 
 	/**

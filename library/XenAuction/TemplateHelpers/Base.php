@@ -29,9 +29,8 @@ class XenAuction_TemplateHelpers_Base
 
 	public static function helperStripHtml($text) 
 	{
-		
 		$text = html_entity_decode($text);
-		return strip_tags($text);
+		return utf8_encode(strip_tags($text));
 	}
 	
 	public static function helperHasPermission($permission)
@@ -42,17 +41,13 @@ class XenAuction_TemplateHelpers_Base
 	
 	public static function helperTags($tags)
 	{
-		if (substr($tags,0,1) == ',')
+		if (empty($tags))
 		{
-			$tags = substr($tags, 1);
+			return '';
 		}
 		
-		if (substr($tags,-1) == ',')
-		{
-			$tags = substr($tags, 0, -1);
-		}
-		
-		return implode(', ', explode(',', $tags));
+		$tags = array_map( create_function('$a', 'return $a["name"];'), $tags);
+		return implode(', ', $tags);
 	}
 	
 	public static function helperImage(array $auction, $size = 'n', $link = false, $showEmpty = true)

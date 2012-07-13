@@ -75,6 +75,41 @@ class XenAuction_Install
 	}
 	
 	/**
+	 * 1.0 Beta 3 (build 1) Update
+	 * 
+	 * @return	void							
+	 */
+	public static function update11()
+	{
+		$auctions = XenForo_Application::getDb()->fetchAll("
+			SELECT auction_id, tags
+			FROM xf_auction
+		");
+		
+		if ($auctions)
+		{
+			foreach ($auctions AS $auction)
+			{
+				$tags = explode(',', $auction['tags']);
+				foreach ($tags AS $tag)
+				{
+					if (empty($tag))
+					{
+						continue;
+					}
+					
+					$modelTag = XenForo_Model::create('XenAuction_Model_Tag');
+					$modelTag->addTagToAuction($tag, $auction['auction_id']);
+				}
+			}
+		}
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction` DROP `tags`
+		");
+	}
+	
+	/**
 	 * Perform uninstall (wipe stored data)
 	 * 
 	 * @return	void							

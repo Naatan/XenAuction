@@ -10,38 +10,43 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
 		
 		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
-		$tag 			= $this->_input->filterSingle('tag', XenForo_Input::STRING);
+		$tags 			= $this->_input->filterSingle('tags', XenForo_Input::ARRAY_SIMPLE);
 		
 		$fetchConditions = array(
 			'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
-			'title'		=> $search,
-			'tags'		=> $search
+			'title'		=> $search
 		);
 		
-		if ( ! empty($tag))
+		if ( ! empty($tags))
 		{
-			$fetchConditions['tags'] = $tag;
+			$fetchConditions['tag'] = $tags;
 		}
 		
 		$fetchOptions 	= array(
-			'join'		=> XenAuction_Model_Auction::FETCH_USER,
+			'join'		=> array(XenAuction_Model_Auction::FETCH_USER),
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
+		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
 		$auctions 		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
 		$total 		 	= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
+		$auctionIds 	= array_map( create_function('$a', 'return $a["auction_id"];'), $auctions );
+		$tags 			= array_flip($tags);
+		$tags 			= array_map( create_function('$a', 'return true;'), $tags);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
-			'tags'		=> XenAuction_Helper_Tags::get(),
+			'allTags'	=> $tagModel->getTags(),
+			'tags'		=> $tagModel->getTagsByAuctions($auctionIds),
+			'selTags'	=> $tags,
 		   	'auctions'	=> $auctions,
 			'search'	=> $search,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
 			'total'		=> $total,
 			'visitor' 	=> XenForo_Visitor::getInstance()->toArray()
-		));	
+		));
 	}
 
 	public function actionDetails() 
@@ -51,8 +56,12 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
 		$auction     	= $auctionModel->getAuctionById($id);
 
+		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
+		$tags 			= $tagModel->getTagsByAuction($auction['auction_id']);
+
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_details', array(
-		   	'auction'	=> $auction
+		   	'auction'	=> $auction,
+			'tags'		=> $tags
 		));	
 	}
 	
