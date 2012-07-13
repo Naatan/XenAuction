@@ -197,9 +197,42 @@ XenAuction.Helpers = {
 			top: coords.top,
 			left: coords.left + coords.width + 10
 		}).show();
+	},
+	
+	fixOverlay: function()
+	{
+		var originalOverlay 	= XenForo.createOverlay;
+		XenForo.createOverlay 	= function($trigger, templateHtml, extraOptions)
+		{
+			var overlay = originalOverlay.call(this, $trigger, templateHtml, extraOptions);
+			var elem 	= overlay.getOverlay();
+			
+			overlay.onLoad = function()
+			{
+				var position= elem.position();
+				elem.css('position', 'absolute');
+				elem.position(position);
+				elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
+				
+				elem.find(".Disabler").click(function() {
+					setTimeout(function() {
+						elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
+					}, 100);
+				});
+			};
+			
+			overlay.onClose = function()
+			{
+				elem.find('form').trigger('reset');
+			};
+			
+			return overlay;
+		};
 	}
 	
 }
+
+$(document).ready(XenAuction.Helpers.fixOverlay);
 
 // helpers
 
