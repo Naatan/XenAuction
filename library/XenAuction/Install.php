@@ -81,6 +81,8 @@ class XenAuction_Install
 	 */
 	public static function update11()
 	{
+		self::createStructureTags();
+		
 		$auctions = XenForo_Application::getDb()->fetchAll("
 			SELECT auction_id, tags
 			FROM xf_auction
@@ -134,7 +136,6 @@ class XenAuction_Install
 			  `message` mediumtext NOT NULL,
 			  `status` enum('active','canceled','expired') DEFAULT NULL,
 			  `archived` smallint(1) NOT NULL DEFAULT '0',
-			  `tags` varchar(255) DEFAULT NULL,
 			  `image` varchar(50) DEFAULT NULL,
 			  `min_bid` int(10) unsigned DEFAULT NULL,
 			  `buy_now` int(10) unsigned DEFAULT NULL,
@@ -160,10 +161,37 @@ class XenAuction_Install
 			  `completed` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			  `bid_date` int(10) unsigned NOT NULL,
 			  PRIMARY KEY (`bid_id`)
-			) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8
 		");
 		
-		self::update6();
+		XenForo_Application::getDb()->query("
+			INSERT INTO `xf_user_field` (`field_id`, `display_group`, `display_order`, `field_type`, `field_choices`, `match_type`, `match_regex`, `match_callback_class`, `match_callback_method`, `max_length`, `required`, `show_registration`, `user_editable`, `viewable_profile`, `viewable_message`, `display_template`)
+			VALUES
+				('auctionConfirmMessage', 'preferences', 5001, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, ''),
+				('auctionEnableConfirm', 'preferences', 5000, 'checkbox', X'613A313A7B693A313B733A373A22456E61626C6564223B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, '');
+		");
+		
+		self::createStructureTags();
+	}
+	
+	protected static function createStructureTags()
+	{
+		XenForo_Application::getDb()->query("
+			CREATE TABLE `xf_auction_tag` (
+			  `tag_id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
+			  `name` varchar(50) NOT NULL DEFAULT '',
+			  PRIMARY KEY (`tag_id`),
+			  UNIQUE KEY `name` (`name`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8
+		");
+		
+		XenForo_Application::getDb()->query("
+			CREATE TABLE `xf_auction_tag_rel` (
+			  `tag_id` smallint(6) unsigned NOT NULL,
+			  `auction_id` int(10) unsigned NOT NULL,
+			  UNIQUE KEY `tag_id` (`tag_id`,`auction_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1
+		");
 	}
 	
 	/**
@@ -179,6 +207,14 @@ class XenAuction_Install
 		
 		XenForo_Application::getDb()->query("
 			DROP TABLE IF EXISTS `xf_auction_bid`
+		");
+		
+		XenForo_Application::getDb()->query("
+			DROP TABLE IF EXISTS `xf_auction_tag`
+		");
+		
+		XenForo_Application::getDb()->query("
+			DROP TABLE IF EXISTS `xf_auction_tag_rel`
 		");
 		
 		XenForo_Application::getDb()->query("
