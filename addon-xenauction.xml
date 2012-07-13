@@ -162,6 +162,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="you_have_no_auctions" version_id="0" version_string=""><![CDATA[You have no active auctions]]></phrase>
     <phrase title="you_have_no_bids" version_id="0" version_string=""><![CDATA[You have not placed any bids]]></phrase>
     <phrase title="you_have_no_buyouts" version_id="0" version_string=""><![CDATA[You have not placed any buyouts]]></phrase>
+    <phrase title="you_have_no_sales" version_id="0" version_string=""><![CDATA[You have not made any sales yet]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
@@ -990,11 +991,11 @@ $(document).ready(function() {
 		</ul>
 	</td>
 </tr>]]></template>
-    <template title="auction_history_sales" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[<div>
+    <template title="auction_history_sales" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
-		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+		<xen:pagenav link="auction-history#_sales" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
 	<table class="auctionHistory">
@@ -1050,7 +1051,7 @@ $(document).ready(function() {
 	</table>
 	
 	<div class="pageNavLinkGroup">
-		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+		<xen:pagenav link="auction-history#_sales" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
 	<script type="text/javascript">
@@ -1060,7 +1061,7 @@ $(document).ready(function() {
 	-->
 	</script>
 <xen:else/>
-	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
+	<div class="emptyResults">{xen:phrase you_have_no_sales}</div>
 </xen:if>
 </div>]]></template>
     <template title="auction_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
