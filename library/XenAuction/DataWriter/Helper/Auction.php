@@ -100,7 +100,7 @@ class XenAuction_DataWriter_Helper_Auction
 		$width 		= $upload->getImageInfoField('width');
 		$height 	= $upload->getImageInfoField('height');
 		
-		$sizes 		= array('l' => 768, 'n' => 150, 's' => 48, 't' => 32);
+		$sizes 		= array('l' => 768, 'n' => 150, 'm' => 120, 's' => 48, 't' => 32);
 		
 		$outputFiles= array();
 		$outputType = $imageType;

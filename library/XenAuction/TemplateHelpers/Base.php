@@ -16,6 +16,7 @@ class XenAuction_TemplateHelpers_Base
 		}
 		
 	}
+	
 	public static function helperBasePath() 
 	{
 		$paths = XenForo_Application::getRequestPaths(new Zend_Controller_Request_Http);
@@ -66,12 +67,20 @@ class XenAuction_TemplateHelpers_Base
 		}
 		
 		$image 	= empty($auction['image']) ? 'image' : $auction['image'];
-		$out 	= sprintf('<img src="%s/xenauction/%s_%s.jpg" class="auctionImage" />', $path, $image, $size);
+		
+		if ($size != 'l')
+		{
+			$out 	= sprintf('<div style="background-image: url(%s/xenauction/%s_%s.jpg)" class="auctionImage size_%s"></div>', $path, $image, $size, $size);
+		}
+		else
+		{
+			$out 	= sprintf('<img src="%s/xenauction/%s_%s.jpg" class="auctionImage" />', $path, $image, $size);
+		}
 		
 		if ($link AND ! empty($auction['image']))
 		{
 			$link 	= sprintf("%s/xenauction/%s_l.jpg", $path, $image);
-			$out 	= sprintf('<a href="%s" class="auctionImageLink" target="_blank">%s</a>', $link, $out);
+			$out 	= sprintf('<a href="%s" class="auctionImageLink" target="_blank" rel="lightbox">%s</a>', $link, $out);
 		}
 		
 		return $out;

@@ -71,6 +71,18 @@ class XenAuction_Model_Auction extends XenForo_Model
 		', $auctionId);
 	}
 
+	public function getRandomAuctions($amount = 10)
+	{
+		return $this->fetchAllKeyed('
+			SELECT *
+			FROM xf_auction 
+			WHERE
+				`status` = ' . $this->_getDb()->quote(XenAuction_Model_Auction::STATUS_ACTIVE) . '
+			ORDER BY rand()
+			LIMIT ' . ((int) $amount) . '
+		', 'auction_id');
+	}
+
 	/**
 	 * Get list of auctions
 	 * 

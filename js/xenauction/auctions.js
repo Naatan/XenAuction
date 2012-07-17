@@ -72,6 +72,51 @@ XenAuction.List.prototype = {
 	}
 };
 
+
+XenAuction.Widget = function() { this.__construct(); };
+XenAuction.Widget.prototype = {
+	__construct: function()
+	{
+		var checkCsrf = setInterval($.context(function() {
+			if (XenForo._csrfToken != '')
+			{
+				clearInterval(checkCsrf);
+				this.loadWidget();
+			}
+		}, this));
+	},
+	
+	loadWidget: function()
+	{
+		XenForo.ajax($("base").attr("href") + 'auctions/random', [{name: '_xfToken', value: XenForo._csrfToken}], $.context(this.renderWidget, this));
+	},
+	
+	renderWidget: function(data)
+	{
+		$("#auctionWidgetPlaceholder").replaceWith($(data.templateHtml));
+		$(window).resize(this.resizer);
+		this.resizer();
+	},
+	
+	resizer: function()
+	{
+		var liWidth = $("#auctionWidget > li:first-child").outerWidth(true);
+		
+		$("#auctionWidget > li").show();
+		
+		for (var i=10;i>0;i--)
+		{
+			var width = ($("#auctionWidget").innerWidth() / i);
+			if (width >= liWidth)
+			{
+				break;
+			}
+			
+			$("#auctionWidget > li:nth-child("+i+")").hide();
+		}
+	}
+};
+
 XenAuction.Bid = function() { this.__construct(); };
 XenAuction.Bid.prototype = {
 	__construct: function()

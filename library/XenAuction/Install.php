@@ -117,6 +117,52 @@ class XenAuction_Install
 	}
 	
 	/**
+	 * 1.0 Beta 4 (build 1) Update
+	 * 
+	 * @return	void							
+	 */
+	public static function update12()
+	{
+		$images = XenForo_Application::getDb()->fetchAll("
+			SELECT image
+			FROM xf_auction
+			WHERE image IS NOT NULL
+			GROUP BY image
+		");
+		
+		if ( ! $images)
+		{
+			return;
+		}
+		
+		foreach ($images AS $_image)
+		{
+			$fileName = sprintf('%s/xenauction/%s_%s.jpg',
+				XenForo_Helper_File::getExternalDataPath(),
+				$_image['image'],
+				'n'
+			);
+			
+			$fileNameOut = sprintf('%s/xenauction/%s_%s.jpg',
+				XenForo_Helper_File::getExternalDataPath(),
+				$_image['image'],
+				'm'
+			);
+			
+			$image = XenForo_Image_Abstract::createFromFile($fileName, IMAGETYPE_JPEG);
+			
+			if ( ! $image)
+			{
+				continue;
+			}
+			
+			$image->thumbnailFixedShorterSide(120);
+			$image->output(IMAGETYPE_JPEG, $fileNameOut, 85);
+		}
+		
+	}
+	
+	/**
 	 * Perform uninstall (wipe stored data)
 	 * 
 	 * @return	void							

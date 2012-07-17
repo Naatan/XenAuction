@@ -48,6 +48,16 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 			'visitor' 	=> XenForo_Visitor::getInstance()->toArray()
 		));
 	}
+	
+	public function actionRandom()
+	{
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions 		= $auctionModel->getRandomAuctions();
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_widget', array(
+		   	'auctions'	=> $auctions,
+		));
+	}
 
 	public function actionDetails() 
 	{

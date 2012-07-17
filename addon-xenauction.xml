@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 3 (build 1)" version_id="11" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 4 (build 1)" version_id="12" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -33,6 +33,12 @@ inputclass=Elastic</edit_format_params>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="auctions" display_order="200"/>
+    </option>
+    <option option_id="auctionWidgetEnabled" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="400"/>
     </option>
   </optiongroups>
   <permissions>
@@ -115,6 +121,10 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="option_auctionPaymentAddress_explain" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Enter the address that purchasers are supposed to send their payments to]]></phrase>
     <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
+    <phrase title="option_auctionWidgetEnabled" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Enable Random Auctions Widget]]></phrase>
+    <phrase title="option_auctionWidgetEnabled_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Once enabled, place the following code in your templates where you want the widget to appear:
+
+&lt;xen:include template="auction_widget" /&gt;]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
     <phrase title="outbid_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url] by [i]{top_bidder}[/i]. 
@@ -133,6 +143,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="place_bid" version_id="0" version_string=""><![CDATA[Place Bid]]></phrase>
     <phrase title="quantity" version_id="0" version_string=""><![CDATA[Quantity]]></phrase>
     <phrase title="quantity_not_available" version_id="0" version_string=""><![CDATA[You are trying to buy a higher quantity than there is available]]></phrase>
+    <phrase title="random_auctions" version_id="0" version_string=""><![CDATA[Random Auctions]]></phrase>
     <phrase title="requested_auction_not_found" version_id="0" version_string=""><![CDATA[Could not find the requested auction]]></phrase>
     <phrase title="requested_bid_not_found" version_id="0" version_string=""><![CDATA[Requested bid not found]]></phrase>
     <phrase title="sales" version_id="0" version_string=""><![CDATA[Sales]]></phrase>
@@ -149,6 +160,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="user_field_auctionEnableConfirm" global_cache="1" version_id="0" version_string=""><![CDATA[Send Auction Confirmation Message]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_choice_1" global_cache="1" version_id="0" version_string=""><![CDATA[Enabled]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_desc" version_id="0" version_string=""><![CDATA[Automatically sends a confirmation message to the winner of your auctions when you archive the relevant auction.]]></phrase>
+    <phrase title="view_more" version_id="0" version_string=""><![CDATA[View More]]></phrase>
     <phrase title="won_auction_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Congratulations! You have won [i]{title}[/i].
 
 [b]Your winning bid (cost):[/b] ${top_bid}
@@ -310,7 +322,7 @@ new XenAuction.Bid;
     <template title="auction_create" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require css="auction_tags.css" />
 <xen:require js="js/xenauction/auctions.js" />
-<xen:require js="js/chosen/chosen.jquery.js" />
+<xen:require js="js/xenauction/chosen/chosen.jquery.js" />
 
 <xen:title>{xen:phrase create_auction}</xen:title>
 
@@ -733,7 +745,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -743,6 +755,9 @@ dl.doubleButtons dt
 <xen:require css="auction_list.css" />
 <xen:require css="auction_history_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
+<xen:require js="js/xenauction/slimbox/js/slimbox2.js" />
+
+<link rel="stylesheet" href="js/xenauction/slimbox/css/slimbox2.css" />
 
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
@@ -1069,7 +1084,10 @@ $(document).ready(function() {
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 <xen:require css="auction_tags.css" />
-<xen:require js="js/chosen/chosen.jquery.js" />
+<xen:require js="js/xenauction/chosen/chosen.jquery.js" />
+<xen:require js="js/xenauction/slimbox/js/slimbox2.js" />
+
+<link rel="stylesheet" href="js/xenauction/slimbox/css/slimbox2.css" />
 
 <div class="pageNavLinkGroup">
 	<xen:pagenav link="auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
@@ -1144,7 +1162,7 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[table.auctions
+    <template title="auction_list.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[table.auctions
 {
 	width: 100%;
 }
@@ -1259,6 +1277,36 @@ new XenAuction.List;
 		{
 			border-top: 0px !important;
 		}
+
+.auctionImage
+{
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.auctionImage.size_t
+{
+	width: 32px;
+	height: 32px;
+}
+
+.auctionImage.size_s
+{
+	width: 48px;
+	height: 48px;
+}
+
+.auctionImage.size_m
+{
+	width: 120px;
+	height: 120px;
+}
+
+.auctionImage.size_n
+{
+	width: 150px;
+	height: 150px;
+}
 
 .auctionCreate
 {
@@ -1425,7 +1473,7 @@ XenAuction.Config.phrases.errorBidTooLow 		= '{xen:phrase bid_must_be_higher}';]
   width: 12px;
   height: 13px;
   font-size: 1px;
-background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) right top no-repeat;
+background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png) right top no-repeat;
 }
 .chzn-container-single .chzn-single abbr:hover {
   background-position: right -11px;
@@ -1454,7 +1502,7 @@ background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) righ
   width: 18px;
 }
 .chzn-container-single .chzn-single div b {
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 0 1px;
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 0 1px;
   display: block;
   width: 100%;
   height: 100%;
@@ -1467,13 +1515,13 @@ background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) righ
   z-index: 1010;
 }
 .chzn-container-single .chzn-search input {
-  background: #fff url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px;
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: #fff url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px;
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
   margin: 1px 0;
   padding: 4px 20px 4px 5px;
   outline: 0;
@@ -1565,7 +1613,7 @@ background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) righ
   width: 12px;
   height: 13px;
   font-size: 1px;
-  background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) right top no-repeat;
+  background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png) right top no-repeat;
 }
 .chzn-container-multi .chzn-choices .search-choice .search-choice-close:hover {
   background-position: right -11px;
@@ -1701,17 +1749,131 @@ background: url({xen:property imagePath}/../../js/chosen/chosen-sprite.png) righ
 .chzn-rtl .chzn-results .group-option { padding-left: 0; padding-right: 20px; }
 .chzn-rtl.chzn-container-active .chzn-single-with-drop div { border-right: none; }
 .chzn-rtl .chzn-search input {
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, #ffffff;
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);  
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
-  background: url('{xen:property imagePath}/../../js/chosen/chosen-sprite.png') no-repeat -38px -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, #ffffff;
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);  
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('{xen:property imagePath}/../../js/xenauction/chosen/chosen-sprite.png') no-repeat -38px -22px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
   padding: 4px 5px 4px 20px;
 }
 /* @end */
 ]]></template>
+    <template title="auction_widget" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:if is="{$auctions}">
+	
+	<div id="auctionWidgetWrap">
+
+		<a href="{xen:link auctions}" class="callToAction"><span>{xen:phrase view_more}</span></a>
+		
+		<h2>{xen:phrase random_auctions}</h2>
+		
+		<hr/>
+		
+		<div id="auctionWidgetOuter" class="primaryContent">
+			
+			<ul id="auctionWidget">
+				
+				<xen:foreach loop="$auctions" value="$auction">
+					<li class="secondaryContent">
+						<a href="{xen:link auctions/details, '', 'id={$auction.auction_id}'}" class="OverlayTrigger">
+							{xen:helper auction, image, $auction, 'm', 0}
+							<h3>
+								{$auction.title}
+							</h3>
+							<h5>
+								<xen:if is="{$auction.top_bid}">
+									<span class="muted">$</span>{xen:number $auction.top_bid}
+								<xen:else/>
+									<span class="muted">$</span>{xen:number $auction.buy_now}
+								</xen:if>
+							</h5>
+						</a>
+					</li>
+				</xen:foreach>
+				
+			</ul>
+		</div>
+		
+	</div>
+	
+<xen:else/>
+	
+	<xen:require js="js/xenauction/auctions.js" />
+	<xen:require css="auction_widget.css" />
+	
+	<div id="auctionWidgetPlaceholder"></div>
+	
+	<script type="text/javascript">
+	<!--
+	new XenAuction.Widget();
+	-->
+	</script>
+	
+</xen:if>]]></template>
+    <template title="auction_widget.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[#auctionWidgetWrap
+{
+	{xen:property sectionMain}
+}
+
+#auctionWidgetWrap hr
+{
+	border: 0;
+	height: 1px;
+	background-color: {xen:property primaryLighterStill};
+	margin: 5px 0;
+}
+
+#auctionWidgetWrap > h2
+{
+	font-size: 16pt;
+}
+
+#auctionWidgetWrap .callToAction
+{
+	float: right;
+}
+
+#auctionWidgetOuter
+{
+	display: table;
+	margin: 0 auto;
+}
+
+#auctionWidget
+{
+	max-height: 150px;
+	overflow: hidden;
+}
+
+#auctionWidget li
+{
+	display: block;
+	float: left;
+	margin: 10px;
+	padding: 0;
+	text-align: center;
+}
+
+#auctionWidget li .auctionImage
+{
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;	
+}
+
+#auctionWidget li h3
+{
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+.auctionImage.size_m
+{
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 120px;
+	height: 80px;
+}]]></template>
     <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
 	<xen:if is="{xen:helper auction, hasPermission, 'viewAuctions'}">
 		<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
