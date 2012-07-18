@@ -19,8 +19,14 @@ XenAuction.List.prototype = {
 
 		this.parseTimeleft();
 		
-		$(document).ready(function() {
-			$(".chzn-select").chosen();
+		$(document).ready(function()
+		{
+			
+			if ($(".chzn-select").length > 0)
+			{
+				$(".chzn-select").chosen();
+			}
+			
 		});
 
 	},
@@ -205,10 +211,40 @@ XenAuction.HistoryPanes = function() { this.__construct(); };
 XenAuction.HistoryPanes.prototype = {
 	__construct: function()
 	{
-
+		this.overrideTabConstructor();
 		this.$tabs = new XenForo.Tabs($('#HistoryTabs'));
 		this.removePagesFromUrls();
+	},
+	
+	overrideTabConstructor: function()
+	{
+		XenForo.Tabs.prototype.__construct = function($tabContainer)
+		{
+			this.$tabContainer = $tabContainer;
+			this.$panes = $($tabContainer.data('panes'));
 
+			var index = 0;
+			
+			$tabContainer.find('a[href]').each(function()
+			{
+				var $this = $(this), hrefParts = $this.attr('href').split('#');
+				if (location.hash.substr(1) == hrefParts[1])
+				{
+					$tabContainer.find(".active").removeClass("active");
+					$this.addClass("active");
+					$this.parent().addClass("active");
+					index = $this.parent().index();
+				}
+			});
+
+			$tabContainer.tabs(this.$panes, {
+				current: 'active',
+				history: false,
+				onBeforeClick: $.context(this, 'onBeforeClick'),
+				initialIndex: index
+			});
+			this.api = $tabContainer.data('tabs');
+		}
 	},
 	
 	removePagesFromUrls: function()

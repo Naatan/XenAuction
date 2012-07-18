@@ -761,7 +761,7 @@ dl.doubleButtons dt
 
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
-	<li><a href="{$requestPaths.requestUri}#_auctionsArchive" class="active">{xen:phrase archived_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_auctionsArchive">{xen:phrase archived_auctions}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_sales">{xen:phrase sales}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>

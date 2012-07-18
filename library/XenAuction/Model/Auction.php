@@ -140,8 +140,8 @@ class XenAuction_Model_Auction extends XenForo_Model
 		}
 		
 		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
-		
-		return $this->fetchAllKeyed($this->limitQueryResults('
+
+		return $this->_getDb()->fetchAll($this->limitQueryResults('
 				SELECT bid.*, auction.*
 					' . $selectFields . '
 				FROM xf_auction_bid bid
@@ -154,7 +154,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 					auction.status = \'expired\'
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
-		), 'auction_id');
+		));
 	}
 	
 	public function getSalesCount($userId, array $fetchOptions = array())
