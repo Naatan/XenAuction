@@ -65,9 +65,9 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			$dw->bulkSet($data);
 			$dw->save();
 			
-			$data = $dw->getMergedData();
+			$auction = $dw->getMergedData();
 			
-			$tagModel->addTagToAuction($tags, $data['auction_id']);
+			$tagModel->addTagToAuction($tags, $auction['auction_id']);
 		}
 		
 		return $this->responseRedirect(

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 3 (build 1)" version_id="11" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 3 (build 2)" version_id="12" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -733,7 +733,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -746,7 +746,7 @@ dl.doubleButtons dt
 
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
-	<li><a href="{$requestPaths.requestUri}#_auctionsArchive" class="active">{xen:phrase archived_auctions}</a></li>
+	<li><a href="{$requestPaths.requestUri}#_auctionsArchive">{xen:phrase archived_auctions}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_sales">{xen:phrase sales}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>
