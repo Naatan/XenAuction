@@ -37,6 +37,11 @@ class XenAuction_Install
 			self::update11();
 		}
 		
+		if ($existingAddOn AND $existingAddOn['version_id'] < 12)
+		{
+			self::update12();
+		}
+		
 	}
 	
 	/**
