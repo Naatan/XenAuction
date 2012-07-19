@@ -1278,14 +1278,12 @@ new XenAuction.List;
 {
 	font-weight: bold;
 	font-size: 140%;
+	float: left;
 }
 
 	.auctions .auctionItem td.descriptionWrap h3  a
 	{
 		display: block;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		-o-text-overflow: ellipsis;
 		max-height: 22px;
 	}
 
@@ -1298,7 +1296,9 @@ new XenAuction.List;
 {
 	float: right;
 	font-size: 90%;
+	font-weight: normal;
 	color: {xen:property dimmedTextColor};
+	margin-top: -10px;
 }
 
 .auctions .auctionItem td.timeLeft .amount, .auctions .auctionItem .availability .amount
@@ -1421,16 +1421,17 @@ new XenAuction.List;
 {
 	text-align: left;
 }]]></template>
-    <template title="auction_list_item" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:require css="auction_list.css" />
+    <template title="auction_list_item" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <tr class="primaryContent auctionItem status_{$auction.status}">
 	
 	<td class="icon">{xen:helper auction, image, $auction, 's', 1}</td>
 	<td class="descriptionWrap">
-		<span class="tags">{xen:helper auction, tags, {$tags.{$auction.auction_id}}}</span>
-		<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
-		<div class="description">{xen:string wordtrim, {xen:helper auction, stripHtml, {$auction.message}}, 80}</div>
+		<div class="tags">{xen:helper auction, tags, {$tags.{$auction.auction_id}}}</div>
+		<h3 class="title">
+			<a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a>
+		</h3>
 	</td>
 	<td class="timeLeft">
 		<xen:if is="{$auction.status} == 'active'">
