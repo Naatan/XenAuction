@@ -122,6 +122,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
 {complete_purchase}]]></phrase>
     <phrase title="bought_auction_x" version_id="0" version_string=""><![CDATA[Auction Bought: {title}]]></phrase>
     <phrase title="buyer" version_id="0" version_string=""><![CDATA[Buyer]]></phrase>
+    <phrase title="buying_auctions" version_id="0" version_string=""><![CDATA[Buying Auctions]]></phrase>
     <phrase title="buying_x" version_id="0" version_string=""><![CDATA[Buying {title}]]></phrase>
     <phrase title="buyout" version_id="0" version_string=""><![CDATA[Buyout]]></phrase>
     <phrase title="buy_now" version_id="0" version_string=""><![CDATA[Buy Now]]></phrase>
@@ -139,6 +140,7 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="complete_sale" version_id="0" version_string=""><![CDATA[Complete Sale]]></phrase>
     <phrase title="copies_to_create" version_id="0" version_string=""><![CDATA[Copies to create]]></phrase>
     <phrase title="create_auction" global_cache="1" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
+    <phrase title="creating_auctions" version_id="0" version_string=""><![CDATA[Creating Auctions]]></phrase>
     <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
@@ -211,6 +213,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="user_field_auctionEnableConfirm" global_cache="1" version_id="0" version_string=""><![CDATA[Send Auction Confirmation Message]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_choice_1" global_cache="1" version_id="0" version_string=""><![CDATA[Enabled]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_desc" version_id="0" version_string=""><![CDATA[Automatically sends a confirmation message to the winner of your auctions when you archive the relevant auction.]]></phrase>
+    <phrase title="viewing_auctions" version_id="0" version_string=""><![CDATA[Viewing Auctions]]></phrase>
     <phrase title="view_more" version_id="0" version_string=""><![CDATA[View More]]></phrase>
     <phrase title="won_auction_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Congratulations! You have won [i]{title}[/i].
 

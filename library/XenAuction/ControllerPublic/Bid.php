@@ -204,6 +204,15 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 	}
 	
 	/**
+	 * Session activity details.
+	 * @see XenForo_Controller::getSessionActivityDetailsForList()
+	 */
+	public static function getSessionActivityDetailsForList(array $activities)
+	{
+		return new XenForo_Phrase('buying_auctions');
+	}
+	
+	/**
 	 * Enforce registered-users only for all actions in this controller
 	 *
 	 * @see library/XenForo/XenForo_Controller#_preDispatch($action)
