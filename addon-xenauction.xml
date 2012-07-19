@@ -6,8 +6,10 @@
   <admin_templates/>
   <code_events/>
   <code_event_listeners>
+    <listener event_id="front_controller_pre_dispatch" execute_order="10" callback_class="XenAuction_Listen" callback_method="front_controller_pre_dispatch" active="1" description=""/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="XenAuction_Listen" callback_method="init_dependecies" active="1" description=""/>
     <listener event_id="navigation_tabs" execute_order="10" callback_class="XenAuction_Listen" callback_method="navigation_tabs" active="1" description=""/>
+    <listener event_id="template_create" execute_order="10" callback_class="XenAuction_Listen" callback_method="template_create" active="1" description=""/>
     <listener event_id="template_hook" execute_order="10" callback_class="XenAuction_Listen" callback_method="template_hook" active="1" description=""/>
   </code_event_listeners>
   <cron>
@@ -34,6 +36,13 @@ inputclass=Elastic</edit_format_params>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="auctions" display_order="200"/>
+    </option>
+    <option option_id="auctionTagMode" edit_format="radio" data_type="string" can_backup="1">
+      <default_value>list</default_value>
+      <edit_format_params>list=List Mode (shows vertical list of links)
+dropdown=Dropdown Mode (uses &lt;a href="http://harvesthq.github.com/chosen/"&gt;chosen.js&lt;/a&gt;)</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="210"/>
     </option>
     <option option_id="auctionWidgetCriteria" edit_format="textbox" data_type="string" can_backup="1">
       <default_value></default_value>
@@ -155,6 +164,8 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="option_auctionPaymentAddress_explain" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[Enter the address that purchasers are supposed to send their payments to]]></phrase>
     <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
+    <phrase title="option_auctionTagMode" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Tag Display Mode]]></phrase>
+    <phrase title="option_auctionTagMode_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[How you want tags to be shown, if you expect to have a large amount of tags it's best to select "Dropdown Mode"]]></phrase>
     <phrase title="option_auctionWidgetCriteria" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Widget Display Criteria]]></phrase>
     <phrase title="option_auctionWidgetCriteria_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Enter the prefixes that should trigger or prevent the widget (see Display Mode option above). Separate by new line.]]></phrase>
     <phrase title="option_auctionWidgetEnabled" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Enable Random Auctions Widget]]></phrase>
@@ -1119,12 +1130,10 @@ $(document).ready(function() {
 	<div class="emptyResults">{xen:phrase you_have_no_sales}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
+    <template title="auction_list" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
-<xen:require css="auction_tags.css" />
-<xen:require js="js/xenauction/chosen/chosen.jquery.js" />
 <xen:require js="js/xenauction/slimbox/js/slimbox2.js" />
 
 <link rel="stylesheet" href="js/xenauction/slimbox/css/slimbox2.css" />
@@ -1175,21 +1184,35 @@ $(document).ready(function() {
 		</div>
 	</xen:if>
 	
-	<xen:if is="{$allTags}">	
+	<xen:if is="{$allTags}">
 		<div class="section filterTags">
-			<form action="{xen:link auctions}" method="post" class="secondaryContent filterTag">
-				<h3>{xen:phrase filter_by_tag}</h3>
-
-				<select name="tags[]" class="chzn-select" multiple="multiple" style="width: 100%;" data-placeholder="{xen:phrase choose_tags}">
-					<xen:foreach loop="$allTags" value="$tag">
-						<option value="{$tag.tag_id}" {xen:if {$selTags.{$tag.tag_id}}, "selected='selected'"}>{$tag.name}</option>
-					</xen:foreach>
-				</select>
-				
-				<input type="submit" value="{xen:phrase filter}" class="button"/>
-
-				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
-			</form>
+			<xen:if is="{$tagMode}=='list'">
+				<div class="tagList secondaryContent">
+					<h3>{xen:phrase filter_by_tag}</h3>
+					
+					<ul>
+						<xen:foreach loop="$allTags" value="$tag">
+							<li><a href="{xen:link auctions, '', 'tag={$tag.tag_id}'}">{$tag.name}</a></li>
+						</xen:foreach>
+					</ul>
+				</div>
+			<xen:else/>
+				<xen:require css="auction_tags.css" />
+				<xen:require js="js/xenauction/chosen/chosen.jquery.js" />
+				<form action="{xen:link auctions}" method="post" class="secondaryContent filterTag">
+					<h3>{xen:phrase filter_by_tag}</h3>
+	
+					<select name="tags[]" class="chzn-select" multiple="multiple" style="width: 100%;" data-placeholder="{xen:phrase choose_tags}">
+						<xen:foreach loop="$allTags" value="$tag">
+							<option value="{$tag.tag_id}" {xen:if {$selTags.{$tag.tag_id}}, "selected='selected'"}>{$tag.name}</option>
+						</xen:foreach>
+					</select>
+					
+					<input type="submit" value="{xen:phrase filter}" class="button"/>
+	
+					<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+				</form>
+			</xen:if>
 		</div>
 	</xen:if>
 
@@ -1374,6 +1397,24 @@ new XenAuction.List;
 .sidebar .filterTags
 {
 	text-align: center;
+}
+
+.sidebar .tagList 
+{
+	text-align: left;
+}
+
+.sidebar .filterTags ul
+{
+	text-align: left;
+	margin: 20px 0 10px;
+}
+
+.sidebar .filterTags li
+{
+	font-size: 110%;
+	margin-left: 30px;
+	list-style: square;
 }
 
 .sidebar .chzn-container

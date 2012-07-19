@@ -88,7 +88,9 @@ class XenAuction_Listen
 		$criterias = explode("\n", $options->auctionWidgetCriteria);
 		foreach ($criterias AS $criteria)
 		{
-			list($section, $action) = explode('|', $criteria);
+			$criteria 	= explode('|', $criteria);
+			$section 	= $criteria[0];
+			$action  	= isset($criteria[1]) ? $criteria[1] : null;
 			
 			if ($section == self::$_prefixSection AND (empty($action) OR $action == self::$_prefixAction))
 			{

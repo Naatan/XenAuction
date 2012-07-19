@@ -11,6 +11,12 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		
 		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
 		$tags 			= $this->_input->filterSingle('tags', XenForo_Input::ARRAY_SIMPLE);
+		$tag 			= $this->_input->filterSingle('tag', XenForo_Input::STRING);
+		
+		if ( ! empty($tag))
+		{
+			$tags = array($tag);
+		}
 		
 		$fetchConditions = array(
 			'status' 	=> XenAuction_Model_Auction::STATUS_ACTIVE,
@@ -45,7 +51,8 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 			'page'		=> $page,
 			'perPage'	=> $perPage,
 			'total'		=> $total,
-			'visitor' 	=> XenForo_Visitor::getInstance()->toArray()
+			'visitor' 	=> XenForo_Visitor::getInstance()->toArray(),
+			'tagMode'	=> $options->auctionTagMode
 		));
 	}
 
