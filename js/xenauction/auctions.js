@@ -83,13 +83,14 @@ XenAuction.Widget = function() { this.__construct(); };
 XenAuction.Widget.prototype = {
 	__construct: function()
 	{
-		var checkCsrf = setInterval($.context(function() {
-			if (XenForo._csrfToken != '')
-			{
-				clearInterval(checkCsrf);
-				this.loadWidget();
-			}
-		}, this));
+		this.renderWidget();
+		//var checkCsrf = setInterval($.context(function() {
+		//	if (XenForo._csrfToken != '')
+		//	{
+		//		clearInterval(checkCsrf);
+		//		this.loadWidget();
+		//	}
+		//}, this));
 	},
 	
 	loadWidget: function()
@@ -99,7 +100,7 @@ XenAuction.Widget.prototype = {
 	
 	renderWidget: function(data)
 	{
-		$("#auctionWidgetPlaceholder").replaceWith($(data.templateHtml));
+		//$("#auctionWidgetPlaceholder").replaceWith($(data.templateHtml));
 		$(window).resize(this.resizer);
 		this.resizer();
 	},
