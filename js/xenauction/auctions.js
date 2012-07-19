@@ -214,7 +214,18 @@ XenAuction.HistoryPanes.prototype = {
 	{
 		this.overrideTabConstructor();
 		this.$tabs = new XenForo.Tabs($('#HistoryTabs'));
-		this.removePagesFromUrls();
+		this.removeParamsFromUrls();
+		
+		$(".historySearch form").submit( this.searchSubmit );
+	},
+	
+	searchSubmit: function()
+	{
+		var href = window.location.pathname + window.location.search;
+		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)page\=\d*/);
+		href = href.replace(regex, '');
+		
+		$(".historySearch form").attr("action", href + '#' + $("#HistoryPanes li:visible").attr("id"));
 	},
 	
 	overrideTabConstructor: function()
@@ -248,9 +259,9 @@ XenAuction.HistoryPanes.prototype = {
 		}
 	},
 	
-	removePagesFromUrls: function()
+	removeParamsFromUrls: function()
 	{
-		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)page\=\d*/);
+		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)(?:page|search)\=[A-Za-z0-9 ]*/);
 		
 		this.$tabs.$panes.each(function()
 		{
@@ -263,7 +274,7 @@ XenAuction.HistoryPanes.prototype = {
 		$("#HistoryTabs > li > a").each(function()
 		{
 			var url = $(this).attr("href");
-			url = url.replace(/(?:\?|\&|\%3F|\&amp\;)page\=\d*/, '');
+			url = url.replace(regex, '');
 			$(this).attr("href", url);
 		});
 	}

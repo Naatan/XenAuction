@@ -124,9 +124,18 @@ class XenAuction_Model_Auction extends XenForo_Model
 		');
 	}
 	
-	public function getSales($userId, array $fetchOptions = array())
+	public function getSales(array $conditions = array(), array $fetchOptions = array())
 	{
+		if ( ! isset($conditions['user_id']))
+		{
+			return false;
+		}
+		
+		$userId = $conditions['user_id'];
+		unset($conditions['user_id']);
+		
 		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 
 		$selectFields 	= '';
 		$joinTables 	= '';
@@ -139,7 +148,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 					(user.user_id = bid.bid_user_id)';
 		}
 		
-		$orderClause 	= $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
+		$orderClause = $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
 
 		return $this->_getDb()->fetchAll($this->limitQueryResults('
 				SELECT bid.*, auction.*
@@ -150,15 +159,29 @@ class XenAuction_Model_Auction extends XenForo_Model
 					auction.user_id = ' . $this->_getDb()->quote($userId) . '
 				' . $joinTables . '
 				WHERE
-					bid.is_buyout = 1 OR
-					auction.status = \'expired\'
+					' . $whereClause . ' AND
+					(
+						bid.is_buyout = 1 OR
+						auction.status = \'expired\'
+					)
+				
 				' . $orderClause . '
 			', $limitOptions['limit'], $limitOptions['offset']
 		));
 	}
 	
-	public function getSalesCount($userId, array $fetchOptions = array())
+	public function getSalesCount(array $conditions = array(), array $fetchOptions = array())
 	{
+		if ( ! isset($conditions['user_id']))
+		{
+			return false;
+		}
+		
+		$userId = $conditions['user_id'];
+		unset($conditions['user_id']);
+		
+		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
+		
 		$joinTables 	= '';
 		if (in_array(self::FETCH_USER, $fetchOptions['join']))
 		{
@@ -175,8 +198,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 					auction.user_id = ' . $this->_getDb()->quote($userId) . '
 				' . $joinTables . '
 				WHERE
-					bid.is_buyout = 1 OR
-					auction.status = \'expired\'
+					' . $whereClause . ' AND
+					(
+						bid.is_buyout = 1 OR
+						auction.status = \'expired\'
+					)
 			'
 		);
 	}
@@ -306,14 +332,24 @@ class XenAuction_Model_Auction extends XenForo_Model
 		{
 			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
 		}
+		
+		if ( ! empty($conditions['auction_id_search']))
+		{
+			$searchConditions[] = 'auction.auction_id =' . $db->quote( $conditions['auction_id_search'] );
+		}
+		
+		if ( ! empty($conditions['bid_id_search']))
+		{
+			$searchConditions[] = 'bid.bid_id =' . $db->quote( $conditions['bid_id_search'] );
+		}
+		
+		if ($searchConditions)
+		{
+			$sqlConditions[] = '(' . implode(') OR (', $searchConditions) . ')';
+		}
 
 		if ($sqlConditions)
 		{
-			if ($searchConditions)
-			{
-				$sqlConditions[] = '(' . implode(') OR (', $searchConditions) . ')';
-			}
-			
 			return '(' . implode(') AND (', $sqlConditions) . ')';
 		}
 		else

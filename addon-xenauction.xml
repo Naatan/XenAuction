@@ -154,6 +154,7 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="history" global_cache="1" version_id="0" version_string=""><![CDATA[History]]></phrase>
     <phrase title="hours_left" version_id="0" version_string=""><![CDATA[Hours Left]]></phrase>
     <phrase title="invalid_buy_action" version_id="0" version_string=""><![CDATA[Action not allowed on this type of auction]]></phrase>
+    <phrase title="keyword_or_id" version_id="0" version_string=""><![CDATA[Keyword or ID]]></phrase>
     <phrase title="keyword_tag" version_id="0" version_string=""><![CDATA[Keyword / Tag]]></phrase>
     <phrase title="minutes_left" version_id="0" version_string=""><![CDATA[Minutes Left]]></phrase>
     <phrase title="must_use_bid_or_buyout" version_id="0" version_string=""><![CDATA[You have to select either a bid or a buyout value]]></phrase>
@@ -813,6 +814,13 @@ dl.doubleButtons dt
 
 <link rel="stylesheet" href="js/xenauction/slimbox/css/slimbox2.css" />
 
+<div class="historySearch">
+	<form method="POST">
+		<input type="search" name="search" placeholder="{xen:phrase keyword_or_id}" value="{$search}" class="textCtrl"/>
+		<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	</form>		
+</div>
+
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
 	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
 		<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
@@ -825,12 +833,12 @@ dl.doubleButtons dt
 
 <ul id="HistoryPanes">
 	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
-		<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
-		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}"></li>
-		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}"></li>
+		<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}&search={$search}"></li>
+		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}&search={$search}"></li>
+		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}&search={$search}"></li>
 	</xen:if>
-	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
-	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
+	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}&search={$search}"></li>
+	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}&search={$search}'}"></li>
 </ul>
 
 <script type="text/javascript"><!--
@@ -838,7 +846,7 @@ $(document).ready(function() {
 	new XenAuction.HistoryPanes;
 });
 //--></script>]]></template>
-    <template title="auction_history_list.css" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[.auctionHistory
+    <template title="auction_history_list.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -998,6 +1006,12 @@ $(document).ready(function() {
 #HistoryPanes .emptyResults
 {
 	margin: 20px;
+}
+
+.historySearch
+{
+	float: right;	
+	margin-bottom: -20px;
 }]]></template>
     <template title="auction_history_list_item" version_id="0" version_string=""><![CDATA[<tr class="primaryContent auctionItem status_{$auction.status}">
 	<td class="icon">
