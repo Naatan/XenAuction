@@ -796,7 +796,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -811,17 +811,21 @@ dl.doubleButtons dt
 <link rel="stylesheet" href="js/xenauction/slimbox/css/slimbox2.css" />
 
 <ul id="HistoryTabs" class="tabs mainTabs" data-panes="#HistoryPanes > li" data-history="on">
-	<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
-	<li><a href="{$requestPaths.requestUri}#_auctionsArchive">{xen:phrase archived_auctions}</a></li>
-	<li><a href="{$requestPaths.requestUri}#_sales">{xen:phrase sales}</a></li>
+	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
+		<li class="active"><a href="{$requestPaths.requestUri}#_auctions" class="active">{xen:phrase your_auctions}</a></li>
+		<li><a href="{$requestPaths.requestUri}#_auctionsArchive">{xen:phrase archived_auctions}</a></li>
+		<li><a href="{$requestPaths.requestUri}#_sales">{xen:phrase sales}</a></li>
+	</xen:if>
 	<li><a href="{$requestPaths.requestUri}#_bids">{xen:phrase your_bids}</a></li>
 	<li><a href="{$requestPaths.requestUri}#_buyouts">{xen:phrase your_buyouts}</a></li>
 </ul>
 
 <ul id="HistoryPanes">
-	<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
-	<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}"></li>
-	<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}"></li>
+	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
+		<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}"></li>
+		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}"></li>
+		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}"></li>
+	</xen:if>
 	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}"></li>
 	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}"></li>
 </ul>
