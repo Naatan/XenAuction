@@ -35,7 +35,8 @@ class XenAuction_CronEntry_Auction
 			$bid 			= $auctionModel->getTopBid($auction['auction_id']);
 			$args 			= array_merge($auction, $bid);
 			
-			$paymentAddress = array('payment_address' => XenForo_Application::get('options')->auctionPaymentAddress);
+			$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
+			$paymentAddress	= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
 			
 			$title 		= new XenForo_Phrase('won_auction_x', $auction);
 			$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));

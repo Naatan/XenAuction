@@ -182,7 +182,10 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		);
 		$args = array_merge($auction, $args);
 		
-		$paymentAddress = array('payment_address' => XenForo_Application::get('options')->auctionPaymentAddress);
+		$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
+		$address 		= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
+		
+		$paymentAddress = array('payment_address' => $address);
 		
 		$title 		= new XenForo_Phrase('bought_auction_x', $auction);
 		$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));

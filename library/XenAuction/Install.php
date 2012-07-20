@@ -42,6 +42,11 @@ class XenAuction_Install
 			self::update12();
 		}
 		
+		if ($existingAddOn AND $existingAddOn['version_id'] < 13)
+		{
+			self::update12();
+		}
+		
 	}
 	
 	/**
@@ -168,6 +173,20 @@ class XenAuction_Install
 	}
 	
 	/**
+	 * 1.0 Beta 5 (build 1) Update
+	 * 
+	 * @return	void							
+	 */
+	public static function update13()
+	{
+		XenForo_Application::getDb()->query("
+			INSERT INTO `xf_user_field` (`field_id`, `display_group`, `display_order`, `field_type`, `field_choices`, `match_type`, `match_regex`, `match_callback_class`, `match_callback_method`, `max_length`, `required`, `show_registration`, `user_editable`, `viewable_profile`, `viewable_message`, `display_template`)
+			VALUES
+				('auctionPaymentAddress', 'preferences', 5002, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 1, 0, '');
+		");
+	}
+	
+	/**
 	 * Perform uninstall (wipe stored data)
 	 * 
 	 * @return	void							
@@ -224,7 +243,9 @@ class XenAuction_Install
 			INSERT INTO `xf_user_field` (`field_id`, `display_group`, `display_order`, `field_type`, `field_choices`, `match_type`, `match_regex`, `match_callback_class`, `match_callback_method`, `max_length`, `required`, `show_registration`, `user_editable`, `viewable_profile`, `viewable_message`, `display_template`)
 			VALUES
 				('auctionConfirmMessage', 'preferences', 5001, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, ''),
-				('auctionEnableConfirm', 'preferences', 5000, 'checkbox', X'613A313A7B693A313B733A373A22456E61626C6564223B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, '');
+				('auctionEnableConfirm', 'preferences', 5000, 'checkbox', X'613A313A7B693A313B733A373A22456E61626C6564223B7D', 'none', '', '', '', 0, 0, 0, 'yes', 0, 0, ''),
+				('auctionPaymentAddress', 'preferences', 5002, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 1, 0, '');
+
 		");
 		
 		self::createStructureTags();
@@ -274,7 +295,7 @@ class XenAuction_Install
 		");
 		
 		XenForo_Application::getDb()->query("
-			DELETE FROM `xf_user_field` WHERE `field_id` = 'auctionConfirmMessage' OR `field_id` = 'auctionEnableConfirm' LIMIT 2
+			DELETE FROM `xf_user_field` WHERE `field_id` IN ('auctionConfirmMessage', 'auctionEnableConfirm', 'auctionPaymentAddress') LIMIT 2
 		");
 	}
 	
