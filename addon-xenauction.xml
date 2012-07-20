@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 5 (build 1)" version_id="13" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 5 (build 2)" version_id="13" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -541,7 +541,7 @@ new XenAuction.Create;
 		width: {xen:calc "{xen:property overlayFormWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px;
 	}
 */]]></template>
-    <template title="auction_details" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_details" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
 
@@ -550,29 +550,41 @@ new XenAuction.Create;
     <xen:breadcrumb href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</xen:breadcrumb>
 </xen:navigation>
 
-<form class="xenForm formOverlay auctionBid">
+<form class="xenForm formOverlay auctionForm auctionBid">
 
 	<xen:include template="auction_details_content" />
 
-	<dl class="ctrlUnit submitUnit {xen:if "{$auction.status}=='active' && {$auction.min_bid} && {$auction.buy_now}", 'doubleButtons'}">
-			<dt></dt>
+
+	<xen:if is="{$auction.status}=='active' && {$visitor.user_id}!={$auction.user_id}">
+		<dl class="ctrlUnit submitUnit">
 			<dd>
-				<xen:if is="{$auction.status}=='active'">
-					<xen:if is="{$auction.min_bid}">
-						<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
-					</xen:if>
-					<xen:if is="{$auction.buy_now}">
-						<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
-					</xen:if>
+				<xen:if is="{$auction.min_bid}">
+					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
 				</xen:if>
-				<xen:if is="{$auction.status}!='active' && {$auction.archived}!=1 && {$visitor.user_id}=={$auction.user_id}">
-					<a class="OverlayTrigger button primary" href="{xen:link 'auction-process/archive', '', 'id={$auction.auction_id}'}">{xen:phrase archive_auction}</a>
+				<xen:if is="{$auction.buy_now}">
+					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
 				</xen:if>
 			</dd>
 		</dl>
+	</xen:if>
+	<xen:if is="{$auction.status}!='active' && {$auction.archived}!=1 && {$visitor.user_id}=={$auction.user_id}">
+		<dl class="ctrlUnit submitUnit">
+			<dd>
+				<a class="OverlayTrigger button primary" href="{xen:link 'auction-process/archive', '', 'id={$auction.auction_id}'}">{xen:phrase archive_auction}</a>
+			</dd>
+		</dl>
+	</xen:if>
+	<xen:if is="{$bid} && {$visitor.user_id}=={$auction.user_id}">
+		<dl class="ctrlUnit submitUnit">
+			<dd>
+				<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_auction}</a>
+			</dd>
+		</dl>
+	</xen:if>		
+
 	
 </form>]]></template>
-    <template title="auction_details.css" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[.auctionDetails .message
+    <template title="auction_details.css" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[.auctionDetails .message
 {
 	min-height: 170px;
 }
@@ -591,6 +603,12 @@ new XenAuction.Create;
 dl.doubleButtons dt
 {
 	width: {xen:calc '{xen:property overlayCtrlUnitLabelWidth} - {xen:property ctrlUnitLabel.padding-left} - {xen:property ctrlUnitLabel.padding-right} - 50'}px !important;
+}
+
+.xenForm.auctionForm .ctrlUnit.submitUnit dd
+{
+	width: 100%;
+	text-align: center;
 }]]></template>
     <template title="auction_details_content" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_details.css" />
 
@@ -633,7 +651,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_auctions}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_bids" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[<div>
+    <template title="auction_history_bids" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -665,9 +683,9 @@ dl.doubleButtons dt
 							</xen:if>		
 						</xen:if>
 					</td>
-					<td class="highestBidder {xen:if '{$auction.username} == {$visitor.username}', 'me', 'notme'}">
+					<td class="highestBidder {xen:if '{$users.{$auction.top_bidder}.username} == {$visitor.username}', 'me', 'notme'}">
 						<xen:if is="{$auction.top_bidder}">
-							{$auction.username}
+							{$users.{$auction.top_bidder}.username}
 						<xen:elseif is=" ! {$auction.min_bid}"/>
 							<div class="availability">
 								<div class="amount">{$auction.availability}</div>
@@ -841,7 +859,7 @@ $(document).ready(function() {
 	new XenAuction.HistoryPanes;
 });
 //--></script>]]></template>
-    <template title="auction_history_list.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[.auctionHistory
+    <template title="auction_history_list.css" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -863,9 +881,14 @@ $(document).ready(function() {
 		width: 150px;
 	}
 
-	.bidbuyHistory .auctionItem td.highestBidder
+	.bidbuyHistory .auctionItem td.status
 	{
 		width: 100px;
+	}
+
+	.bidbuyHistory .auctionItem td.highestBidder
+	{
+		width: 150px;
 	}
 	
 	.bidbuyHistory .auctionItem td.purchaseAmount
@@ -929,6 +952,11 @@ $(document).ready(function() {
 .bidbuyHistory .auctionItem td.timeLeft, .bidbuyHistory .auctionItem td.highestBidder, .bidbuyHistory .auctionItem .availability 
 {
 	text-align: center;
+}
+
+.bidbuyHistory .auctionItem td.status
+{
+	text-align: right;
 }
 
 .bidbuyHistory .auctionItem td.highestBidder 
@@ -1073,7 +1101,7 @@ $(document).ready(function() {
 		</ul>
 	</td>
 </tr>]]></template>
-    <template title="auction_history_sales" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<div>
+    <template title="auction_history_sales" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -1090,7 +1118,7 @@ $(document).ready(function() {
 						{xen:helper auction, image, $auction, 't', 1}
 					</td>
 					<td class="title">
-						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
+						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}&bid_id={$auction.bid_id}">{$auction.title}</a></h3>
 					</td>
 					<td class="status">
 						<div class="muted">
@@ -1104,7 +1132,7 @@ $(document).ready(function() {
 						</div>
 					</td>
 					<td class="highestBidder">
-						<a href="{xen:link 'members'}{$auction.username}.{$auction.user_id}/">{$auction.username}</a>
+						<a href="{xen:link 'members'}{$users.{$auction.bid_user_id}.username}.{$users.{$auction.bid_user_id}.user_id}/">{$users.{$auction.bid_user_id}.username}</a>
 					</td>
 					<td class="purchaseAmount">
 						<dl>
@@ -1437,7 +1465,7 @@ new XenAuction.List;
 {
 	text-align: left;
 }]]></template>
-    <template title="auction_list_item" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:require css="auction_list.css" />
+    <template title="auction_list_item" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <tr class="primaryContent auctionItem status_{$auction.status}">
@@ -1464,36 +1492,38 @@ new XenAuction.List;
 	</td>
 	<td class="highestBidder">
 		<xen:if is="{$auction.top_bidder}">
-			<xen:avatar user="$auction" size="s" />
-			<xen:elseif is=" ! {$auction.min_bid}"/>
-				<div class="availability">
-					<div class="amount">{$auction.availability}</div>
-					<div class="description">{xen:phrase available}</div>
-				</div>
-				<xen:else/>
-				{xen:phrase no_bids}
-			</xen:if>
+			{xen:helper auction, avatar, {$users.{$auction.top_bidder}}, s}
+		<xen:elseif is=" ! {$auction.min_bid}"/>
+			<div class="availability">
+				<div class="amount">{$auction.availability}</div>
+				<div class="description">{xen:phrase available}</div>
+			</div>
+			<xen:else/>
+			{xen:phrase no_bids}
+		</xen:if>
 	</td>
-	<td class="bid">
-		<ul>
-			<xen:if is="{$auction.min_bid}">
-				<xen:if is="{$auction.top_bid}">
-					<li>
-						<div><span class="muted">$</span>{xen:number $auction.top_bid}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
-					</li>
-					<xen:else/>
+	<xen:if is="{$auction.user_id}!={$visitor.user_id}">
+		<td class="bid">
+			<ul>
+				<xen:if is="{$auction.min_bid}">
+					<xen:if is="{$auction.top_bid}">
 						<li>
-							<div><span class="muted">$</span>{xen:number $auction.min_bid}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+							<div><span class="muted">$</span>{xen:number $auction.top_bid}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+						</li>
+						<xen:else/>
+							<li>
+								<div><span class="muted">$</span>{xen:number $auction.min_bid}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
+							</li>
+						</xen:if>
+					</xen:if>
+					<xen:if is="{$auction.buy_now}">
+						<li>
+							<div><span class="muted">$</span>{xen:number $auction.buy_now}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
 						</li>
 					</xen:if>
-				</xen:if>
-				<xen:if is="{$auction.buy_now}">
-					<li>
-						<div><span class="muted">$</span>{xen:number $auction.buy_now}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
-					</li>
-				</xen:if>
-			</ul>
-	</td>
+				</ul>
+		</td>
+	</xen:if>
 	
 </tr>]]></template>
     <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';

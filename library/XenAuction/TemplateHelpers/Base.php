@@ -100,4 +100,10 @@ class XenAuction_TemplateHelpers_Base
 		return XenForo_Link::buildPublicLink($link, '', $options);
 	}
 	
+	public static function helperAvatar($user, $size = 'n')
+	{
+		// workaround for template compiler bug
+		return XenForo_Template_Helper_Core::helperAvatarHtml($user, false, array('size' => $size));
+	}
+	
 }

@@ -29,24 +29,30 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		}
 		
 		$fetchOptions 	= array(
-			'join'		=> array(XenAuction_Model_Auction::FETCH_USER),
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
 		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		
 		$auctions 		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
 		$total 		 	= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
+		
+		$userIds 		= array_map( create_function('$a', 'if (!empty($a["top_bidder"])) return $a["top_bidder"];'), $auctions );
 		$auctionIds 	= array_map( create_function('$a', 'return $a["auction_id"];'), $auctions );
 		$tags 			= array_flip($tags);
 		$tags 			= array_map( create_function('$a', 'return true;'), $tags);
+		
+		$users 			= $userModel->getUsersByIds($userIds);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
 			'allTags'	=> $tagModel->getTags(),
 			'tags'		=> $tagModel->getTagsByAuctions($auctionIds),
 			'selTags'	=> $tags,
 		   	'auctions'	=> $auctions,
+			'users'		=> $users,
 			'search'	=> $search,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
@@ -58,16 +64,19 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 
 	public function actionDetails() 
 	{
-		$id = $this->_input->filterSingle('id', XenForo_Input::UINT);
+		$id 	= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		$bidId 	= $this->_input->filterSingle('bid_id', XenForo_Input::UINT);
 
 		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
 		$auction     	= $auctionModel->getAuctionById($id);
+		$bid 			= $bidId ? $auctionModel->getBidById($bidId) : false;
 
 		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
 		$tags 			= $tagModel->getTagsByAuction($auction['auction_id']);
 
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_details', array(
 		   	'auction'	=> $auction,
+			'bid'		=> $bid,
 			'tags'		=> $tags
 		));	
 	}

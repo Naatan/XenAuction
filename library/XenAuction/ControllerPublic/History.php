@@ -28,21 +28,27 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		);
 		
 		$fetchOptions 	= array(
-			'join'		=> XenAuction_Model_Auction::FETCH_USER,
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		
 		$auctions 		= $auctionModel->getAuctions($fetchConditions, $fetchOptions);
 		$total 			= $auctionModel->getAuctionCount($fetchConditions, $fetchOptions);
 		
+		$userIds 		= array_map( create_function('$a', 'if (!empty($a["top_bidder"])) return $a["top_bidder"];'), $auctions );
+		$users 			= $userModel->getUsersByIds($userIds);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_auctions', array(
 		   	'auctions'	=> $auctions,
+			'users'		=> $users,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
 			'total'		=> $total,
-			'search'	=> $search
+			'search'	=> $search,
+			'visitor' 	=> $visitor->toArray(),
 		));	
 	}
 	
@@ -55,25 +61,30 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
 		
 		$fetchConditions = array(
-			'bid_user_id' 	=> $visitor->user_id,
-			'is_buyout' 	=> 0,
-			'title'			=> $search,
+			'bid_user_id' 		=> $visitor->user_id,
+			'is_buyout' 		=> 0,
+			'title'				=> $search,
 			'auction_id_search'	=> $search,
 			'bid_id_search'		=> $search
 		);
 		
 		$fetchOptions 	= array(
-			'join'		=> XenAuction_Model_Auction::FETCH_USER,
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		
 		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
 		$total 		 	= $auctionModel->getUserBidCount($fetchConditions, $fetchOptions);
 		
+		$userIds 		= array_map( create_function('$a', 'if (!empty($a["top_bidder"])) return $a["top_bidder"];'), $auctions );
+		$users 			= $userModel->getUsersByIds($userIds);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_bids', array(
 			'auctions'	=> $auctions,
+			'users'		=> $users,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
 			'total'		=> $total,
@@ -90,15 +101,14 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		$search 		= $this->_input->filterSingle('search', XenForo_Input::STRING);
 		
 		$fetchConditions = array(
-			'bid_user_id' 	=> $visitor->user_id,
-			'is_buyout' 	=> 1,
-			'title'			=> $search,
+			'bid_user_id' 		=> $visitor->user_id,
+			'is_buyout' 		=> 1,
+			'title'				=> $search,
 			'auction_id_search'	=> $search,
 			'bid_id_search'		=> $search
 		);
 		
 		$fetchOptions 	= array(
-			'join'		=> XenAuction_Model_Auction::FETCH_USER,
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
@@ -131,17 +141,22 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		);
 		
 		$fetchOptions 	= array(
-			'join'		=> array(XenAuction_Model_Auction::FETCH_USER),
 			'page'		=> $page,
 			'perPage'	=> $perPage
 		);
 		
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		
 		$auctions  		= $auctionModel->getSales($fetchConditions, $fetchOptions);
 		$total 		 	= $auctionModel->getSalesCount($fetchConditions, $fetchOptions);
 		
+		$userIds 		= array_map( create_function('$a', 'if (!empty($a["bid_user_id"])) return $a["bid_user_id"];'), $auctions );
+		$users 			= $userModel->getUsersByIds($userIds);
+		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_sales', array(
 			'auctions'	=> $auctions,
+			'users'		=> $users,
 			'page'		=> $page,
 			'perPage'	=> $perPage,
 			'total'		=> $total,

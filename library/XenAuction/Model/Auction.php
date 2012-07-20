@@ -6,7 +6,6 @@
 class XenAuction_Model_Auction extends XenForo_Model
 {
 	
-	const FETCH_USER     		= 'user';
 	const FETCH_BID     		= 'bid';
 	
 	const STATUS_ACTIVE 	= 'active';
@@ -137,27 +136,14 @@ class XenAuction_Model_Auction extends XenForo_Model
 		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 
-		$selectFields 	= '';
-		$joinTables 	= '';
-		
-		if (in_array(self::FETCH_USER, $fetchOptions['join']))
-		{
-			$selectFields = ',user.*';
-			$joinTables .= '
-				JOIN xf_user AS user ON
-					(user.user_id = bid.bid_user_id)';
-		}
-		
 		$orderClause = $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
 
 		return $this->_getDb()->fetchAll($this->limitQueryResults('
 				SELECT bid.*, auction.*
-					' . $selectFields . '
 				FROM xf_auction_bid bid
 				JOIN xf_auction auction ON 
 					auction.auction_id = bid.auction_id AND
 					auction.user_id = ' . $this->_getDb()->quote($userId) . '
-				' . $joinTables . '
 				WHERE
 					' . $whereClause . ' AND
 					(
@@ -182,21 +168,12 @@ class XenAuction_Model_Auction extends XenForo_Model
 		
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 		
-		$joinTables 	= '';
-		if (in_array(self::FETCH_USER, $fetchOptions['join']))
-		{
-			$joinTables .= '
-				JOIN xf_user AS user ON
-					(user.user_id = bid.bid_user_id)';
-		}
-		
 		return $this->_getDb()->fetchOne('
 				SELECT COUNT(bid.bid_id)
 				FROM xf_auction_bid bid
 				JOIN xf_auction auction ON 
 					auction.auction_id = bid.auction_id AND
 					auction.user_id = ' . $this->_getDb()->quote($userId) . '
-				' . $joinTables . '
 				WHERE
 					' . $whereClause . ' AND
 					(
@@ -384,23 +361,6 @@ class XenAuction_Model_Auction extends XenForo_Model
 				$joinTables .= '
 					LEFT JOIN xf_auction_bid AS bid ON
 						(bid.auction_id = auction.auction_id)';
-			}
-			
-			if (in_array(self::FETCH_USER, $fetchOptions['join']) AND in_array(self::FETCH_BID, $fetchOptions['join']))
-			{
-				$selectFields .= ',
-					user.*';
-				$joinTables .= '
-					JOIN xf_user AS user ON
-						(user.user_id = bid.bid_user_id)';
-			}
-			else if (in_array(self::FETCH_USER, $fetchOptions['join']))
-			{
-				$selectFields .= ',
-					user.*';
-				$joinTables .= '
-					LEFT JOIN xf_user AS user ON
-						(user.user_id = auction.top_bidder)';
 			}
 		}
 			
