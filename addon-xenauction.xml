@@ -207,6 +207,8 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="user_field_auctionEnableConfirm" global_cache="1" version_id="0" version_string=""><![CDATA[Send Auction Confirmation Message]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_choice_1" global_cache="1" version_id="0" version_string=""><![CDATA[Enabled]]></phrase>
     <phrase title="user_field_auctionEnableConfirm_desc" version_id="0" version_string=""><![CDATA[Automatically sends a confirmation message to the winner of your auctions when you archive the relevant auction.]]></phrase>
+    <phrase title="user_field_auctionPaymentAddress" global_cache="1" version_id="0" version_string=""><![CDATA[Auction Payment Address]]></phrase>
+    <phrase title="user_field_auctionPaymentAddress_desc" version_id="0" version_string=""><![CDATA[Enter the address that purchasers are supposed to send their payments to.]]></phrase>
     <phrase title="viewing_auctions" version_id="0" version_string=""><![CDATA[Viewing Auctions]]></phrase>
     <phrase title="view_more" version_id="0" version_string=""><![CDATA[View More]]></phrase>
     <phrase title="won_auction_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Congratulations! You have won [i]{title}[/i].
@@ -793,7 +795,7 @@ dl.doubleButtons dt
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -831,7 +833,7 @@ dl.doubleButtons dt
 		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}&search={$search}"></li>
 	</xen:if>
 	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}&search={$search}"></li>
-	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}&search={$search}'}"></li>
+	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}&search={$search}"></li>
 </ul>
 
 <script type="text/javascript"><!--

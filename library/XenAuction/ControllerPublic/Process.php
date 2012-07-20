@@ -110,8 +110,13 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	
 	public function actionComplete()
 	{
-		$visitor 	= XenForo_Visitor::getInstance();
-		if ( ! isset($visitor->customFields['auctionEnableConfirm']) OR $visitor->customFields['auctionEnableConfirm'][1] != 1)
+		$visitor = XenForo_Visitor::getInstance();
+		
+		if (
+			! isset($visitor->customFields['auctionEnableConfirm']) OR
+			! isset($visitor->customFields['auctionEnableConfirm'][1]) OR
+			$visitor->customFields['auctionEnableConfirm'][1] != 1
+		)
 		{
 			return $this->actionMarkComplete();
 		}
