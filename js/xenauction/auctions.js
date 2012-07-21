@@ -109,17 +109,20 @@ XenAuction.Widget.prototype = {
 	{
 		var liWidth = $("#auctionWidget > li:first-child").outerWidth(true);
 		
-		$("#auctionWidget > li").show();
+		$("#auctionWidget > li").hide();
+		
+		var total = 0;
 		
 		for (var i=10;i>0;i--)
 		{
-			var width = ($("#auctionWidget").innerWidth() / i);
-			if (width >= liWidth)
+			$("#auctionWidget > li:nth-child("+i+")").show();
+			total += $("#auctionWidget > li:nth-child("+i+")").outerWidth(true);
+			
+			if (total > $("#auctionWidget").innerWidth())
 			{
+				$("#auctionWidget > li:nth-child("+i+")").hide();
 				break;
 			}
-			
-			$("#auctionWidget > li:nth-child("+i+")").hide();
 		}
 	}
 };

@@ -1935,7 +1935,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 	</script>
 	
 </xen:if>]]></template>
-    <template title="auction_widget.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[#auctionWidgetWrap
+    <template title="auction_widget.css" version_id="13" version_string="1.0 Beta 5 (build 2)"><![CDATA[#auctionWidgetWrap
 {
 	{xen:property sectionMain}
 }
@@ -1962,6 +1962,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 {
 	display: table;
 	margin: 0 auto;
+	border-bottom: 0 !important;
 }
 
 #auctionWidget
@@ -1983,6 +1984,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;	
+	margin: auto;
 }
 
 #auctionWidget li h3
