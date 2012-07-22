@@ -216,18 +216,9 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	{
 		$visitor = XenForo_Visitor::getInstance();
 		
-		if (
-			! isset($visitor->customFields['auctionEnableConfirm']) OR
-			! isset($visitor->customFields['auctionEnableConfirm'][1]) OR
-			$visitor->customFields['auctionEnableConfirm'][1] != 1
-		)
-		{
-			return $this->actionMarkComplete();
-		}
-		
 		$id 			= $this->_input->filterSingle('id', XenForo_Input::UINT);
 		
-		$fetchOptions	= array('join'	 => array(XenAuction_Model_Auction::FETCH_USER, XenAuction_Model_Auction::FETCH_BID));
+		$fetchOptions	= array('join'	 => XenAuction_Model_Auction::FETCH_BID);
 		$fetchConditions= array('bid_id' => $id);
 		
 		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
@@ -243,8 +234,13 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		$message = isset($visitor->customFields['auctionConfirmMessage']) ? $visitor->customFields['auctionConfirmMessage'] : '';
 		if ( ! empty($message))
 		{
-			$auction['link'] 	= XenForo_Link::buildPublicLink('auctions/details', '', array('id' => $auction['auction_id']));
-			$message 			= preg_replace('|\{([a-z]*?)\}|e', '"".$auction["$1"].""', $message);
+			$userModel 		= XenForo_Model::create('XenForo_Model_User');
+			$user 			= $userModel->getUserById($auction['bid_user_id']);
+			
+			$vars 			= array_merge($auction, $user);
+			$vars['link'] 	= XenForo_Link::buildPublicLink('auctions/details', '', array('id' => $auction['auction_id']));
+			
+			$message 		= @preg_replace('|\{([a-z]*?)\}|e', '"".$vars["$1"].""', $message);
 		}
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_complete', array(
@@ -298,7 +294,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auction-history')
+			XenForo_Link::buildPublicLink('auction-history') . '#_sales'
 		);
 	}
 	

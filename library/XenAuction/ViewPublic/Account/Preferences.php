@@ -14,7 +14,7 @@ class XenAuction_ViewPublic_Account_Preferences extends XFCP_XenAuction_ViewPubl
 		
 		foreach ($this->_params['customFields'] AS $param => $value)
 		{
-			if (in_array($param, array('auctionConfirmMessage', 'auctionEnableConfirm', 'auctionPaymentAddress')))
+			if (in_array($param, array('auctionConfirmMessage', 'auctionPaymentAddress')))
 			{
 				unset($this->_params['customFields'][$param]);
 			}

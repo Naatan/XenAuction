@@ -209,15 +209,13 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="save_auction" version_id="0" version_string=""><![CDATA[Save Auction]]></phrase>
     <phrase title="seconds_left" version_id="0" version_string=""><![CDATA[Seconds Left]]></phrase>
     <phrase title="select_one" version_id="0" version_string=""><![CDATA[Select One]]></phrase>
+    <phrase title="skip_message" version_id="0" version_string=""><![CDATA[Skip Message]]></phrase>
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
     <phrase title="summary" version_id="0" version_string=""><![CDATA[Summary]]></phrase>
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
     <phrase title="type" version_id="0" version_string=""><![CDATA[Type]]></phrase>
     <phrase title="user_field_auctionConfirmMessage" global_cache="1" version_id="0" version_string=""><![CDATA[Default Auction Confirmation Message]]></phrase>
     <phrase title="user_field_auctionConfirmMessage_desc" version_id="0" version_string=""><![CDATA[The confirmation message to be send to the winner of the auction when you archive the relevant auction. You can use the following tags: {username}, {title}, {link}, {price}, {quantity}]]></phrase>
-    <phrase title="user_field_auctionEnableConfirm" global_cache="1" version_id="0" version_string=""><![CDATA[Send Auction Confirmation Message]]></phrase>
-    <phrase title="user_field_auctionEnableConfirm_choice_1" global_cache="1" version_id="0" version_string=""><![CDATA[Enabled]]></phrase>
-    <phrase title="user_field_auctionEnableConfirm_desc" version_id="0" version_string=""><![CDATA[Automatically sends a confirmation message to the winner of your auctions when you archive the relevant auction.]]></phrase>
     <phrase title="user_field_auctionPaymentAddress" global_cache="1" version_id="0" version_string=""><![CDATA[Auction Payment Address]]></phrase>
     <phrase title="user_field_auctionPaymentAddress_desc" version_id="0" version_string=""><![CDATA[Enter the address that purchasers are supposed to send their payments to.]]></phrase>
     <phrase title="viewing_auctions" version_id="0" version_string=""><![CDATA[Viewing Auctions]]></phrase>
@@ -348,7 +346,7 @@ new XenAuction.Bid;
 <script type="text/javascript"><!--
 new XenAuction.Bid;
 //--></script>]]></template>
-    <template title="auction_complete" version_id="6" version_string="1.0 Beta 2 (build 5)"><![CDATA[<xen:require css="auction_complete.css" />
+    <template title="auction_complete" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_complete.css" />
 
 <xen:title>{xen:phrase complete_sale}: {$auction.title}</xen:title>
 
@@ -357,7 +355,7 @@ new XenAuction.Bid;
     <xen:breadcrumb href="{xen:link 'auction-process/complete', '', 'id={$auction.bid_id}'}">{xen:phrase complete_sale}</xen:breadcrumb>
 </xen:navigation>
 
-<form action="{xen:link 'auction-process/markComplete', '', 'id={$auction.bid_id}'}" class="xenForm formOverlay auctionComplete" method="post">
+<form action="{xen:link 'auction-process/mark-complete', '', 'id={$auction.bid_id}'}" class="xenForm formOverlay auctionComplete" method="post">
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.bid_id}"/>
 	
@@ -376,6 +374,7 @@ new XenAuction.Bid;
 			<dt></dt>
 			<dd>
 				<input type="submit" value="{xen:phrase complete_sale}" class="button primary"/>
+				<a href="{xen:link 'auction-process/mark-complete', '', 'id={$auction.bid_id}'}" class="button primary">{xen:phrase skip_message}</a>
 			</dd>
 		</dl>
 	
