@@ -86,6 +86,11 @@ class XenAuction_Listen
 			return false;
 		}
 		
+		if ( ! XenForo_Visitor::getInstance()->hasPermission('auctions', 'viewAuctions'))
+		{
+			return false;
+		}
+		
 		$criterias = explode("\n", $options->auctionWidgetCriteria);
 		foreach ($criterias AS $criteria)
 		{
