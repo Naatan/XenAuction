@@ -138,8 +138,9 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		
 		$fetchConditions = array(
 			'user_id'	=> $visitor->user_id,
-			'title'		=> $search,
-			'bid_id_search'	=> $search
+			'title'			=> $search,
+			'bid_id_search'	=> $search,
+			'username'		=> $search
 		);
 		
 		$fetchOptions 	= array(

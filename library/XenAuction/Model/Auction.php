@@ -320,6 +320,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$searchConditions[] = 'bid.bid_id =' . $db->quote( $conditions['bid_id_search'] );
 		}
 		
+		if ( ! empty($conditions['username']))
+		{
+			$searchConditions[] = 'bid.bid_user_id = (SELECT user_id FROM xf_user WHERE username = ' .  $db->quote($conditions['username']) . ')';
+		}
+		
 		if ($searchConditions)
 		{
 			$sqlConditions[] = '(' . implode(') OR (', $searchConditions) . ')';
