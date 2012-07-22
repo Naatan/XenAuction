@@ -19,11 +19,14 @@ class XenAuction_Helper_Notification
 			}
 
 			$title 		= $title->render();
+			$signature 	= new XenForo_Phrase('auction_notification_signature');
 			
 			if ($message instanceof XenForo_Phrase)
 			{
 				$message = $message->render();
 			}
+			
+			$message .= $signature->render();
 			
 			$message = str_replace('&amp;', '&', $message);
 
