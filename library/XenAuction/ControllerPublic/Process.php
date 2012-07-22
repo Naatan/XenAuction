@@ -2,6 +2,34 @@
 
 class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstract
 {
+
+	public function actionEdit()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		$auctionId 	 	= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
+		
+		$auction 		= $auctionModel->getAuctionById($auctionId);
+		
+		if (
+			! $visitor->hasPermission('auctions', 'editOthersAuctions') AND
+			(
+				$auction['user_id'] == $visitor->user_id AND
+				! $visitor->hasPermission('auctions', 'editOwnAuctions')
+			)
+		)
+		{
+			return $this->responseNoPermission();
+		}
+		
+		return $this->responseView('XenAuction_ViewPublic_Auction_Create', 'auction_edit', array(
+			'allTags'	=> $tagModel->getTags(),
+			'auction'	=> $auction,
+			'tags'		=> $tagModel->getTagsByAuction($auctionId)
+		));
+	}
 	
 	public function actionCreate()
 	{
@@ -13,18 +41,9 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 	
 	public function actionAdd()
 	{
-		$visitor = XenForo_Visitor::getInstance();
-		
-		$upload  = XenForo_Upload::getUploadedFile('image');
-		
-		if ($upload)
-		{
-			$imagePath = XenAuction_DataWriter_Helper_Auction::saveImage($upload);
-		}
-		else
-		{
-			$imagePath = NULL;
-		}
+		$visitor 	= XenForo_Visitor::getInstance();
+		$upload  	= XenForo_Upload::getUploadedFile('image');
+		$imagePath 	= $upload ? XenAuction_DataWriter_Helper_Auction::saveImage($upload) : NULL;
 		
 		$input = $this->_input->filter(array(
 			'title'        		=> XenForo_Input::STRING,
@@ -49,12 +68,14 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
 			'image'				=> $imagePath,
-			'message'        	=> $input['message_html'],
 			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,
 			'buy_now'        	=> $input['buyout_enable'] ? $input['buyout'] : NULL,
 			'availability'   	=> $input['buyout_enable'] ? $input['availability'] : NULL,
 			'expiration_date'	=> time() + ((int) $input['expires'] * 86400)
 		);
+		
+		$data['message'] = $this->getHelper('Editor')->getMessageText('message', $this->_input);
+		$data['message'] = XenForo_Helper_String::autoLinkBbCode($data['message']);
 		
 		$tags 		= array_unique(array_filter($input['tags']));
 		$tagModel 	= XenForo_Model::create('XenAuction_Model_Tag');
@@ -69,6 +90,62 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			
 			$tagModel->addTagToAuction($tags, $auction['auction_id']);
 		}
+		
+		return $this->responseRedirect(
+			XenForo_ControllerResponse_Redirect::SUCCESS,
+			XenForo_Link::buildPublicLink('auctions')
+		);
+	}
+	
+	public function actionSave()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		$upload  		= XenForo_Upload::getUploadedFile('image');
+		$imagePath 		= $upload ? XenAuction_DataWriter_Helper_Auction::saveImage($upload) : false;
+		$auctionId 	 	= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auction 		= $auctionModel->getAuctionById($auctionId);
+		
+		if (
+			! $visitor->hasPermission('auctions', 'editOthersAuctions') AND
+			(
+				$auction['user_id'] == $visitor->user_id AND
+				! $visitor->hasPermission('auctions', 'editOwnAuctions')
+			)
+		)
+		{
+			return $this->responseNoPermission();
+		}
+		
+		$input = $this->_input->filter(array(
+			'title'        		=> XenForo_Input::STRING,
+			'tags'         		=> XenForo_Input::ARRAY_SIMPLE,
+			'message_html' 		=> XenForo_Input::STRING,
+		));
+		
+		$data = array();
+		
+		$data['title'] = $input['title'];
+		
+		$data['message'] = $this->getHelper('Editor')->getMessageText('message', $this->_input);
+		$data['message'] = XenForo_Helper_String::autoLinkBbCode($data['message']);
+		
+		if ($imagePath)
+		{
+			$data['image'] = $imagePath;
+		}
+		
+		$tags 		= array_unique(array_filter($input['tags']));
+		$tagModel 	= XenForo_Model::create('XenAuction_Model_Tag');
+		
+		$tagModel->deleteTagsFromAuction($auctionId);
+		$tagModel->addTagToAuction($tags, $auctionId);
+		
+		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+		$dw->setExistingData($auction);
+		$dw->bulkSet($data);
+		$dw->save();
 		
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
@@ -105,6 +182,33 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
 			XenForo_Link::buildPublicLink('auction-history')
+		);
+	}
+	
+	public function actionExpire()
+	{
+		$visitor 		= XenForo_Visitor::getInstance();
+		$auctionId 	 	= $this->_input->filterSingle('id', XenForo_Input::UINT);
+		
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auction 		= $auctionModel->getAuctionById($auctionId);
+		
+		if (
+			! $visitor->hasPermission('auctions', 'expireOthersAuctions') AND
+			(
+				$auction['user_id'] == $visitor->user_id AND
+				! $visitor->hasPermission('auctions', 'expireOwnAuctions')
+			)
+		)
+		{
+			return $this->responseNoPermission();
+		}
+		
+		XenAuction_CronEntry_Auction::runExpireAuction($auction);
+		
+		return $this->responseRedirect(
+			XenForo_ControllerResponse_Redirect::SUCCESS,
+			XenForo_Link::buildPublicLink('auctions')
 		);
 	}
 	

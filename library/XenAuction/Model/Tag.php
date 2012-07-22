@@ -35,13 +35,13 @@ class XenAuction_Model_Tag extends XenForo_Model
 	
 	public function getTagsByAuction($auctionId)
 	{
-		return $this->_getDb()->fetchAll('
+		return $this->fetchAllKeyed('
 			SELECT *
 			FROM xf_auction_tag_rel rel 
 			JOIN xf_auction_tag tag ON
 				tag.tag_id = rel.tag_id
 			WHERE rel.auction_id = ?
-		', $auctionId);
+		', 'tag_id', $auctionId);
 	}
 	
 	public function getTagsByAuctions(array $auctionIds)
@@ -58,6 +58,12 @@ class XenAuction_Model_Tag extends XenForo_Model
 				tag.tag_id = rel.tag_id
 			WHERE rel.auction_id IN (' . $this->_getDb()->quote($auctionIds) . ')
 		', 'auction_id');
+	}
+	
+	public function deleteTagsFromAuction($auctionId)
+	{
+		$db = $this->_getDb();
+		$db->delete('xf_auction_tag_rel', 'auction_id = ' . $db->quote($auctionId));
 	}
 	
 	public function addTagToAuction($tags, $auctionId)

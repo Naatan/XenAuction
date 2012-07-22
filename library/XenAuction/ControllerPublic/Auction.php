@@ -47,7 +47,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		
 		$users 			= $userModel->getUsersByIds($userIds);
 		
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_list', array(
+		return $this->responseView('XenAuction_ViewPublic_Auction_View', 'auction_list', array(
 			'allTags'	=> $tagModel->getTags(),
 			'tags'		=> $tagModel->getTagsByAuctions($auctionIds),
 			'selTags'	=> $tags,
@@ -74,7 +74,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
 		$tags 			= $tagModel->getTagsByAuction($auction['auction_id']);
 
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_details', array(
+		return $this->responseView('XenAuction_ViewPublic_Auction_View', 'auction_details', array(
 		   	'auction'	=> $auction,
 			'bid'		=> $bid,
 			'tags'		=> $tags

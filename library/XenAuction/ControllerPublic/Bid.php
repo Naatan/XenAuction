@@ -22,7 +22,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			return $this->responseError(new XenForo_Phrase('cant_buy_own_auction'));
 		}
 
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_bid', array(
+		return $this->responseView('XenAuction_ViewPublic_Auction_View', 'auction_bid', array(
 		   	'auction'	=> $auction
 		));	
 	}
@@ -46,7 +46,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			return $this->responseError(new XenForo_Phrase('cant_buy_own_auction'));
 		}
 
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_buyout', array(
+		return $this->responseView('XenAuction_ViewPublic_Auction_View', 'auction_buyout', array(
 		   	'auction'	=> $auction
 		));	
 	}

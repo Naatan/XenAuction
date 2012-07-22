@@ -179,11 +179,35 @@ class XenAuction_Install
 	 */
 	public static function update13()
 	{
+		$auctions = XenForo_Application::getDb()->fetchAll("
+			SELECT *
+			FROM xf_auction
+		");
+		
+		$controller = new XenAuction_ControllerPublic_Auction(
+			new Zend_Controller_Request_Http,
+			new Zend_Controller_Response_Http,
+			new XenForo_RouteMatch
+		);
+		$helper = new XenForo_ControllerHelper_Editor($controller);
+		
+		foreach ($auctions AS $auction)
+		{
+			$message = $helper->getMessageText('message', new XenForo_Input(array('message_html' => $auction['message'])));
+			$message = XenForo_Helper_String::autoLinkBbCode($message);
+		
+			$auctionDw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+			$auctionDw->setExistingData($auction);
+			$auctionDw->set('message', $message);
+			$auctionDw->save();
+		}
+		
 		XenForo_Application::getDb()->query("
 			INSERT INTO `xf_user_field` (`field_id`, `display_group`, `display_order`, `field_type`, `field_choices`, `match_type`, `match_regex`, `match_callback_class`, `match_callback_method`, `max_length`, `required`, `show_registration`, `user_editable`, `viewable_profile`, `viewable_message`, `display_template`)
 			VALUES
 				('auctionPaymentAddress', 'preferences', 5002, 'textarea', X'613A303A7B7D', 'none', '', '', '', 0, 0, 0, 'yes', 1, 0, '');
 		");
+		
 	}
 	
 	/**

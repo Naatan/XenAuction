@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 5 (build 2)" version_id="13" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 5 (build 1)" version_id="13" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -84,11 +84,15 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
       <permission_group permission_group_id="auctions"/>
     </permission_groups>
     <permissions>
-      <permission permission_group_id="auctions" permission_id="bidOnAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
-      <permission permission_group_id="auctions" permission_id="buyoutAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
-      <permission permission_group_id="auctions" permission_id="createAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
-      <permission permission_group_id="auctions" permission_id="searchAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="1"/>
-      <permission permission_group_id="auctions" permission_id="viewAuctions" permission_type="flag" default_value="unset" interface_group_id="auctions" display_order="1"/>
+      <permission permission_group_id="auctions" permission_id="bidOnAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="21"/>
+      <permission permission_group_id="auctions" permission_id="buyoutAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="22"/>
+      <permission permission_group_id="auctions" permission_id="createAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="30"/>
+      <permission permission_group_id="auctions" permission_id="editOthersAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="50"/>
+      <permission permission_group_id="auctions" permission_id="editOwnAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="40"/>
+      <permission permission_group_id="auctions" permission_id="expireOthersAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="52"/>
+      <permission permission_group_id="auctions" permission_id="expireOwnAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="51"/>
+      <permission permission_group_id="auctions" permission_id="searchAuctions" permission_type="flag" depend_permission_id="viewAuctions" default_value="unset" interface_group_id="auctions" display_order="20"/>
+      <permission permission_group_id="auctions" permission_id="viewAuctions" permission_type="flag" default_value="unset" interface_group_id="auctions" display_order="10"/>
     </permissions>
     <interface_groups>
       <interface_group interface_group_id="auctions" display_order="1"/>
@@ -139,10 +143,12 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="cron_entry_auctions" version_id="0" version_string=""><![CDATA[Expire Auctions]]></phrase>
     <phrase title="date_is_in_past" version_id="0" version_string=""><![CDATA[You selected a date that is in the past]]></phrase>
     <phrase title="days_left" version_id="0" version_string=""><![CDATA[Days Left]]></phrase>
+    <phrase title="edit_auction" version_id="0" version_string=""><![CDATA[Edit Auction]]></phrase>
     <phrase title="enable_bids" version_id="0" version_string=""><![CDATA[Enable Bids]]></phrase>
     <phrase title="enable_buyouts" version_id="0" version_string=""><![CDATA[Enable Buyouts]]></phrase>
     <phrase title="enter_availability_higher_than_zero" version_id="0" version_string=""><![CDATA[Please enter an availability higher than zero]]></phrase>
     <phrase title="expires_in" version_id="0" version_string=""><![CDATA[Expires in]]></phrase>
+    <phrase title="expire_auction" version_id="0" version_string=""><![CDATA[Expire Auction]]></phrase>
     <phrase title="filter_by_tag" version_id="0" version_string=""><![CDATA[Filter by tag]]></phrase>
     <phrase title="find_auction" version_id="0" version_string=""><![CDATA[Find Auction]]></phrase>
     <phrase title="finished" version_id="0" version_string=""><![CDATA[Finished]]></phrase>
@@ -183,6 +189,10 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="permission_auctions_bidOnAuctions" version_id="0" version_string=""><![CDATA[Bid On Auctions]]></phrase>
     <phrase title="permission_auctions_buyoutAuctions" version_id="0" version_string=""><![CDATA[Buyout Auctions]]></phrase>
     <phrase title="permission_auctions_createAuctions" version_id="0" version_string=""><![CDATA[Create Auctions]]></phrase>
+    <phrase title="permission_auctions_editOthersAuctions" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Edit Others Auctions]]></phrase>
+    <phrase title="permission_auctions_editOwnAuctions" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Edit Own Auctions]]></phrase>
+    <phrase title="permission_auctions_expireOthersAuctions" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Expire Others Auctions]]></phrase>
+    <phrase title="permission_auctions_expireOwnAuctions" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Expire Own Auctions]]></phrase>
     <phrase title="permission_auctions_searchAuctions" version_id="0" version_string=""><![CDATA[Search Auctions]]></phrase>
     <phrase title="permission_auctions_viewAuctions" version_id="0" version_string=""><![CDATA[View Auctions]]></phrase>
     <phrase title="permission_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
@@ -196,6 +206,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="sales" version_id="0" version_string=""><![CDATA[Sales]]></phrase>
     <phrase title="sale_not_found" version_id="0" version_string=""><![CDATA[Could not find the requested sale]]></phrase>
     <phrase title="sale_x_completed" version_id="0" version_string=""><![CDATA[Sale completed: {title}]]></phrase>
+    <phrase title="save_auction" version_id="0" version_string=""><![CDATA[Save Auction]]></phrase>
     <phrase title="seconds_left" version_id="0" version_string=""><![CDATA[Seconds Left]]></phrase>
     <phrase title="select_one" version_id="0" version_string=""><![CDATA[Select One]]></phrase>
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
@@ -369,7 +380,7 @@ new XenAuction.Bid;
 		</dl>
 	
 </form>]]></template>
-    <template title="auction_create" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
+    <template title="auction_create" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require css="auction_tags.css" />
 <xen:require js="js/xenauction/auctions.js" />
 <xen:require js="js/xenauction/chosen/chosen.jquery.js" />
@@ -474,7 +485,6 @@ new XenAuction.Bid;
 	<!-- slot: after_editor -->
 
 	<dl class="ctrlUnit submitUnit">
-		<dt></dt>
 		<dd>
 			<input type="submit" value="{xen:phrase create_auction}" accesskey="s" class="button primary" />
 		</dd>
@@ -490,7 +500,7 @@ new XenAuction.Bid;
 <xen:include template="auction_phrases_js"/>
 new XenAuction.Create;
 //--></script>]]></template>
-    <template title="auction_create.css" version_id="11" version_string="1.0 Beta 3 (build 1)"><![CDATA[.auction .summary .icon
+    <template title="auction_create.css" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[.auction .summary .icon
 {
 	width: 30px;
 	height: 30px;
@@ -506,9 +516,15 @@ new XenAuction.Create;
 	width: {xen:calc "{xen:property formWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px !important;
 }
 
-.auction .details
+.auction .details, .auction .ctrlUnit.submitUnit
 {
 	margin-top: 30px;
+}
+
+.auction .ctrlUnit.submitUnit dd
+{
+	width: 100%;
+	text-align: center;
 }
 
 .auction .details .ctrlUnit dt
@@ -528,6 +544,12 @@ new XenAuction.Create;
 .ctrlUnit.double dd
 {
 	width: 100px;
+}
+
+label[for="ctrl_tags"]
+{
+	margin-top: 10px;
+	display: block;
 }
 
 /*
@@ -555,32 +577,39 @@ new XenAuction.Create;
 	<xen:include template="auction_details_content" />
 
 
-	<xen:if is="{$auction.status}=='active' && {$visitor.user_id}!={$auction.user_id}">
-		<dl class="ctrlUnit submitUnit">
-			<dd>
+	<dl class="ctrlUnit submitUnit">
+		<dd>
+			<xen:if is="{$auction.status}=='active' && {$visitor.user_id}!={$auction.user_id} && {xen:helper auction, hasPermission, 'bidOnAuctions||buyoutAuctions'}">
 				<xen:if is="{$auction.min_bid}">
 					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
 				</xen:if>
 				<xen:if is="{$auction.buy_now}">
 					<a class="OverlayTrigger button primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
 				</xen:if>
-			</dd>
-		</dl>
-	</xen:if>
-	<xen:if is="{$auction.status}!='active' && {$auction.archived}!=1 && {$visitor.user_id}=={$auction.user_id}">
-		<dl class="ctrlUnit submitUnit">
-			<dd>
+			</xen:if>
+			<xen:if is="{$auction.status}!='active' && {$auction.archived}!=1 && {$visitor.user_id}=={$auction.user_id}">
 				<a class="OverlayTrigger button primary" href="{xen:link 'auction-process/archive', '', 'id={$auction.auction_id}'}">{xen:phrase archive_auction}</a>
-			</dd>
-		</dl>
-	</xen:if>
-	<xen:if is="{$bid} && {$visitor.user_id}=={$auction.user_id}">
-		<dl class="ctrlUnit submitUnit">
-			<dd>
-				<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_auction}</a>
-			</dd>
-		</dl>
-	</xen:if>		
+			</xen:if>
+			<xen:if is="{$visitor.user_id}=={$auction.user_id} && ({$bid} || {xen:helper auction, hasPermission, 'editOwnAuctions'})">
+				<xen:if is="{$bid}">
+					<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_auction}</a>
+				</xen:if>
+				
+				<xen:if is="{$auction.status}=='active' && {xen:helper auction, hasPermission, 'editOwnAuctions'}">
+					<a class="button primary" href="{xen:link auction-process/edit, '', 'id={$auction.auction_id}'}">{xen:phrase edit_auction}</a>
+				</xen:if>
+			</xen:if>
+			<xen:if is="{$auction.status}=='active'">
+				<xen:if is="{$visitor.user_id}!={$auction.user_id} && {xen:helper auction, hasPermission, 'editOthersAuctions'}">
+					<a class="button primary" href="{xen:link auction-process/edit, '', 'id={$auction.auction_id}'}">{xen:phrase edit_auction}</a>
+				</xen:if>
+				<xen:if is="({$visitor.user_id}=={$auction.user_id} && {xen:helper auction, hasPermission, 'expireOwnAuctions'}) || {xen:helper auction, hasPermission, 'expireOthersAuctions'}">
+					<a href="{xen:link auction-process/expire, '', 'id={$auction.auction_id}'}" class="button primary">{xen:phrase expire_auction}</a>
+				</xen:if>
+			</xen:if>
+		</dd>
+	</dl>
+	
 
 	
 </form>]]></template>
@@ -610,16 +639,90 @@ dl.doubleButtons dt
 	width: 100%;
 	text-align: center;
 }]]></template>
-    <template title="auction_details_content" version_id="4" version_string="1.0 Beta 2 (build 3)"><![CDATA[<xen:require css="auction_details.css" />
+    <template title="auction_details_content" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_details.css" />
 
 <div class="auctionDetails">
 
 	<div class="message">
 		{xen:helper auction, image, $auction, 'n', 0, 0}
-		{xen:raw $auction.message}
+		{xen:raw $auction.messageHtml}
 	</div>
 
 </div>]]></template>
+    <template title="auction_edit" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
+<xen:require css="auction_tags.css" />
+<xen:require js="js/xenauction/auctions.js" />
+<xen:require js="js/xenauction/chosen/chosen.jquery.js" />
+
+<xen:title>{xen:phrase edit_auction}</xen:title>
+
+<xen:navigation>
+    <xen:breadcrumb href="{xen:link 'auction-process/edit', '', 'id={$auction.auction_id}'}">{xen:phrase edit_auction}</xen:breadcrumb>
+</xen:navigation>
+
+<form action="{xen:link 'auction-process/save'}" method="post"
+	class="xenForm auction"
+	enctype="multipart/form-data"
+>
+
+	<xen:hook name="auction_create">
+		
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_tags">{xen:phrase tags}:</label></dt>
+		<dd class="tagContainer">
+			<select name="tags[]" class="chzn-select" multiple="multiple" data-placeholder="{xen:phrase choose_tags}" style="width: {xen:calc '{xen:property formWidth} - {xen:property ctrlUnitLabelWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - {xen:property ctrlUnitEdgeSpacer}'}px">
+				<xen:foreach loop="$allTags" value="$tag">
+					<option value="{$tag.tag_id}" {xen:if {$tags.{$tag.tag_id}}, 'selected="selected"'}>{$tag.name}</option>
+				</xen:foreach>
+			</select>
+		</dd>
+	</dl>	
+
+	<div class="summary">
+		
+		<dl class="ctrlUnit fullWidth surplusLabel">
+			<dt><label for="ctrl_title_thread_create">{xen:phrase title}:</label></dt>
+			<dd><input type="text" name="title" class="textCtrl titleCtrl" id="ctrl_title_auction_create" maxlength="100" autofocus="true"
+				placeholder="{xen:phrase auction_title}..." value="{$auction.title}" /></dd>
+		</dl>
+		
+		<dl class="ctrlUnit fullWidth">
+			<dt></dt>
+			<dd>{xen:raw $editorTemplate}</dd>
+		</dl>
+	</div>
+	
+	<div class="details">
+		
+		<h3 class="textHeading">{xen:phrase details}</h3>
+		
+		<dl class="ctrlUnit">
+			<dt>Image:</dt>
+			<dd><input type="file" name="image" /></dd>
+		</dl>
+		
+		
+	</div>
+	
+	<!-- slot: after_editor -->
+
+	<dl class="ctrlUnit submitUnit">
+		<dd>
+			<input type="submit" value="{xen:phrase save_auction}" accesskey="s" class="button primary" />
+		</dd>
+	</dl>
+
+	<input type="hidden" name="id" value="{$auction.auction_id}" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	
+	</xen:hook>
+	
+</form>
+
+<script type="text/javascript"><!--
+<xen:include template="auction_phrases_js"/>
+new XenAuction.Create;
+//--></script>]]></template>
     <template title="auction_history_auctions" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
@@ -1174,7 +1277,7 @@ $(document).ready(function() {
 	<div class="emptyResults">{xen:phrase you_have_no_sales}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_list" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
+    <template title="auction_list" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
@@ -1191,7 +1294,7 @@ $(document).ready(function() {
 		
 		<tbody>
 	
-			<xen:foreach loop="$auctions" value="$auction">
+		<xen:foreach loop="$auctions" value="$auction">
 				<xen:include template="auction_list_item"/>
 			</xen:foreach>
 		
@@ -1505,7 +1608,7 @@ new XenAuction.List;
 	<xen:if is="{$auction.user_id}!={$visitor.user_id}">
 		<td class="bid">
 			<ul>
-				<xen:if is="{$auction.min_bid}">
+				<xen:if is="{$auction.min_bid} AND {xen:helper auction, hasPermission, 'bidOnAuctions'}">
 					<xen:if is="{$auction.top_bid}">
 						<li>
 							<div><span class="muted">$</span>{xen:number $auction.top_bid}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a>
@@ -1516,7 +1619,7 @@ new XenAuction.List;
 							</li>
 						</xen:if>
 					</xen:if>
-					<xen:if is="{$auction.buy_now}">
+					<xen:if is="{$auction.buy_now} AND {xen:helper auction, hasPermission, 'buyoutAuctions'}">
 						<li>
 							<div><span class="muted">$</span>{xen:number $auction.buy_now}</div> <a class="OverlayTrigger" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a>
 						</li>

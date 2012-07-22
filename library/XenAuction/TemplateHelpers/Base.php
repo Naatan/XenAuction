@@ -37,6 +37,29 @@ class XenAuction_TemplateHelpers_Base
 	public static function helperHasPermission($permission)
 	{
 		$visitor = XenForo_Visitor::getInstance();
+		
+		if (strpos($permission, '||') OR strpos($permission, '&&'))
+		{
+			$isOr = strpos($permission, '||') !== false;
+			
+			$permissions = explode($isOr ? '||' : '&&', $permission);
+			
+			foreach ($permissions AS $permission)
+			{
+				if ($visitor->hasPermission('auctions', $permission))
+				{
+					if ($isOr)
+					{
+						return true;
+					}
+				}
+				else if ( ! $isOr)
+				{
+					return false;
+				}
+			}
+		}
+		
 		return $visitor->hasPermission('auctions', $permission);
 	}
 	

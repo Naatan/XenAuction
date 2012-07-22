@@ -29,7 +29,9 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		
 		$fetchOptions 	= array(
 			'page'		=> $page,
-			'perPage'	=> $perPage
+			'perPage'	=> $perPage,
+			'order'		=> 'expiration_date',
+			'direction'	=> 'desc'
 		);
 		
 		$userModel 		= XenForo_Model::create('XenForo_Model_User');
