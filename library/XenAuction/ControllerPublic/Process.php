@@ -293,7 +293,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		if ( ! empty($message))
 		{
 			$title = new XenForo_Phrase('sale_x_completed', $auction);
-			XenAuction_Helper_Notification::sendNotification($auction['bid_user_id'], $title, $message, $visitor->toArray());
+			XenAuction_Helper_Notification::sendNotification($auction['bid_user_id'], $title, $message);
 		}
 		
 		return $this->responseRedirect(
