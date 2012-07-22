@@ -305,9 +305,9 @@ XenAuction.Helpers = {
 			
 			overlay.onLoad = function()
 			{
-				var position= elem.position();
+				var position = elem.offset();
 				elem.css('position', 'absolute');
-				elem.position(position);
+				elem.offset(position);
 				elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
 				
 				elem.find(".Disabler").click(function() {
