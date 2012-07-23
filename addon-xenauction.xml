@@ -26,6 +26,13 @@
       <sub_options></sub_options>
       <relation group_id="auctions" display_order="1"/>
     </option>
+    <option option_id="auctionPrivacyMode" edit_format="radio" data_type="string" can_backup="1">
+      <default_value>disabled</default_value>
+      <edit_format_params>enabled=Enabled
+disabled=Disabled</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="auctions" display_order="100"/>
+    </option>
     <option option_id="auctionsPerPage" edit_format="spinbox" data_type="unsigned_numeric" can_backup="1">
       <default_value>15</default_value>
       <edit_format_params></edit_format_params>
@@ -40,7 +47,8 @@ dropdown=Dropdown Mode (uses &lt;a href="http://harvesthq.github.com/chosen/"&gt
       <relation group_id="auctions" display_order="210"/>
     </option>
     <option option_id="auctionWidgetCriteria" edit_format="textbox" data_type="string" can_backup="1">
-      <default_value></default_value>
+      <default_value>forums|create-thread
+auctions</default_value>
       <edit_format_params>rows=4
 inputclass=Elastic</edit_format_params>
       <sub_options></sub_options>
@@ -99,6 +107,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     </interface_groups>
   </permissions>
   <phrases>
+    <phrase title="active_bids" version_id="0" version_string=""><![CDATA[Active Bids]]></phrase>
     <phrase title="advanced" version_id="0" version_string=""><![CDATA[Advanced]]></phrase>
     <phrase title="amount_paid" version_id="0" version_string=""><![CDATA[Amount Paid]]></phrase>
     <phrase title="archived_auctions" version_id="0" version_string=""><![CDATA[Archived Auctions]]></phrase>
@@ -106,6 +115,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
+    <phrase title="auction_notification_signature" version_id="0" version_string=""><![CDATA[]]></phrase>
     <phrase title="auction_title" version_id="0" version_string=""><![CDATA[Auction Title]]></phrase>
     <phrase title="availability" version_id="0" version_string=""><![CDATA[Availability]]></phrase>
     <phrase title="availability_too_high" version_id="0" version_string=""><![CDATA[You can't use an availability higher than 1 if you are also allowing bids]]></phrase>
@@ -164,6 +174,8 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="no_bids" version_id="0" version_string=""><![CDATA[No bids]]></phrase>
     <phrase title="option_auctionNotificationSender" version_id="0" version_string=""><![CDATA[User ID that sends notifications]]></phrase>
     <phrase title="option_auctionNotificationSender_explain" version_id="0" version_string=""><![CDATA[Enter the ID of the user that will be used to send auction notifications. Note that this user should NOT participate in any other part of the auctions (eg. bidding, buying and creating auctions).]]></phrase>
+    <phrase title="option_auctionPrivacyMode" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Privacy Mode]]></phrase>
+    <phrase title="option_auctionPrivacyMode_explain" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[With privacy mode turned on, no buyer or seller information is disclosed to anyone. Only sellers will still be aware of who bids on and buys their auctions.]]></phrase>
     <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
     <phrase title="option_auctionTagMode" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Tag Display Mode]]></phrase>
@@ -180,7 +192,8 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="option_auctionWidgetPlacement_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Choose the template hook where the auction widget should be placed]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
-    <phrase title="outbid_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url] by [i]{top_bidder}[/i]. 
+    <phrase title="outbid" version_id="0" version_string=""><![CDATA[Outbid]]></phrase>
+    <phrase title="outbid_message" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url]. 
 
 The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="outbid_on_x" version_id="0" version_string=""><![CDATA[Outbid on: {title}]]></phrase>
@@ -245,7 +258,7 @@ The new top bid is: ${top_bid}.]]></phrase>
   </route_prefixes>
   <style_properties/>
   <templates>
-    <template title="auction_bid" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_bid" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{xen:phrase bidding_on_x, 'title={$auction.title}'}</xen:title>
 
@@ -253,7 +266,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <xen:breadcrumb href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</xen:breadcrumb>
 </xen:navigation>
 
-<form action="{xen:link 'auction-bid/place-bid', '', 'id={$auction.auction_id}'}" class="xenForm formOverlay auctionBid" method="post">
+<form action="{xen:link 'auction-bid/place-bid', '', 'id={$auction.auction_id}'}" class="xenForm formOverlay auctionBid auctionForm" method="post">
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.auction_id}"/>
 	
@@ -291,7 +304,7 @@ new XenAuction.Bid;
 	background: url(./data/xenauction/image_s.png) center no-repeat;
 	margin: 5px 10px;
 }]]></template>
-    <template title="auction_buyout" version_id="10" version_string="1.0 Beta 2 (build 9)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_buyout" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{xen:phrase buying_x, 'title={$auction.title}'}</xen:title>
 
@@ -299,7 +312,7 @@ new XenAuction.Bid;
     <xen:breadcrumb href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</xen:breadcrumb>
 </xen:navigation>
 
-<form action="{xen:link 'auction-bid/place-buyout', '', 'id={$auction.auction_id}'}" class="xenForm formOverlay auctionBid" method="post">
+<form action="{xen:link 'auction-bid/place-buyout', '', 'id={$auction.auction_id}'}" class="xenForm formOverlay auctionBid auctionForm" method="post">
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.auction_id}"/>
 	
@@ -637,6 +650,29 @@ dl.doubleButtons dt
 {
 	width: 100%;
 	text-align: center;
+}
+
+.formOverlay.auctionForm
+{
+	border: 0 !important;
+}
+
+	.formOverlay.auctionForm .heading.h1
+	{
+		background: transparent;
+		border: 0;
+		padding: 0;
+	}
+
+	.formOverlay.auctionForm .auctionImage
+	{
+		border-radius: 4px;
+		background-color: rgba(0,0,0,0.2);
+		padding: 5px;
+	}
+
+#lbOverlay, #lbCenter, #lbBottomContainer {
+	z-index: 99999 !important;
 }]]></template>
     <template title="auction_details_content" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_details.css" />
 
@@ -787,7 +823,11 @@ new XenAuction.Create;
 					</td>
 					<td class="highestBidder {xen:if '{$users.{$auction.top_bidder}.username} == {$visitor.username}', 'me', 'notme'}">
 						<xen:if is="{$auction.top_bidder}">
-							{$users.{$auction.top_bidder}.username}
+							<xen:if is="{$users.{$auction.top_bidder}.username} == {$visitor.username} || {$xenOptions.auctionPrivacyMode}!='enabled'">
+								{$users.{$auction.top_bidder}.username}
+							<xen:else/>
+								{xen:phrase outbid}
+							</xen:if>
 						<xen:elseif is=" ! {$auction.min_bid}"/>
 							<div class="availability">
 								<div class="amount">{$auction.availability}</div>
@@ -1594,15 +1634,19 @@ new XenAuction.List;
 	</td>
 	<td class="highestBidder">
 		<xen:if is="{$auction.top_bidder}">
-			{xen:helper auction, avatar, {$users.{$auction.top_bidder}}, s}
-		<xen:elseif is=" ! {$auction.min_bid}"/>
-			<div class="availability">
-				<div class="amount">{$auction.availability}</div>
-				<div class="description">{xen:phrase available}</div>
-			</div>
-			<xen:else/>
-			{xen:phrase no_bids}
-		</xen:if>
+			<xen:if is="{$xenOptions.auctionPrivacyMode}=='enabled'">
+				{xen:phrase active_bids}
+				<xen:else/>
+					{xen:helper auction, avatar, {$users.{$auction.top_bidder}}, s}
+			</xen:if>
+			<xen:elseif is=" ! {$auction.min_bid}"/>
+				<div class="availability">
+					<div class="amount">{$auction.availability}</div>
+					<div class="description">{xen:phrase available}</div>
+				</div>
+				<xen:else/>
+				{xen:phrase no_bids}
+			</xen:if>
 	</td>
 	<xen:if is="{$auction.user_id}!={$visitor.user_id}">
 		<td class="bid">
