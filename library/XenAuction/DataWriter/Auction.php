@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Datawriter for XenAuction tables
+ * Datawriter for xf_auction table
+ *
+ * @package 		XenAuction
+ * @author 			Nathan Rijksen <nathan@naatan.com>
+ * @copyright		2012 Naatan.com
  */
 class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 {
@@ -45,6 +49,11 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 		);
 	}
 	
+	/**
+	 * Actions performed right before saving data to database
+	 * 
+	 * @return void    
+	 */
 	protected function _preSave()
 	{
 		if ($this->get('min_bid') == NULL AND $this->get('buy_now') == NULL)

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Auction view, used to convert the auction message from bbcode to html
+ *
+ * @package 		XenAuction
+ * @author 			Nathan Rijksen <nathan@naatan.com>
+ * @copyright		2012 Naatan.com
+ */
 class XenAuction_ViewPublic_Auction_View extends XenForo_ViewPublic_Base
 {
 	public function renderHtml()

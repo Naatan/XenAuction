@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Datawriter for XenAuction tables
+ * DataWriter for xf_auction_tag table
+ *
+ * @package 		XenAuction
+ * @author 			Nathan Rijksen <nathan@naatan.com>
+ * @copyright		2012 Naatan.com
  */
 class XenAuction_DataWriter_Tag extends XenForo_DataWriter
 {

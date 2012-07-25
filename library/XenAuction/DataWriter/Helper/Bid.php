@@ -1,19 +1,41 @@
 <?php
 
+/**
+ * Bid datawriter helpers, used to verify data
+ *
+ * @package 		XenAuction
+ * @author 			Nathan Rijksen <nathan@naatan.com>
+ * @copyright		2012 Naatan.com
+ */
 class XenAuction_DataWriter_Helper_Bid
 {
 	
+	/**
+	 * @var array 	Cache of auctions so we don't tax the database each time we want to validate an auction field
+	 */
 	protected static $_auctionCache = array();
 	
+	/**
+	 * Get auction for bid
+	 *
+	 * This is in the datawriter rather than in the model since it's caching is very specific 
+	 * to the use of this datawriter
+	 *
+	 * @param XenForo_DataWriter $dw 
+	 * 
+	 * @return array
+	 */
 	protected static function getAuctionForBid(XenForo_DataWriter $dw)
 	{
 		$auctionId = $dw->get('auction_id');
 		
+		// If this auction is cached, return it from the cache
 		if (isset(self::$_auctionCache[$auctionId]))
 		{
 			return self::$_auctionCache[$auctionId];
 		}
 		
+		// Get auction from database and save it in the cache
 		$db = XenForo_Application::getDb();
 		self::$_auctionCache[$auctionId] = $db->fetchRow('
 			SELECT *
@@ -23,7 +45,16 @@ class XenAuction_DataWriter_Helper_Bid
 		
 		return self::$_auctionCache[$auctionId];
 	}
-
+	
+	/**
+	 * Verify that the given bid exists
+	 *
+	 * @param int            		$bid_id    
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param string|bool           $fieldName 
+	 * 
+	 * @return bool               
+	 */
 	public static function verifyBidId(&$bid_id, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		$db = XenForo_Application::getDb();
@@ -42,6 +73,15 @@ class XenAuction_DataWriter_Helper_Bid
 		return false;
 	}
 	
+	/**
+	 * Verify that the user is not also the auction creator
+	 * 
+	 * @param int            		$userId    
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param string|bool           $fieldName 
+	 * 
+	 * @return bool
+	 */
 	public static function verifyUserId(&$userId, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		$auction = self::getAuctionForBid($dw);
@@ -55,13 +95,22 @@ class XenAuction_DataWriter_Helper_Bid
 		return true;
 	}
 	
+	/**
+	 * Verify that the bid/buy action is allowed on this auction
+	 * 
+	 * @param bool            		$isBuyout  
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param string|bool           $fieldName 
+	 * 
+	 * @return bool               
+	 */
 	public static function verifyIsBuyout(&$isBuyout, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		$auction = self::getAuctionForBid($dw);
 		
 		if (
-			($isBuyout == 1 AND $auction['buy_now'] == NULL) OR
-			($isBuyout == 0 AND $auction['min_bid'] == NULL)
+			($isBuyout == 1 AND $auction['buy_now'] === NULL) OR
+			($isBuyout == 0 AND $auction['min_bid'] === NULL)
 		)
 		{
 			$dw->error(new XenForo_Phrase('invalid_buy_action'), $fieldName);
@@ -71,6 +120,15 @@ class XenAuction_DataWriter_Helper_Bid
 		return true;
 	}
 	
+	/**
+	 * Verify that the buyout amount is valid
+	 * 
+	 * @param int            		$amount    
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param string|bool           $fieldName 
+	 * 
+	 * @return bool               
+	 */
 	public static function verifyAmount(&$amount, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		if ($dw->get('is_buyout') == 1)
@@ -89,6 +147,15 @@ class XenAuction_DataWriter_Helper_Bid
 		return true;
 	}
 	
+	/**
+	 * Verify that the quantity given does not exceed the availability
+	 * 
+	 * @param int            		$quantity  
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param string|bool           $fieldName 
+	 * 
+	 * @return bool               
+	 */
 	public static function verifyQuantity(&$quantity, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		if ($dw->get('is_buyout') == 0)
