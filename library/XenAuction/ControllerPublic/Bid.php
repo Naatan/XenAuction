@@ -209,6 +209,12 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			'quantity'	=> XenForo_Input::UINT
 		));
 		
+		// Enforce quantity of at least 1
+		if (empty($input['quantity']) || $input['quantity'] < 1)
+		{
+			$input['quantity'] = 1;
+		}
+		
 		// Retrieve auction details from DB
 		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
 		$auction     	= $auctionModel->getAuctionById($input['id']);
