@@ -63,24 +63,38 @@ class XenAuction_CronEntry_Auction
 		// Check if this auction had a top bidder
 		if ($auction['top_bidder'])
 		{
-			// Retrieve top bid data
-			$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-			$bid 			= $auctionModel->getTopBid($auction['auction_id']);
-			
-			// Set phrase params
-			$args 			= array_merge($auction, $bid);
-			
-			// Get user configured payment address
-			$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
-			$paymentAddress	= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
-			
-			// Parse notification title and message
-			$title 		= new XenForo_Phrase('won_auction_x', $auction);
-			$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));
-			$message	= new XenForo_Phrase('won_auction_message', array_merge($args, array('complete_purchase' => $complete)));
-			
-			// Send notification
-			XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
+			if ($auction['availability'] == 0)
+			{
+				// Prepare auction data to be updated
+				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+				$dw->setExistingData($auction);
+				$dw->set('top_bidder',	0); // Set top_bidder to 0 as a workaround
+				
+				// TODO: properly implement the top bidder being "outbid" when an auction has been "bought"
+				// Update auction DB entry
+				$dw->save();
+			}
+			else
+			{
+				// Retrieve top bid data
+				$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+				$bid 			= $auctionModel->getTopBid($auction['auction_id']);
+				
+				// Set phrase params
+				$args 			= array_merge($auction, $bid);
+				
+				// Get user configured payment address
+				$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
+				$paymentAddress	= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
+				
+				// Parse notification title and message
+				$title 		= new XenForo_Phrase('won_auction_x', $auction);
+				$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));
+				$message	= new XenForo_Phrase('won_auction_message', array_merge($args, array('complete_purchase' => $complete)));
+				
+				// Send notification
+				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
+			}
 		}
 
 	}

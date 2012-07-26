@@ -225,6 +225,7 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="seconds_left" version_id="0" version_string=""><![CDATA[Seconds Left]]></phrase>
     <phrase title="select_one" version_id="0" version_string=""><![CDATA[Select One]]></phrase>
     <phrase title="skip_message" version_id="0" version_string=""><![CDATA[Skip Message]]></phrase>
+    <phrase title="sold_out" version_id="0" version_string=""><![CDATA[Sold Out]]></phrase>
     <phrase title="starting_bid" version_id="0" version_string=""><![CDATA[Starting Bid]]></phrase>
     <phrase title="summary" version_id="0" version_string=""><![CDATA[Summary]]></phrase>
     <phrase title="tags" version_id="0" version_string=""><![CDATA[Tags]]></phrase>
@@ -394,7 +395,7 @@ new XenAuction.Bid;
 		</dl>
 	
 </form>]]></template>
-    <template title="auction_create" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_create.css" />
+    <template title="auction_create" version_id="14" version_string="1.0 RC1"><![CDATA[<xen:require css="auction_create.css" />
 <xen:require css="auction_tags.css" />
 <xen:require js="js/xenauction/auctions.js" />
 <xen:require js="js/xenauction/chosen/chosen.jquery.js" />
@@ -489,8 +490,7 @@ new XenAuction.Bid;
 		<dl class="ctrlUnit" id="availability_wrap">
 			<dt>{xen:phrase copies_to_create}:</dt>
 			<dd>
-				<input type="text" name="batch" class="textCtrl autoSize" placeholder="1" size="10" maxlength="10"/><br/>
-				<em><small>This is a temporary solution for batch creating auctions, it will be replaced in the final version.</small></em>
+				<input type="text" name="batch" class="textCtrl autoSize" placeholder="1" size="10" maxlength="10"/>
 			</dd>
 		</dl>
 		
@@ -791,7 +791,7 @@ new XenAuction.Create;
 	<div class="emptyResults">{xen:phrase you_have_no_auctions}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_bids" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
+    <template title="auction_history_bids" version_id="14" version_string="1.0 RC1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -835,6 +835,8 @@ new XenAuction.Create;
 								<div class="amount">{$auction.availability}</div>
 								<div class="description">{xen:phrase available}</div>
 							</div>
+						<xen:elseif is="{$auction.top_bidder}===0"/>
+							{xen:phrase sold_out}
 						<xen:else/>
 							{xen:phrase no_bids}
 						</xen:if>
