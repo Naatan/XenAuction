@@ -182,7 +182,10 @@ class XenAuction_Model_Auction extends XenForo_Model
 					' . $whereClause . ' AND
 					(
 						bid.is_buyout = 1 OR
-						auction.status = \'expired\'
+						(
+							auction.status = \'expired\' AND
+							auction.top_bidder > 0
+						)
 					)
 				
 				' . $orderClause . '
