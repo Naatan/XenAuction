@@ -71,7 +71,7 @@ class XenAuction_DataWriter_Helper_Auction
 	public static function verifyAvailability(&$availability, XenForo_DataWriter $dw, $fieldName = false)
 	{
 		// Set availability to 1 if 0 was given
-		if ($availability == 0)
+		if ($dw->isInsert() AND $availability == 0)
 		{
 			$availability = 1;
 		}
