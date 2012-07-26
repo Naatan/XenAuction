@@ -123,12 +123,12 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="bid" version_id="0" version_string=""><![CDATA[Bid]]></phrase>
     <phrase title="bidding_on_x" version_id="0" version_string=""><![CDATA[Bidding on {title}]]></phrase>
     <phrase title="bid_must_be_higher" version_id="0" version_string=""><![CDATA[Your bid must be higher than the current bid]]></phrase>
-    <phrase title="bought_auction_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Thank you for purchasing [i]{title}[/i].
+    <phrase title="bought_auction_message" version_id="14" version_string="1.0 RC1"><![CDATA[Thank you for purchasing [i]{title}[/i].
 
 [b]Quantity:[/b] {quantity}
 [b]Cost:[/b] ${amount}
 
-{complete_purchase}]]></phrase>
+{payment_address}]]></phrase>
     <phrase title="bought_auction_x" version_id="0" version_string=""><![CDATA[Auction Bought: {title}]]></phrase>
     <phrase title="buyer" version_id="0" version_string=""><![CDATA[Buyer]]></phrase>
     <phrase title="buying_auctions" version_id="0" version_string=""><![CDATA[Buying Auctions]]></phrase>
@@ -142,11 +142,6 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="choose_tags" version_id="0" version_string=""><![CDATA[Choose Tags]]></phrase>
     <phrase title="completed" version_id="0" version_string=""><![CDATA[Completed]]></phrase>
     <phrase title="complete_auction" version_id="0" version_string=""><![CDATA[Complete Auction]]></phrase>
-    <phrase title="complete_purchase" version_id="3" version_string="1.0 Beta 2 (build 2)"><![CDATA[To complete your purchase, please send your payment to 
-
-{payment_address}
-
-And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="complete_sale" version_id="0" version_string=""><![CDATA[Complete Sale]]></phrase>
     <phrase title="copies_to_create" version_id="0" version_string=""><![CDATA[Copies to create]]></phrase>
     <phrase title="create_auction" global_cache="1" version_id="0" version_string=""><![CDATA[Create Auction]]></phrase>
@@ -238,11 +233,11 @@ The new top bid is: ${top_bid}.]]></phrase>
     <phrase title="user_field_auctionPaymentAddress_desc" version_id="0" version_string=""><![CDATA[Enter the address that purchasers are supposed to send their payments to.]]></phrase>
     <phrase title="viewing_auctions" version_id="0" version_string=""><![CDATA[Viewing Auctions]]></phrase>
     <phrase title="view_more" version_id="0" version_string=""><![CDATA[View More]]></phrase>
-    <phrase title="won_auction_message" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[Congratulations! You have won [i]{title}[/i].
+    <phrase title="won_auction_message" version_id="14" version_string="1.0 RC1"><![CDATA[Congratulations! You have won [i]{title}[/i].
 
 [b]Your winning bid (cost):[/b] ${top_bid}
 
-{complete_purchase}]]></phrase>
+{payment_address}]]></phrase>
     <phrase title="won_auction_x" version_id="0" version_string=""><![CDATA[Auction Won: {title}]]></phrase>
     <phrase title="your_auctions" version_id="0" version_string=""><![CDATA[Your Auctions]]></phrase>
     <phrase title="your_bid" version_id="0" version_string=""><![CDATA[Your Bid]]></phrase>

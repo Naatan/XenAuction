@@ -265,6 +265,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		// Get the address field setting from the auctioneer
 		$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
 		$address 		= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
+		$address 		= str_replace('{bidid}', $bid['bid_id'], $address);
 		
 		// Set notification phrase variables
 		$args = array(
@@ -277,8 +278,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		
 		// set notification title and message ($complete is used in message)
 		$title 		= new XenForo_Phrase('bought_auction_x', $auction);
-		$complete	= new XenForo_Phrase('complete_purchase', $args);
-		$message	= new XenForo_Phrase('bought_auction_message', array_merge($args, array('complete_purchase' => $complete)));
+		$message	= new XenForo_Phrase('bought_auction_message', $args);
 		
 		// Send notification
 		XenAuction_Helper_Notification::sendNotification($visitor['user_id'], $title, $message);
