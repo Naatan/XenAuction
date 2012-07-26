@@ -192,7 +192,7 @@ class XenAuction_Model_Tag extends XenForo_Model
 			$results[$row[$key]][] = $row;
 		}
 
-		return empty($results) ? false : $result;
+		return empty($results) ? false : $results;
 	}
 	
 }
