@@ -1668,6 +1668,17 @@ new XenAuction.List;
 	</xen:if>
 	
 </tr>]]></template>
+    <template title="auction_navigation_tab" version_id="14" version_string="1.0 RC1"><![CDATA[<ul class="secondaryContent blockLinksList">
+	<xen:if is="{xen:helper auction, hasPermission, 'viewAuctions'}">
+		<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
+		<li><a href="{xen:link auction-history}">{xen:phrase history}</a></li>
+	</xen:if>
+	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
+		<li><a href="{xen:link auction-process/create}">{xen:phrase create_auction}</a></li>
+	</xen:if>
+	<xen:include template="auction_navigation_tab_extra" />
+</ul>]]></template>
+    <template title="auction_navigation_tab_extra" version_id="0" version_string=""><![CDATA[]]></template>
     <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
 XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
 XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
@@ -2142,15 +2153,6 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 	width: 120px;
 	height: 80px;
 }]]></template>
-    <template title="navigation_tab_auctions" version_id="0" version_string=""><![CDATA[<ul class="secondaryContent blockLinksList">
-	<xen:if is="{xen:helper auction, hasPermission, 'viewAuctions'}">
-		<li><a href="{xen:link auctions}">{xen:phrase auction_list}</a></li>
-		<li><a href="{xen:link auction-history}">{xen:phrase history}</a></li>
-	</xen:if>
-	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
-		<li><a href="{xen:link auction-process/create}">{xen:phrase create_auction}</a></li>
-	</xen:if>
-</ul>]]></template>
   </templates>
   <bb_code_media_sites/>
   <template_modifications/>

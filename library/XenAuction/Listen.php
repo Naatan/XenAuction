@@ -24,7 +24,7 @@ class XenAuction_Listen
 		$extraTabs['auctions'] = array(
 			'title' 		=> new XenForo_Phrase('auctions'),
 			'href'  		=> XenForo_Link::buildPublicLink('auctions'),
-			'linksTemplate' => 'navigation_tab_auctions',
+			'linksTemplate' => 'auction_navigation_tab',
 			'position'  	=> 'middle'
 		);
 	}
