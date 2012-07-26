@@ -249,6 +249,10 @@ class XenAuction_Install
 			UPDATE `xf_auction_bid` SET `sale_date` = `bid_date`
 		");
 		
+		XenForo_Application::getDb()->query("
+			DELETE FROM `xf_data_registry` WHERE `data_key` = 'auctionTags'
+		");
+		
 		$images = XenForo_Application::getDb()->fetchAll("
 			SELECT image
 			FROM xf_auction
