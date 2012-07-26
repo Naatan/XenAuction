@@ -121,7 +121,8 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		$dw->bulkSet(array(
 			'auction_id' 	=> $auction['auction_id'],
 			'bid_user_id' 	=> $visitor->user_id,
-			'amount'		=> $input['bid']
+			'amount'		=> $input['bid'],
+			'is_buyout'		=> false
 		));
 		
 		// Validate data before writing to DB
