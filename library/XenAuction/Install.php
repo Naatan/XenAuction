@@ -44,7 +44,7 @@ class XenAuction_Install
 		
 		if ($existingAddOn AND $existingAddOn['version_id'] < 13)
 		{
-			self::update12();
+			self::update13();
 		}
 		
 	}
@@ -210,6 +210,22 @@ class XenAuction_Install
 		
 		XenForo_Application::getDb()->query("
 			DELETE FROM `xf_user_field` WHERE `field_id` = 'auctionEnableConfirm'
+		");
+	}
+	
+	/**
+	 * 1.0 RC 1 Update
+	 * 
+	 * @return void    
+	 */
+	public static function update14()
+	{
+		XenForo_Application::getDb()->query("
+			UPDATE xf_auction SET min_bid = NULL, top_bid = NULL, top_bidder = NULL, bids = 0 WHERE min_bid = 0
+		");
+		
+		XenForo_Application::getDb()->query("
+			UPDATE xf_auction SET buy_now = NULL WHERE buy_now = 0
 		");
 	}
 	

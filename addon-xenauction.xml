@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.0 Beta 5 (build 1)" version_id="13" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.0 RC1" version_id="14" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -134,6 +134,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="buying_auctions" version_id="0" version_string=""><![CDATA[Buying Auctions]]></phrase>
     <phrase title="buying_x" version_id="0" version_string=""><![CDATA[Buying {title}]]></phrase>
     <phrase title="buyout" version_id="0" version_string=""><![CDATA[Buyout]]></phrase>
+    <phrase title="buyout_too_low" version_id="0" version_string=""><![CDATA[The buyout price is too low]]></phrase>
     <phrase title="buy_now" version_id="0" version_string=""><![CDATA[Buy Now]]></phrase>
     <phrase title="canceled" version_id="0" version_string=""><![CDATA[Canceled]]></phrase>
     <phrase title="cant_buy_own_auction" version_id="0" version_string=""><![CDATA[You cannot buy your own auctions]]></phrase>
@@ -168,6 +169,7 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="keyword_or_id" version_id="0" version_string=""><![CDATA[Keyword or ID]]></phrase>
     <phrase title="keyword_tag" version_id="0" version_string=""><![CDATA[Keyword / Tag]]></phrase>
     <phrase title="minutes_left" version_id="0" version_string=""><![CDATA[Minutes Left]]></phrase>
+    <phrase title="min_bid_too_low" version_id="0" version_string=""><![CDATA[The minimum bid is too low]]></phrase>
     <phrase title="must_use_bid_or_buyout" version_id="0" version_string=""><![CDATA[You have to select either a bid or a buyout value]]></phrase>
     <phrase title="my_activity" version_id="0" version_string=""><![CDATA[My Activity]]></phrase>
     <phrase title="no_auctions_found" version_id="0" version_string=""><![CDATA[No auctions were found]]></phrase>
@@ -890,7 +892,7 @@ new XenAuction.Create;
 	<div class="emptyResults">{xen:phrase you_have_no_bids}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_buyouts" version_id="9" version_string="1.0 Beta 2 (build 8)"><![CDATA[<div>
+    <template title="auction_history_buyouts" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -910,16 +912,10 @@ new XenAuction.Create;
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
 					</td>
 					<td class="timeLeft">
-						<xen:if is="{$auction.status} == 'active'">
-							{$auction.expiration_date}
-						<xen:elseif is="{$auction.status} == 'canceled'"/>
-							{xen:phrase canceled}
+						<xen:if is="{$auction.completed}">
+							{xen:phrase completed}
 						<xen:else/>
-							<xen:if is="{$auction.top_bidder}">
-								{xen:phrase finished}
-							<xen:else/>
-								{xen:phrase expired}
-							</xen:if>		
+							{xen:phrase pending}
 						</xen:if>
 					</td>
 					<td class="purchaseAmount">
