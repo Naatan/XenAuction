@@ -170,7 +170,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 		$limitOptions 	= $this->prepareLimitFetchOptions($fetchOptions);
 		$whereClause 	= $this->prepareAuctionFetchConditions($conditions, $fetchOptions);
 		
-		$orderClause = $this->prepareAuctionOrderOptions($fetchOptions, 'auction.expiration_date');
+		$orderClause = $this->prepareAuctionOrderOptions($fetchOptions, 'bid.sale_date');
 		
 		return $this->_getDb()->fetchAll($this->limitQueryResults('
 				SELECT bid.*, auction.*
@@ -458,7 +458,8 @@ class XenAuction_Model_Auction extends XenForo_Model
 			'expiration_date' 	=> 'auction.expiration_date',
 			'bids' 				=> 'auction.bids',
 			'top_bid' 			=> 'auction.top_bid',
-			'buy_now' 			=> 'auction.buy_now'
+			'buy_now' 			=> 'auction.buy_now',
+			'sale_date' 		=> 'bid.sale_date'
 		);
 		return $this->getOrderByClause($choices, $fetchOptions, $defaultOrderSql);
 	}

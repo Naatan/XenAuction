@@ -91,16 +91,22 @@ class XenAuction_CronEntry_Auction
 				$args 			= array_merge($auction, $bid);
 				
 				// Get user configured payment address
-				$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
-				$paymentAddress	= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
+				$fieldModel 			= XenForo_Model::create('XenForo_Model_UserField');
+				$args['payment_address']= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
 				
 				// Parse notification title and message
 				$title 		= new XenForo_Phrase('won_auction_x', $auction);
-				$complete	= new XenForo_Phrase('complete_purchase', array_merge($args, $paymentAddress));
+				$complete	= new XenForo_Phrase('complete_purchase', $args);
 				$message	= new XenForo_Phrase('won_auction_message', array_merge($args, array('complete_purchase' => $complete)));
 				
 				// Send notification
 				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
+				
+				// Set sale date of bid
+				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+				$dw->setExistingData($bid);
+				$dw->set('sale_date', XenForo_Application::$time);
+				$dw->save();
 			}
 		}
 

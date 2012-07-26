@@ -226,7 +226,8 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			'bid_user_id' 	=> $visitor->user_id,
 			'amount'		=> $input['quantity'] * $auction['buy_now'],
 			'quantity'		=> $input['quantity'],
-			'is_buyout' 	=> 1
+			'is_buyout' 	=> 1,
+			'sale_date'		=> XenForo_Application::$time
 		));
 		
 		// Validate data before writing to DB

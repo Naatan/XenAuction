@@ -205,7 +205,9 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		// Set fetch options
 		$fetchOptions 	= array(
 			'page'		=> $input['page'],
-			'perPage'	=> $perPage
+			'perPage'	=> $perPage,
+			'order'		=> 'sale_date',
+			'direction'	=> 'DESC'
 		);
 		
 		// Prepare database models

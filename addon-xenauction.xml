@@ -1243,7 +1243,7 @@ $(document).ready(function() {
 		</ul>
 	</td>
 </tr>]]></template>
-    <template title="auction_history_sales" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
+    <template title="auction_history_sales" version_id="14" version_string="1.0 RC1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -1292,8 +1292,8 @@ $(document).ready(function() {
 						</dl>
 					</td>
 					<td class="purchaseDate">
-						<div class="DateTime muted">{xen:date {$auction.bid_date}}</div>
-						<div class="DateTime muted">{xen:time {$auction.bid_date}}</div>
+						<div class="DateTime muted">{xen:date {$auction.sale_date}}</div>
+						<div class="DateTime muted">{xen:time {$auction.sale_date}}</div>
 					</td>
 				</tr>
 				

@@ -239,7 +239,15 @@ class XenAuction_Install
 		
 		XenForo_Application::getDb()->query("
 			ALTER TABLE `xf_auction_bid` ADD INDEX (`is_buyout`, `auction_id`)
-		");		
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction_bid` ADD `sale_date` INT(10)  UNSIGNED  NULL  DEFAULT NULL  AFTER `bid_date`
+		");
+		
+		XenForo_Application::getDb()->query("
+			UPDATE `xf_auction_bid` SET `sale_date` = `bid_date`
+		");
 		
 		$dataModel = XenForo_Model::create('XenForo_Model_DataRegistry');
 		$dataModel->delete('auctionTags');

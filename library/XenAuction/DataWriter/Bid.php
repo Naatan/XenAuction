@@ -45,7 +45,8 @@ class XenAuction_DataWriter_Bid extends XenForo_DataWriter
 							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyAmount')),
 					
 				'completed'		=> array('type' => self::TYPE_UINT, 'default' => 0),
-				'bid_date'		=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time)
+				'bid_date'		=> array('type' => self::TYPE_UINT, 'default' => XenForo_Application::$time),
+				'sale_date'		=> array('type' => self::TYPE_UINT, 'default' => NULL)
 				
 			)
 		);
