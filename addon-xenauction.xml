@@ -629,7 +629,7 @@ label[for="ctrl_tags"]
 
 	
 </form>]]></template>
-    <template title="auction_details.css" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[.auctionDetails .message
+    <template title="auction_details.css" version_id="14" version_string="1.0 RC1"><![CDATA[.auctionDetails .message
 {
 	min-height: 170px;
 }
@@ -677,13 +677,19 @@ dl.doubleButtons dt
 
 #lbOverlay, #lbCenter, #lbBottomContainer {
 	z-index: 99999 !important;
+}
+
+.auctionImage.size_m
+{
+	width: 150px;
+	height: 150px;
 }]]></template>
-    <template title="auction_details_content" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_details.css" />
+    <template title="auction_details_content" version_id="14" version_string="1.0 RC1"><![CDATA[<xen:require css="auction_details.css" />
 
 <div class="auctionDetails">
 
 	<div class="message">
-		{xen:helper auction, image, $auction, 'n', 0, 0}
+		{xen:helper auction, image, $auction, 'm', 0, 0}
 		{xen:raw $auction.messageHtml}
 	</div>
 
@@ -1409,7 +1415,7 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[table.auctions
+    <template title="auction_list.css" version_id="14" version_string="1.0 RC1"><![CDATA[table.auctions
 {
 	width: 100%;
 }
@@ -1531,12 +1537,6 @@ new XenAuction.List;
 	background-repeat: no-repeat;
 }
 
-.auctionImage.size_t
-{
-	width: 32px;
-	height: 32px;
-}
-
 .auctionImage.size_s
 {
 	width: 48px;
@@ -1544,12 +1544,6 @@ new XenAuction.List;
 }
 
 .auctionImage.size_m
-{
-	width: 120px;
-	height: 120px;
-}
-
-.auctionImage.size_n
 {
 	width: 150px;
 	height: 150px;
