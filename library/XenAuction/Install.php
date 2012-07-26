@@ -47,6 +47,11 @@ class XenAuction_Install
 			self::update13();
 		}
 		
+		if ($existingAddOn AND $existingAddOn['version_id'] < 14)
+		{
+			self::update14();
+		}
+		
 	}
 	
 	/**
@@ -228,6 +233,14 @@ class XenAuction_Install
 			UPDATE xf_auction SET buy_now = NULL WHERE buy_now = 0
 		");
 		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction` ADD INDEX (`status`, `title`, `expiration_date`)
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction_bid` ADD INDEX (`is_buyout`, `auction_id`)
+		");		
+		
 		$dataModel = XenForo_Model::create('XenForo_Model_DataRegistry');
 		$dataModel->delete('auctionTags');
 	}
@@ -267,8 +280,9 @@ class XenAuction_Install
 			  `top_bidder` int(10) unsigned DEFAULT NULL,
 			  `placement_date` int(10) unsigned DEFAULT NULL,
 			  `expiration_date` int(10) unsigned DEFAULT NULL,
-			  PRIMARY KEY (`auction_id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8
+			  PRIMARY KEY (`auction_id`),
+			  KEY `status` (`status`,`title`,`expiration_date`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		
 		XenForo_Application::getDb()->query("
@@ -281,8 +295,9 @@ class XenAuction_Install
 			  `amount` int(10) unsigned NOT NULL,
 			  `completed` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			  `bid_date` int(10) unsigned NOT NULL,
-			  PRIMARY KEY (`bid_id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8
+			  PRIMARY KEY (`bid_id`),
+			  KEY `is_buyout` (`is_buyout`,`auction_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		
 		XenForo_Application::getDb()->query("

@@ -364,7 +364,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 		// Title
 		if ( ! empty($conditions['title']))
 		{
-			$searchConditions[] = 'auction.title LIKE ' . $db->quote('%'. $conditions['title'] . '%');
+			$searchConditions[] = 'auction.title LIKE ' . $db->quote($conditions['title'] . '%');
+		}
+		else
+		{
+			$searchConditions[] = 'auction.title = auction.title';
 		}
 		
 		// Auction ID search
