@@ -321,6 +321,7 @@ class XenAuction_Install
 			  `amount` int(10) unsigned NOT NULL,
 			  `completed` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			  `bid_date` int(10) unsigned NOT NULL,
+			  `sale_date` int(10) unsigned DEFAULT NULL,
 			  PRIMARY KEY (`bid_id`),
 			  KEY `is_buyout` (`is_buyout`,`auction_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
