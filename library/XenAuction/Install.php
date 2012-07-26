@@ -39,7 +39,7 @@ class XenAuction_Install
 		
 		if ($existingAddOn AND $existingAddOn['version_id'] < 12)
 		{
-			self::update12();
+			//self::update12();
 		}
 		
 		if ($existingAddOn AND $existingAddOn['version_id'] < 13)
