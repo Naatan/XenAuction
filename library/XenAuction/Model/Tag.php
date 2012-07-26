@@ -49,11 +49,23 @@ class XenAuction_Model_Tag extends XenForo_Model
 	 */
 	public function getTags()
 	{
-		return $this->fetchAllKeyed('
+		$dataModel 	= XenForo_Model::create('XenForo_Model_DataRegistry');
+		$result 	= $dataModel->get('auctionTags');
+		
+		if ($result)
+		{
+			return $result;
+		}
+		
+		$result = $this->fetchAllKeyed('
 			SELECT *
 			FROM xf_auction_tag
 			ORDER BY name ASC
 		', 'name');
+		
+		$dataModel->set('auctionTags', $result);
+		
+		return $result;
 	}
 	
 	/**
@@ -164,6 +176,9 @@ class XenAuction_Model_Tag extends XenForo_Model
 			} catch (Zend_Db_Statement_Exception $e) {}	
 			
 		}
+		
+		$dataModel = XenForo_Model::create('XenForo_Model_DataRegistry');
+		$dataModel->delete('auctionTags');
 	}
 	
 	/**

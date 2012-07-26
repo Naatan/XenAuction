@@ -227,6 +227,9 @@ class XenAuction_Install
 		XenForo_Application::getDb()->query("
 			UPDATE xf_auction SET buy_now = NULL WHERE buy_now = 0
 		");
+		
+		$dataModel = XenForo_Model::create('XenForo_Model_DataRegistry');
+		$dataModel->delete('auctionTags');
 	}
 	
 	/**
