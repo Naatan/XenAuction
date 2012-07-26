@@ -56,6 +56,7 @@ class XenAuction_Listen
 		{
 			$contents .= $template->create('auction_widget', array('auctions' => $auctions));
 		}
+		
 	}
 
 	public static function template_create($templateName, array &$params, XenForo_Template_Abstract $template)
@@ -64,6 +65,7 @@ class XenAuction_Listen
 		{
 			$template->preloadTemplate('auction_widget');
 		}
+		
 	}
 
 	public static function front_controller_pre_dispatch(XenForo_FrontController $fc, XenForo_RouteMatch &$routeMatch)
@@ -126,6 +128,5 @@ class XenAuction_Listen
 		}
 		/* Extend End */
 	}
-
 
 }

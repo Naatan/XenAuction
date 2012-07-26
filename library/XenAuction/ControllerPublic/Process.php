@@ -81,11 +81,20 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 			'user_id'			=> $visitor->user_id,
 			'title'          	=> $input['title'],
 			'image'				=> $imagePath,
-			'min_bid'        	=> $input['bid_enable'] ? $input['starting_bid'] : NULL,
-			'buy_now'        	=> $input['buyout_enable'] ? $input['buyout'] : NULL,
-			'availability'   	=> $input['buyout_enable'] ? $input['availability'] : NULL,
 			'expiration_date'	=> time() + ((int) $input['expires'] * 86400)
 		);
+		
+		// Set optional values
+		if ($input['bid_enable'])
+		{
+			$data['min_bid'] 		= $input['starting_bid'];
+		}
+		
+		if ($input['buyout_enable'])
+		{
+			$data['buy_now'] 		= $input['buyout'];
+			$data['availability'] 	= $input['availability'];
+		}
 		
 		// Parse the message / description (convert to bbcode)
 		$data['message'] = $this->getHelper('Editor')->getMessageText('message', $this->_input);

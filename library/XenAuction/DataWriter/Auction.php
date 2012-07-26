@@ -29,8 +29,13 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 				'status'			=> array('type' => self::TYPE_STRING, 		'default'  => XenAuction_Model_Auction::STATUS_ACTIVE),
 				'archived'			=> array('type' => self::TYPE_UINT, 		'default'  => 0),
 				'image'				=> array('type' => self::TYPE_STRING, 		'default'  => NULL, 		'maxLength' => 50),
-				'min_bid'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
-				'buy_now'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL),
+				
+				'min_bid'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL,
+							'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyMinBid')),
+				
+				'buy_now'			=> array('type' => self::TYPE_UINT_FORCED, 	'default'  => NULL,
+							'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyBuyNow')),
+				
 				'bids'				=> array('type' => self::TYPE_UINT, 		'default'  => 0),
 				'sales'				=> array('type' => self::TYPE_UINT, 		'default'  => 0),
 				
@@ -56,7 +61,7 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 	 */
 	protected function _preSave()
 	{
-		if ($this->get('min_bid') == NULL AND $this->get('buy_now') == NULL)
+		if ($this->get('min_bid') === NULL AND $this->get('buy_now') === NULL)
 		{
 			$this->error(new XenForo_Phrase('must_use_bid_or_buyout'));
 		}

@@ -70,6 +70,12 @@ class XenAuction_DataWriter_Helper_Auction
 	 */
 	public static function verifyAvailability(&$availability, XenForo_DataWriter $dw, $fieldName = false)
 	{
+		// Set availability to 1 if 0 was given
+		if ($availability == 0)
+		{
+			$availability = 1;
+		}
+		
 		// If this is a new entry with a buyout and no availability defined
 		if ($dw->isInsert() AND $dw->get('buy_now') != NULL AND (int) $availability <= 0)
 		{
@@ -82,6 +88,46 @@ class XenAuction_DataWriter_Helper_Auction
 		{
 			$dw->error(new XenForo_Phrase('availability_too_high'), $fieldName);
 			return false;	
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Verify the min_bid field
+	 * 
+	 * @param int            		$minBid    
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param strin|bool            $fieldName 
+	 * 
+	 * @return bool               
+	 */
+	public static function verifyMinBid($minBid, XenForo_DataWriter $dw, $fieldName = false)
+	{
+		if ($minBid < 0 OR $minBid === 0)
+		{
+			$dw->error(new XenForo_Phrase('min_bid_too_low'), $fieldName);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Verify the buy_now field
+	 * 
+	 * @param int            		$amount    
+	 * @param XenForo_DataWriter 	$dw        
+	 * @param strin|bool            $fieldName 
+	 * 
+	 * @return bool               
+	 */
+	public static function verifyBuyNow($amount, XenForo_DataWriter $dw, $fieldName = false)
+	{
+		if ($amount < 0 OR $amount === 0)
+		{
+			$dw->error(new XenForo_Phrase('buyout_too_low'), $fieldName);
+			return false;
 		}
 		
 		return true;
