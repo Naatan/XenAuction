@@ -265,8 +265,9 @@ class XenAuction_Install
 					$_image['image']
 				);
 				
-				@unlink($fileName . 'n.jpg');
+				@unlink($fileName . 'm.jpg');
 				@unlink($fileName . 't.jpg');
+				@rename($fileName . 'n.jpg', $fileName . 'm.jpg');
 			}
 		}
 	}
