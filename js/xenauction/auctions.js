@@ -42,6 +42,12 @@ XenAuction.List.prototype = {
 			}
 			
 			var time = $(this).text();
+			
+			if (isNaN(time))
+			{
+				return;
+			}
+			
 			var left = time - XenAuction.Config.currentTime;
 			
 			if (left < 0)
