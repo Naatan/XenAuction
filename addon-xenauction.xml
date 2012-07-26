@@ -168,6 +168,8 @@ And be sure to include your purchase id: #{bid_id}]]></phrase>
     <phrase title="invalid_buy_action" version_id="0" version_string=""><![CDATA[Action not allowed on this type of auction]]></phrase>
     <phrase title="keyword_or_id" version_id="0" version_string=""><![CDATA[Keyword or ID]]></phrase>
     <phrase title="keyword_tag" version_id="0" version_string=""><![CDATA[Keyword / Tag]]></phrase>
+    <phrase title="lost_auction_message" version_id="0" version_string=""><![CDATA[Unfortunately someone else has bought the auction you were bidding on.]]></phrase>
+    <phrase title="lost_auction_x" version_id="0" version_string=""><![CDATA[Lost Auction: {title}]]></phrase>
     <phrase title="minutes_left" version_id="0" version_string=""><![CDATA[Minutes Left]]></phrase>
     <phrase title="min_bid_too_low" version_id="0" version_string=""><![CDATA[The minimum bid is too low]]></phrase>
     <phrase title="must_use_bid_or_buyout" version_id="0" version_string=""><![CDATA[You have to select either a bid or a buyout value]]></phrase>

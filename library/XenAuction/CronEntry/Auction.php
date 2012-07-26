@@ -63,6 +63,10 @@ class XenAuction_CronEntry_Auction
 		// Check if this auction had a top bidder
 		if ($auction['top_bidder'])
 		{
+			// Retrieve top bid data
+			$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+			$bid 			= $auctionModel->getTopBid($auction['auction_id']);
+				
 			if ($auction['availability'] == 0)
 			{
 				// Prepare auction data to be updated
@@ -73,13 +77,16 @@ class XenAuction_CronEntry_Auction
 				// TODO: properly implement the top bidder being "outbid" when an auction has been "bought"
 				// Update auction DB entry
 				$dw->save();
+				
+				// Parse notification title and message
+				$title 		= new XenForo_Phrase('lost_auction_x', $auction);
+				$message	= new XenForo_Phrase('lost_auction_message', $auction);
+				
+				// Send notification
+				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
 			}
 			else
 			{
-				// Retrieve top bid data
-				$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-				$bid 			= $auctionModel->getTopBid($auction['auction_id']);
-				
 				// Set phrase params
 				$args 			= array_merge($auction, $bid);
 				
