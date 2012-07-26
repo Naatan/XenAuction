@@ -225,29 +225,29 @@ class XenAuction_Install
 	 */
 	public static function update14()
 	{
-		//XenForo_Application::getDb()->query("
-		//	UPDATE xf_auction SET min_bid = NULL, top_bid = NULL, top_bidder = NULL, bids = 0 WHERE min_bid = 0
-		//");
-		//
-		//XenForo_Application::getDb()->query("
-		//	UPDATE xf_auction SET buy_now = NULL WHERE buy_now = 0
-		//");
-		//
-		//XenForo_Application::getDb()->query("
-		//	ALTER TABLE `xf_auction` ADD INDEX (`status`, `title`, `expiration_date`)
-		//");
-		//
-		//XenForo_Application::getDb()->query("
-		//	ALTER TABLE `xf_auction_bid` ADD INDEX (`is_buyout`, `auction_id`)
-		//");
-		//
-		//XenForo_Application::getDb()->query("
-		//	ALTER TABLE `xf_auction_bid` ADD `sale_date` INT(10)  UNSIGNED  NULL  DEFAULT NULL  AFTER `bid_date`
-		//");
-		//
-		//XenForo_Application::getDb()->query("
-		//	UPDATE `xf_auction_bid` SET `sale_date` = `bid_date`
-		//");
+		XenForo_Application::getDb()->query("
+			UPDATE xf_auction SET min_bid = NULL, top_bid = NULL, top_bidder = NULL, bids = 0 WHERE min_bid = 0
+		");
+		
+		XenForo_Application::getDb()->query("
+			UPDATE xf_auction SET buy_now = NULL WHERE buy_now = 0
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction` ADD INDEX (`status`, `title`, `expiration_date`)
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction_bid` ADD INDEX (`is_buyout`, `auction_id`)
+		");
+		
+		XenForo_Application::getDb()->query("
+			ALTER TABLE `xf_auction_bid` ADD `sale_date` INT(10)  UNSIGNED  NULL  DEFAULT NULL  AFTER `bid_date`
+		");
+		
+		XenForo_Application::getDb()->query("
+			UPDATE `xf_auction_bid` SET `sale_date` = `bid_date`
+		");
 		
 		$images = XenForo_Application::getDb()->fetchAll("
 			SELECT image
