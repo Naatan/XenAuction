@@ -40,7 +40,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		// Override tags input with single tag id if provided
 		if ( ! empty($input['tag']))
 		{
-			$input['tags '] = array($input['tag']);
+			$input['tags'] = array($input['tag']);
 		}
 		
 		// Set fetch conditions (WHERE clause)

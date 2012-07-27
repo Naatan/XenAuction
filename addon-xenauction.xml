@@ -359,7 +359,8 @@ new XenAuction.Bid;
 <script type="text/javascript"><!--
 new XenAuction.Bid;
 //--></script>]]></template>
-    <template title="auction_complete" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_complete.css" />
+    <template title="auction_complete" version_id="14" version_string="1.0 RC1"><![CDATA[<xen:require css="auction_complete.css" />
+<xen:require css="auction_details.css" />
 
 <xen:title>{xen:phrase complete_sale}: {$auction.title}</xen:title>
 
@@ -368,13 +369,13 @@ new XenAuction.Bid;
     <xen:breadcrumb href="{xen:link 'auction-process/complete', '', 'id={$auction.bid_id}'}">{xen:phrase complete_sale}</xen:breadcrumb>
 </xen:navigation>
 
-<form action="{xen:link 'auction-process/mark-complete', '', 'id={$auction.bid_id}'}" class="xenForm formOverlay auctionComplete" method="post">
+<form action="{xen:link 'auction-process/mark-complete', '', 'id={$auction.bid_id}'}" class="xenForm formOverlay auctionForm auctionComplete" method="post">
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="id" value="{$auction.bid_id}"/>
 	
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase buyer}:</dt>
-		<dd>{$auction.username}</dd>
+		<dd>{$user.username}</dd>
 	</dl>
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase message}:</dt>
@@ -674,7 +675,7 @@ dl.doubleButtons dt
 	z-index: 99999 !important;
 }
 
-.auctionImage.size_m
+.auctionDetails .auctionImage.size_m
 {
 	width: 150px;
 	height: 150px;
@@ -808,7 +809,7 @@ new XenAuction.Create;
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						{xen:helper auction, image, $auction, 't', 1}
+						{xen:helper auction, image, $auction, 's', 1}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -897,7 +898,7 @@ new XenAuction.Create;
 	<div class="emptyResults">{xen:phrase you_have_no_bids}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_buyouts" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<div>
+    <template title="auction_history_buyouts" version_id="14" version_string="1.0 RC1"><![CDATA[<div>
 <xen:if is="{$auctions}">
 	
 	<div class="pageNavLinkGroup">
@@ -911,7 +912,7 @@ new XenAuction.Create;
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						{xen:helper auction, image, $auction, 't', 1}
+						{xen:helper auction, image, $auction, 's', 1}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}">{$auction.title}</a></h3>
@@ -956,7 +957,7 @@ new XenAuction.Create;
 	<div class="emptyResults">{xen:phrase you_have_no_buyouts}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_list" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="14" version_string="1.0 RC1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
@@ -989,12 +990,12 @@ new XenAuction.Create;
 
 <ul id="HistoryPanes">
 	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
-		<li id="_auctions" class="auctions" data-loadUrl="{xen:link 'auction-history/auctions', '', 'page={$page}'}&search={$search}"></li>
-		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page}'}&search={$search}"></li>
-		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/sales', '', 'page={$page}'}&search={$search}"></li>
+		<li id="_auctions" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'page={$page},search={$search}'}"></li>
+		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page},search={$search}'}"></li>
+		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/sales', 'page={$page},search={$search}'}"></li>
 	</xen:if>
-	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/bids', '', 'page={$page}'}&search={$search}"></li>
-	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:link 'auction-history/buyouts', '', 'page={$page}'}&search={$search}"></li>
+	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/bids', 'page={$page},search={$search}'}"></li>
+	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/buyouts', 'page={$page},search={$search}'}"></li>
 </ul>
 
 <script type="text/javascript"><!--
@@ -1258,7 +1259,7 @@ $(document).ready(function() {
 				
 				<tr class="primaryContent auctionItem status_{$auction.status}">
 					<td class="icon">
-						{xen:helper auction, image, $auction, 't', 1}
+						{xen:helper auction, image, $auction, 's', 1}
 					</td>
 					<td class="title">
 						<h3 class="title"><a class="OverlayTrigger" href="{xen:link 'auctions/details', '', 'id={$auction.auction_id}'}&bid_id={$auction.bid_id}">{$auction.title}</a></h3>

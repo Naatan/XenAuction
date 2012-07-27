@@ -414,6 +414,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		
 		// All done
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_complete', array(
+			'user'		=> $user,
 			'auction'	=> $auction,
 			'message'	=> $message
 		));	
