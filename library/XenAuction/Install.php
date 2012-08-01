@@ -282,7 +282,7 @@ class XenAuction_Install
 	}
 	
 	/**
-	 * 1.0.1 Update
+	 * 1.1 Beta 1 Update
 	 * 
 	 * @return void    
 	 */
