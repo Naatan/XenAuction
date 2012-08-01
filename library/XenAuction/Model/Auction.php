@@ -19,6 +19,9 @@ class XenAuction_Model_Auction extends XenForo_Model
 	const STATUS_CANCELED 	= 'canceled';
 	const STATUS_EXPIRED 	= 'expired';
 	
+	const BID_STATUS_WINNING 	= 'winning';
+	const BID_STATUS_OUTBID 	= 'outbid';
+	const BID_STATUS_REJECTED 	= 'rejected';
 
 	/**
 	 * Get by Auction ID
@@ -42,6 +45,32 @@ class XenAuction_Model_Auction extends XenForo_Model
 	}
 	
 	/**
+	 * Get by Auction based on fetch conditions
+	 * 
+	 * @param	array		$fetchConditions
+	 * @param 	array 		$fetchOptions
+	 * 
+	 * @return	array|bool		Zend_Db_Adapter_Abstract::fetchRow
+	 */
+	public function getAuction(array $fetchConditions, array $fetchOptions = array())
+	{
+		$whereClause = $this->prepareAuctionFetchConditions($fetchConditions, $fetchOptions);
+		$joinOptions = $this->prepareAuctionFetchOptions($fetchOptions);
+		$orderClause = $this->prepareAuctionOrderOptions($fetchOptions, 'auction.auction_id');
+		
+		return $this->_getDb()->fetchRow('
+			SELECT auction.*
+				' . $joinOptions['selectFields'] . '
+			FROM xf_auction AS auction
+				' . $joinOptions['joinTables'] . '
+			WHERE
+			' . $whereClause . '
+			' . $orderClause . '
+			LIMIT 1
+		');
+	}
+	
+	/**
 	 * Get bid by Bid ID
 	 * 
 	 * @param	int			$idBid
@@ -58,23 +87,24 @@ class XenAuction_Model_Auction extends XenForo_Model
 	}
 	
 	/**
-	 * Get top bid for auction
+	 * Get winning bid for auction
 	 * 
 	 * @param	int			$auctionId
 	 * 
 	 * @return	array|bool		Zend_Db_Adapter_Abstract::fetchRow
 	 */
-	public function getTopBid($auctionId)
+	public function getWinningBid($auctionId)
 	{
 		return $this->_getDb()->fetchRow('
 			SELECT *
 			FROM xf_auction_bid
 			WHERE
 				auction_id = ? AND
-				is_buyout = 0
+				is_buyout = 0 AND
+				bid_status = ?
 			ORDER BY amount DESC
 			LIMIT 1
-		', $auctionId);
+		', $auctionId, self::BID_STATUS_WINNING);
 	}
 	
 	/**
@@ -232,7 +262,8 @@ class XenAuction_Model_Auction extends XenForo_Model
 	
 	/**
 	 * Get list of bids for user
-	 * 
+	 *
+	 * @param 	array 			$conditions
 	 * @param	array			$fetchOptions
 	 * 
 	 * @return	array|bool		XenForo_Model::fetchAllKeyed
@@ -327,6 +358,24 @@ class XenAuction_Model_Auction extends XenForo_Model
 			$sqlConditions[] = 'bid.bid_id = ' . $db->quote($conditions['bid_id']);
 		}
 		
+		// Bid Amount
+		if ( isset($conditions['amount']))
+		{
+			$sqlConditions[] = 'bid.amount = ' . $db->quote($conditions['amount']);
+		}
+		
+		// Bid Amount
+		if ( isset($conditions['amount_under']))
+		{
+			$sqlConditions[] = 'bid.amount < ' . $db->quote($conditions['amount_under']);
+		}
+		
+		// Auction ID
+		if ( isset($conditions['auction_id']))
+		{
+			$sqlConditions[] = 'auction.auction_id = ' . $db->quote($conditions['auction_id']);
+		}
+		
 		// Status
 		if ( isset($conditions['status']))
 		{
@@ -371,7 +420,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 		}
 		else
 		{
-			$searchConditions[] = 'auction.title = auction.title';
+			$sqlConditions[] = 'auction.title = auction.title';
 		}
 		
 		// Auction ID search
@@ -455,11 +504,14 @@ class XenAuction_Model_Auction extends XenForo_Model
 	public function prepareAuctionOrderOptions(array &$fetchOptions, $defaultOrderSql = '')
 	{
 		$choices = array(
+			'auction_id'		=> 'auction.auction_id',
 			'expiration_date' 	=> 'auction.expiration_date',
 			'bids' 				=> 'auction.bids',
 			'top_bid' 			=> 'auction.top_bid',
 			'buy_now' 			=> 'auction.buy_now',
-			'sale_date' 		=> 'bid.sale_date'
+			'sale_date' 		=> 'bid.sale_date',
+			'bid_date' 			=> 'bid.bid_date',
+			'amount'			=> 'bid.amount'
 		);
 		return $this->getOrderByClause($choices, $fetchOptions, $defaultOrderSql);
 	}

@@ -153,28 +153,50 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		// Update auction DB entry
 		$dw->save();
 		
-		// Check if this auction already had a top bidder, if so we'll need to let him know
-		// that he has been outbid
+		// Check if this auction already had a top bidder
 		if ($auction['top_bidder'])
 		{
-			// Retrieve outbid user profile from database
-			$userModel 	= XenForo_Model::create('XenForo_Model_User');
-			$outbidUser = $userModel->getUserById($auction['top_bidder']);
-			
-			// Set notification phrase variables
-			$args = array(
-				'top_bidder'	=> $visitor->username,
-				'link'			=> XenForo_Link::buildPublicLink('full:auctions/details', null, array('id' => $auction['auction_id']))
+			// Set fetch conditions to retrieve the old winning bid
+			$fetchConditions 	= array(
+				'bid_user_id' 	=> $auction['top_bidder'],
+				'auction_id'	=> $auction['auction_id'],
+				'amount'		=> $auction['top_bid']
 			);
-			$args = array_merge($outbidUser, $args);
-			$args = array_merge($auction, $args);
+			$fetchOptions 		= array(
+				'join'	=> XenAuction_Model_Auction::FETCH_BID
+			);
 			
-			// Parse PM title and message
-			$title 		= new XenForo_Phrase('outbid_on_x', $auction);
-			$message	= new XenForo_Phrase('outbid_message', $args);
+			// Retrieve old winning bid
+			$bid = $auctionModel->getAuction($fetchConditions, $fetchOptions);
 			
-			// Send notification to outbid user
-			XenAuction_Helper_Notification::sendNotification($outbidUser['user_id'], $title, $message);
+			// Update status of old winning bid
+			$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+			$dw->setExistingData($bid);
+			$dw->set('bid_status', XenAuction_Model_Auction::BID_STATUS_OUTBID);
+			$dw->save();
+			
+			// If the user outbid someone other than himself we need to notify them
+			if ($auction['top_bidder'] != $visitor->user_id)
+			{
+				// Retrieve outbid user profile from database
+				$userModel 	= XenForo_Model::create('XenForo_Model_User');
+				$outbidUser = $userModel->getUserById($auction['top_bidder']);
+				
+				// Set notification phrase variables
+				$args = array(
+					'top_bidder'	=> $visitor->username,
+					'link'			=> XenForo_Link::buildPublicLink('full:auctions/details', null, array('id' => $auction['auction_id']))
+				);
+				$args = array_merge($outbidUser, $args);
+				$args = array_merge($auction, $args);
+				
+				// Parse PM title and message
+				$title 		= new XenForo_Phrase('outbid_on_x', $auction);
+				$message	= new XenForo_Phrase('outbid_message', $args);
+				
+				// Send notification to outbid user
+				XenAuction_Helper_Notification::sendNotification($outbidUser['user_id'], $title, $message);
+			}
 		}
 		
 		// All done

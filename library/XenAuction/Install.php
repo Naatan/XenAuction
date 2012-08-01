@@ -52,6 +52,11 @@ class XenAuction_Install
 			self::update14();
 		}
 		
+		if ($existingAddOn AND $existingAddOn['version_id'] < 15)
+		{
+			self::update15();
+		}
+		
 	}
 	
 	/**
@@ -274,6 +279,37 @@ class XenAuction_Install
 				@rename($fileName . 'n.jpg', $fileName . 'm.jpg');
 			}
 		}
+	}
+	
+	/**
+	 * 1.0.1 Update
+	 * 
+	 * @return void    
+	 */
+	public static function update15()
+	{
+		$db = XenForo_Application::getDb();
+		$new = $db->fetchRow("
+			SELECT bid_id + 10000 AS newIncrement FROM xf_auction_bid ORDER BY bid_id DESC LIMIT 1
+		");
+		
+		if ($new)
+		{
+			$db->query("ALTER TABLE xf_auction_bid AUTO_INCREMENT = " . $db->quote($new['newIncrement']));	
+		}
+		
+		$db->query("ALTER TABLE `xf_auction_bid` ADD `bid_status` ENUM('winning','outbid','rejected')  NOT NULL  DEFAULT 'winning'  AFTER `auction_id`");
+		
+		$db->query("UPDATE xf_auction_bid SET bid_status = 'outbid' WHERE is_buyout = 0");
+		
+		$db->query("
+			UPDATE xf_auction_bid bid
+			JOIN xf_auction auction ON
+				bid.auction_id = auction.auction_id AND
+				bid.amount = auction.top_bid 
+			SET bid_status = 'winning'
+		");
+		
 	}
 	
 	/**

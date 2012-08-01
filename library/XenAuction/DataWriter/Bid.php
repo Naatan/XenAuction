@@ -28,6 +28,9 @@ class XenAuction_DataWriter_Bid extends XenForo_DataWriter
 					array(	'type' => self::TYPE_UINT,
 							'verification' => array('XenAuction_DataWriter_Helper_Auction', 'verifyAuctionid')),
 					
+				'bid_status'	=>
+					array(	'type' => self::TYPE_STRING),
+					
 				'bid_user_id'	=>
 					array(	'type' => self::TYPE_UINT,	'required' => true,
 							'verification' => array('XenAuction_DataWriter_Helper_Bid', 'verifyUserId')),

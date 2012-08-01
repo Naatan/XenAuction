@@ -65,7 +65,7 @@ class XenAuction_CronEntry_Auction
 		{
 			// Retrieve top bid data
 			$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
-			$bid 			= $auctionModel->getTopBid($auction['auction_id']);
+			$bid 			= $auctionModel->getWinningBid($auction['auction_id']);
 				
 			if ($auction['availability'] === 0)
 			{

@@ -55,6 +55,28 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 	}
 	
 	/**
+	 * Support setting field values to NULL
+	 * 
+	 * @param string $field 
+	 * 
+	 * @return void    
+	 */
+	protected function setNull($field)
+	{
+		$fields 	= $this->_fields['xf_auction'];
+		$validField = isset($fields[$field]) && is_array($fields[$field]);
+		
+		if ( ! $validField)
+		{
+			$this->error("The field '$field' was not recognised.", $field, false);
+		}
+		else
+		{
+			$this->_setInternal('xf_auction', $field, NULL);
+		}
+	}
+	
+	/**
 	 * Actions performed right before saving data to database
 	 * 
 	 * @return void    

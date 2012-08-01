@@ -68,7 +68,7 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'page'		=> $input['page'],
 			'perPage'	=> $perPage,
 			'order'		=> 'expiration_date',
-			'direction'	=> 'desc'
+			'direction'	=> 'ASC'
 		);
 		
 		// Prepare user models
@@ -132,7 +132,9 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		// Set fetch options
 		$fetchOptions 	= array(
 			'page'		=> $input['page'],
-			'perPage'	=> $perPage
+			'perPage'	=> $perPage,
+			'order'		=> 'bid_date',
+			'direction'	=> 'DESC'
 		);
 		
 		// Prepare database models
