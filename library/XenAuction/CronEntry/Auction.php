@@ -84,6 +84,12 @@ class XenAuction_CronEntry_Auction
 				
 				// Send notification
 				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
+				
+				// Update status of old winning bid
+				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+				$dw->setExistingData($bid);
+				$dw->set('bid_status', XenAuction_Model_Auction::BID_STATUS_OUTBID);
+				$dw->save();
 			}
 			else
 			{
