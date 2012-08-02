@@ -141,7 +141,6 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		$dw->set('top_bid', 	$input['bid']);
 		$dw->set('top_bidder',	$visitor->user_id);
 		$dw->set('bids',		$auction['bids'] + 1);
-		$dw->set('sales',		$auction['sales'] + 1);
 		
 		// Validate data before writing to DB
 		$dw->preSave();
