@@ -93,6 +93,12 @@ class XenAuction_CronEntry_Auction
 			}
 			else
 			{
+				// Update sales amount for auction
+				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+				$dw->setExistingData($auction);
+				$dw->set('sales',	$auction['sales'] + 1); 
+				$dw->save();
+				
 				// Set phrase params
 				$args 			= array_merge($auction, $bid);
 				
