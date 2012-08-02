@@ -51,14 +51,12 @@ class XenAuction_CronEntry_Auction
 	{
 		
 		// Prepare datawriter
-		$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
-		$dw->setExistingData($auction);
-		$dw->bulkSet(array(
-			'status'			=> XenAuction_Model_Auction::STATUS_EXPIRED
+		$dwAuction = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
+		$dwAuction->setExistingData($auction);
+		$dwAuction->bulkSet(array(
+			'status'			=> XenAuction_Model_Auction::STATUS_EXPIRED,
+			'expiration_date'	=> XenForo_Application::$time
 		));
-		
-		// Update auction (expire it)
-		$dw->save();
 		
 		// Check if this auction had a top bidder
 		if ($auction['top_bidder'])
@@ -70,13 +68,7 @@ class XenAuction_CronEntry_Auction
 			if ($auction['availability'] === 0)
 			{
 				// Prepare auction data to be updated
-				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
-				$dw->setExistingData($auction);
-				$dw->set('top_bidder',	0); // Set top_bidder to 0 as a workaround
-				
-				// TODO: properly implement the top bidder being "outbid" when an auction has been "bought"
-				// Update auction DB entry
-				$dw->save();
+				$dwAuction->set('top_bidder',	0); // Set top_bidder to 0 as a workaround
 				
 				// Parse notification title and message
 				$title 		= new XenForo_Phrase('lost_auction_x', $auction);
@@ -86,18 +78,15 @@ class XenAuction_CronEntry_Auction
 				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
 				
 				// Update status of old winning bid
-				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
-				$dw->setExistingData($bid);
-				$dw->set('bid_status', XenAuction_Model_Auction::BID_STATUS_OUTBID);
-				$dw->save();
+				$dwBid = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+				$dwBid->setExistingData($bid);
+				$dwBid->set('bid_status', XenAuction_Model_Auction::BID_STATUS_OUTBID);
+				$dwBid->save();
 			}
 			else
 			{
 				// Update sales amount for auction
-				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Auction');
-				$dw->setExistingData($auction);
-				$dw->set('sales',	$auction['sales'] + 1); 
-				$dw->save();
+				$dwAuction->set('sales',	$auction['sales'] + 1); 
 				
 				// Set phrase params
 				$args 			= array_merge($auction, $bid);
@@ -115,11 +104,14 @@ class XenAuction_CronEntry_Auction
 				XenAuction_Helper_Notification::sendNotification($bid['bid_user_id'], $title, $message);
 				
 				// Set sale date of bid
-				$dw = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
-				$dw->setExistingData($bid);
-				$dw->set('sale_date', XenForo_Application::$time);
-				$dw->save();
+				$dwBid = XenForo_DataWriter::create('XenAuction_DataWriter_Bid');
+				$dwBid->setExistingData($bid);
+				$dwBid->set('sale_date', XenForo_Application::$time);
+				$dwBid->save();
 			}
+			
+			// Update auction (expire it)
+			$dwAuction->save();
 		}
 
 	}
