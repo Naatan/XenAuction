@@ -426,9 +426,7 @@ class XenAuction_Install
 			DELETE FROM `xf_user_field` WHERE `field_id` IN ('auctionConfirmMessage', 'auctionEnableConfirm', 'auctionPaymentAddress')
 		");
 		
-		XenForo_Application::getDb()->query("
-			DELETE FROM `xf_data_registry` WHERE `data_key` = 'auctionTags'
-		");
+		XenForo_Model::create('XenForo_Model_DataRegistry')->delete('auctionTags');
 	}
 	
 }
