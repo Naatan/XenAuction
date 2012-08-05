@@ -110,10 +110,11 @@ class XenAuction_CronEntry_Auction
 				$dwBid->save();
 			}
 			
-			// Update auction (expire it)
-			$dwAuction->save();
 		}
-
+		
+		// Update auction (expire it)
+		$dwAuction->save();
+		
 	}
 
 }
