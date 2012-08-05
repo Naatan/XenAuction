@@ -150,6 +150,12 @@ class XenAuction_TemplateHelpers_Base
 		// Set image name
 		$image 	= empty($auction['image']) ? 'image' : $auction['image'];
 		
+		$realPath = sprintf('%s/xenauction/%s_%s.jpg', XenForo_Helper_File::getExternalDataPath(), $image, $size);
+		if ( ! file_exists($realPath))
+		{
+			$image = 'image';
+		}
+		
 		// Parse image
 		if ($size != 'l')
 		{
