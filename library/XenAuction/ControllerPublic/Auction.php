@@ -115,18 +115,18 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		// Parse user input
 		$input = $this->_input->filter(array(
 			'id' 		=> XenForo_Input::UINT,
-			'bidId' 	=> XenForo_Input::UINT
+			'bid_id' 	=> XenForo_Input::UINT
 		));
-
+		
 		// Prepare database models
 		$auctionModel	= XenForo_Model::create('XenAuction_Model_Auction');
 		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
-
+		
 		// Retrieve auction, bid and tag details from database
 		$auction     	= $auctionModel->getAuctionById($input['id']);
-		$bid 			= $input['bidId'] ? $auctionModel->getBidById($input['bidId']) : false;
+		$bid 			= $input['bid_id'] ? $auctionModel->getBidById($input['bid_id']) : false;
 		$tags 			= $tagModel->getTagsByAuction($auction['auction_id']);
-
+		
 		// All done
 		return $this->responseView('XenAuction_ViewPublic_Auction_View', 'auction_details', array(
 		   	'auction'	=> $auction,
