@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.1 Beta 1" version_id="15" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.1" version_id="15" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="auctionBids" parent_navigation_id="auctions" display_order="10" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
     <navigation navigation_id="auctions" parent_navigation_id="applications" display_order="100" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
@@ -234,7 +234,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
-    <phrase title="auction_notification_signature" version_id="0" version_string=""><![CDATA[]]></phrase>
+    <phrase title="auction_notification_signature" version_id="0" version_string=""></phrase>
     <phrase title="auction_title" version_id="0" version_string=""><![CDATA[Auction Title]]></phrase>
     <phrase title="availability" version_id="0" version_string=""><![CDATA[Availability]]></phrase>
     <phrase title="availability_too_high" version_id="0" version_string=""><![CDATA[You can't use an availability higher than 1 if you are also allowing bids]]></phrase>
@@ -315,7 +315,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="option_auctionWidgetPlacement" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Widget Placement]]></phrase>
     <phrase title="option_auctionWidgetPlacement_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Choose the template hook where the auction widget should be placed]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
-    <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
+    <phrase title="option_group_auctions_description" version_id="0" version_string=""></phrase>
     <phrase title="outbid" version_id="0" version_string=""><![CDATA[Outbid]]></phrase>
     <phrase title="outbid_message" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url]. 
 
@@ -709,7 +709,7 @@ label[for="ctrl_tags"]
 		width: {xen:calc "{xen:property overlayFormWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px;
 	}
 */]]></template>
-    <template title="auction_details" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_details" version_id="15" version_string="1.1"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
 
@@ -737,8 +737,8 @@ label[for="ctrl_tags"]
 				<a class="OverlayTrigger button primary" href="{xen:link 'auction-process/archive', '', 'id={$auction.auction_id}'}">{xen:phrase archive_auction}</a>
 			</xen:if>
 			<xen:if is="{$visitor.user_id}=={$auction.user_id} && ({$bid} || {xen:helper auction, hasPermission, 'editOwnAuctions'})">
-				<xen:if is="{$bid}">
-					<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_auction}</a>
+				<xen:if is="{$bid} && {$bid.completed} == 0">
+					<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_sale}</a>
 				</xen:if>
 				
 				<xen:if is="{$auction.status}=='active' && {xen:helper auction, hasPermission, 'editOwnAuctions'}">
@@ -1315,10 +1315,10 @@ new XenAuction.Create;
 	float: right;	
 	margin-bottom: -20px;
 }]]></template>
-    <template title="auction_history_list" version_id="14" version_string="1.0 RC1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
+    <template title="auction_history_list" version_id="15" version_string="1.1"><![CDATA[<xen:title>{xen:phrase auction_history}</xen:title>
 
 <xen:navigation>
-    <xen:breadcrumb href="{xen:link 'auctions/history'}">{xen:phrase history}</xen:breadcrumb>
+    <xen:breadcrumb href="{xen:link 'auction-history'}">{xen:phrase history}</xen:breadcrumb>
 </xen:navigation>
 
 
@@ -1348,12 +1348,12 @@ new XenAuction.Create;
 
 <ul id="HistoryPanes">
 	<xen:if is="{xen:helper auction, hasPermission, 'createAuctions'}">
-		<li id="_auctions" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'page={$page},search={$search}'}"></li>
-		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,page={$page},search={$search}'}"></li>
-		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/sales', 'page={$page},search={$search}'}"></li>
+		<li id="_auctions" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'search={$search},page={$page}'}"></li>
+		<li id="_auctionsArchive" class="auctions" data-loadUrl="{xen:helper auction, link, 'auction-history/auctions', 'archived=1,search={$search},page={$page}'}"></li>
+		<li id="_sales" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/sales', 'search={$search},page={$page}'}"></li>
 	</xen:if>
-	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/bids', 'page={$page},search={$search}'}"></li>
-	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/buyouts', 'page={$page},search={$search}'}"></li>
+	<li id="_bids" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/bids', 'search={$search},page={$page}'}"></li>
+	<li id="_buyouts" class="bidbuyHistory" data-loadUrl="{xen:helper auction, link,  'auction-history/buyouts', 'search={$search},page={$page}'}"></li>
 </ul>
 
 <script type="text/javascript"><!--
@@ -1521,7 +1521,7 @@ $(document).ready(function() {
 	<div class="emptyResults">{xen:phrase you_have_no_sales}</div>
 </xen:if>
 </div>]]></template>
-    <template title="auction_history_sales.css" version_id="15" version_string="1.0.1"><![CDATA[.auctionHistory
+    <template title="auction_history_sales.css" version_id="15" version_string="1.1"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -1646,13 +1646,13 @@ $(document).ready(function() {
 
 .saleHistory .auctionItem td.purchaseAmount dt
 {
-	width: 49%;
+	width: 48%;
 	clear: right;
 }
 
 .saleHistory .auctionItem td.purchaseAmount dd
 {
-	width: 49%;
+	width: 48%;
 	font-weight: bold;
 }
 
@@ -2041,7 +2041,7 @@ new XenAuction.List;
 	</xen:if>
 	<xen:include template="auction_navigation_tab_extra" />
 </ul>]]></template>
-    <template title="auction_navigation_tab_extra" version_id="0" version_string=""><![CDATA[]]></template>
+    <template title="auction_navigation_tab_extra" version_id="0" version_string=""></template>
     <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
 XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
 XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
@@ -2404,7 +2404,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 }
 /* @end */
 ]]></template>
-    <template title="auction_widget" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[<xen:if is="{$auctions}">
+    <template title="auction_widget" version_id="15" version_string="1.1"><![CDATA[<xen:if is="{$auctions}">
 
 	<xen:require js="js/xenauction/auctions.js" />
 	<xen:require css="auction_widget.css" />
@@ -2431,6 +2431,8 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 							<h5>
 								<xen:if is="{$auction.top_bid}">
 									<span class="muted">$</span>{xen:number $auction.top_bid}
+								<xen:elseif is="{$auction.min_bid}"/>
+									<span class="muted">$</span>{xen:number $auction.min_bid}
 								<xen:else/>
 									<span class="muted">$</span>{xen:number $auction.buy_now}
 								</xen:if>
@@ -2518,5 +2520,4 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 }]]></template>
   </templates>
   <bb_code_media_sites/>
-  <template_modifications/>
 </addon>
