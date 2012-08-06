@@ -398,12 +398,12 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		// Prepare default confirmation message
 		$message = isset($visitor->customFields['auctionConfirmMessage']) ? $visitor->customFields['auctionConfirmMessage'] : '';
 		
+		// Get user profile for purchaser
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
+		$user 			= $userModel->getUserById($auction['bid_user_id']);
+		
 		if ( ! empty($message)) // if a default message is defined we'll need to parse it 
 		{
-			// Get user profile for purchaser
-			$userModel 		= XenForo_Model::create('XenForo_Model_User');
-			$user 			= $userModel->getUserById($auction['bid_user_id']);
-			
 			// Prepare variables
 			$vars 			= array_merge($auction, $user);
 			$vars['link'] 	= XenForo_Link::buildPublicLink('auctions/details', '', array('id' => $auction['auction_id']));
