@@ -61,7 +61,7 @@ class XenAuction_DataWriter_Auction extends XenForo_DataWriter
 	 * 
 	 * @return void    
 	 */
-	protected function setNull($field)
+	public function setNull($field)
 	{
 		$fields 	= $this->_fields['xf_auction'];
 		$validField = isset($fields[$field]) && is_array($fields[$field]);
