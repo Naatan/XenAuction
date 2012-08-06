@@ -20,14 +20,18 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 	 *  - page
 	 *  - search
 	 * 
-	 * @return XenForo_ViewPublic_Base    Template auction_history_list
+	 * @return self::actionAuctions
 	 */
 	public function actionIndex()
 	{
-		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_list', array(
-			'page'	=> $this->_input->filterSingle('page', XenForo_Input::UINT),
-			'search'=> $this->_input->filterSingle('search', XenForo_Input::STRING)
-		));	
+		if (XenForo_Visitor::getInstance()->hasPermission('auctions', 'createAuctions'))
+		{
+			return $this->actionAuctions();
+		}
+		else
+		{
+			return $this->actionBids();
+		}
 	}
 	
 	/**
@@ -58,7 +62,7 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		// Set fetch conditions
 		$fetchConditions = array(
 			'user_id' 	=> $visitor->user_id,
-			'archived'	=> $input['archived']? true : false,
+			'archived'	=> $input['archived'] ? true : false,
 			'title'		=> $input['search'],
 			'auction_id_search'=> $input['search']
 		);
@@ -92,6 +96,7 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'total'		=> $total,
 			'search'	=> $input['search'],
 			'visitor' 	=> $visitor->toArray(),
+			'archived'	=> $input['archived']
 		));	
 	}
 	
@@ -193,7 +198,8 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		// Parse user input
 		$input = $this->_input->filter(array(
 			'page' 		=> XenForo_Input::UINT,
-			'search' 	=> XenForo_Input::STRING
+			'search' 	=> XenForo_Input::STRING,
+			'completed' => XenForo_Input::UINT
 		));
 		
 		// Set fetch conditions
@@ -201,7 +207,8 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'user_id'	=> $visitor->user_id,
 			'title'			=> $input['search'],
 			'bid_id_search'	=> $input['search'],
-			'username'		=> $input['search']
+			'username'		=> $input['search'],
+			'completed'		=> $input['completed']
 		);
 		
 		// Set fetch options
@@ -231,7 +238,8 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'page'		=> $input['page'],
 			'perPage'	=> $perPage,
 			'total'		=> $total,
-			'search'	=> $input['search']
+			'search'	=> $input['search'],
+			'completed'	=> $input['completed']
 		));	
 	}
 	

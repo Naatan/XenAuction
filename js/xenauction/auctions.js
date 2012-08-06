@@ -3,10 +3,10 @@ var XenAuction = {};
 XenAuction.Config = {
 	currentTime: 0,
 	phrases: {
-		'secondsLeft': 	'Seconds Left',
-		'minutesLeft': 	'Minutes Left',
-		'hoursLeft': 	'Hours Left',
-		'daysLeft': 	'Days Left',
+		'secondsLeft': 	'Seconds',
+		'minutesLeft': 	'Minutes',
+		'hoursLeft': 	'Hours',
+		'daysLeft': 	'Days',
 		
 		'errorInvalidQuantity': 	'You are trying to buy a higher quantity than there is available'
 	}
@@ -14,9 +14,9 @@ XenAuction.Config = {
 
 XenAuction.List = function() { this.__construct(); };
 XenAuction.List.prototype = {
-	__construct: function()
+	
+	__construct: function(options)
 	{
-
 		this.parseTimeleft();
 		
 		$(document).ready(function()
@@ -28,13 +28,13 @@ XenAuction.List.prototype = {
 			}
 			
 		});
-
+		
 	},
 
 	parseTimeleft: function()
 	{
-
-		$(".auctionItem .timeLeft").each(function() {
+		
+		$(".auctionItem .timeLeft > div").each(function() {
 			
 			if ($(this).parents('.status_active').length == 0 || $(this).data('processed'))
 			{
@@ -74,8 +74,7 @@ XenAuction.List.prototype = {
 			
 			$(this).html("");
 			
-			$(this).append($("<div class=amount>").text(Math.ceil(p[0])));
-			$(this).append($("<div class=description>").text(p[1]));
+			$(this).append(Math.ceil(p[0]) + ' ' + p[1]);
 			
 			$(this).data('processed', true);
 			
@@ -270,7 +269,7 @@ XenAuction.HistoryPanes.prototype = {
 	
 	removeParamsFromUrls: function()
 	{
-		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)(?:page|search)\=[A-Za-z0-9 ]*/);
+		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)(?:page|search)\=[A-Za-z0-9 ]*/g);
 		
 		this.$tabs.$panes.each(function()
 		{
@@ -278,7 +277,6 @@ XenAuction.HistoryPanes.prototype = {
 			url = url.replace(regex, '');
 			$(this).data('loadUrl', url);
 		});
-		
 		
 		$("#HistoryTabs > li > a").each(function()
 		{

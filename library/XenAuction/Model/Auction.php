@@ -104,7 +104,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 				bid_status = ?
 			ORDER BY amount DESC
 			LIMIT 1
-		', $auctionId, self::BID_STATUS_WINNING);
+		', array($auctionId, self::BID_STATUS_WINNING));
 	}
 	
 	/**
@@ -411,6 +411,12 @@ class XenAuction_Model_Auction extends XenForo_Model
 		if ( isset($conditions['archived']))
 		{
 			$sqlConditions[] = 'auction.archived = ' . $db->quote($conditions['archived'] ? 1 : 0);
+		}
+		
+		// Archived
+		if ( isset($conditions['completed']))
+		{
+			$sqlConditions[] = 'bid.completed = ' . $db->quote($conditions['completed'] ? 1 : 0);
 		}
 		
 		// Title

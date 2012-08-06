@@ -74,6 +74,26 @@ class XenAuction_Listen
 		self::$_prefixAction 	= $routeMatch->getAction();
 	}
 
+	public static function load_class_view($class, array &$extend)
+	{
+		/* Extend XenForo_ViewPublic_Account_Preferences */
+		if ($class == 'XenForo_ViewPublic_Account_Preferences' AND ! in_array('XenAuction_ViewPublic_Account_Preferences', $extend))
+		{
+			$extend[] = 'XenAuction_ViewPublic_Account_Preferences';
+		}
+		/* Extend End */
+	}
+
+	public static function load_class_model($class, array &$extend)
+	{
+		/* Extend XenForo_Model_UserField */
+		if ($class == 'XenForo_Model_UserField' AND ! in_array('XenAuction_Model_UserField', $extend))
+		{
+			$extend[] = 'XenAuction_Model_UserField';
+		}
+		/* Extend End */
+	}
+	
 	protected static function _assertShowWidget()
 	{
 		$options = XenForo_Application::get('options');
@@ -107,26 +127,6 @@ class XenAuction_Listen
 		}
 		
 		return ($options->auctionWidgetMode != 'whitelist');
-	}
-
-	public static function load_class_view($class, array &$extend)
-	{
-		/* Extend XenForo_ViewPublic_Account_Preferences */
-		if ($class == 'XenForo_ViewPublic_Account_Preferences' AND ! in_array('XenAuction_ViewPublic_Account_Preferences', $extend))
-		{
-			$extend[] = 'XenAuction_ViewPublic_Account_Preferences';
-		}
-		/* Extend End */
-	}
-
-	public static function load_class_model($class, array &$extend)
-	{
-		/* Extend XenForo_Model_UserField */
-		if ($class == 'XenForo_Model_UserField' AND ! in_array('XenAuction_Model_UserField', $extend))
-		{
-			$extend[] = 'XenAuction_Model_UserField';
-		}
-		/* Extend End */
 	}
 
 }
