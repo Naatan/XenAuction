@@ -270,7 +270,7 @@ XenAuction.HistoryPanes.prototype = {
 	
 	removeParamsFromUrls: function()
 	{
-		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)(?:page|search)\=[A-Za-z0-9 ]*/);
+		var regex = new RegExp(/(?:\?|\&|\%3F|\&amp\;)(?:page|search)\=[A-Za-z0-9 ]*/g);
 		
 		this.$tabs.$panes.each(function()
 		{
@@ -278,7 +278,6 @@ XenAuction.HistoryPanes.prototype = {
 			url = url.replace(regex, '');
 			$(this).data('loadUrl', url);
 		});
-		
 		
 		$("#HistoryTabs > li > a").each(function()
 		{
