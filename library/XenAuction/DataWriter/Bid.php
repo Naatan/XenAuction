@@ -54,6 +54,26 @@ class XenAuction_DataWriter_Bid extends XenForo_DataWriter
 			)
 		);
 	}
+	
+	/**
+	 * Actions performed right before saving data to database
+	 * 
+	 * @return void    
+	 */
+	protected function _preSave()
+	{
+		$auction = XenAuction_DataWriter_Helper_Bid::getAuctionForBid($this);
+		
+		if ( ! $auction)
+		{
+			$this->error(new XenForo_Phrase('requested_auction_not_found'));
+		}
+		
+		if ($auction['status'] != 'active')
+		{
+			$this->error(new XenForo_Phrase('auction_has_expired'));
+		}
+	}
 
 	/**
 	 * Get existing data
