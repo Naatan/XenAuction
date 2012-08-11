@@ -25,7 +25,7 @@ class XenAuction_DataWriter_Helper_Bid
 	 * 
 	 * @return array
 	 */
-	protected static function getAuctionForBid(XenForo_DataWriter $dw)
+	public static function getAuctionForBid(XenForo_DataWriter $dw)
 	{
 		$auctionId = $dw->get('auction_id');
 		
