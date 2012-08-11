@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.2 Beta 1" version_id="16" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.2 Beta 1" version_id="17" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="auctionBids" parent_navigation_id="auctions" display_order="10" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
     <navigation navigation_id="auctions" parent_navigation_id="applications" display_order="100" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
@@ -233,6 +233,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="archive_auction" version_id="0" version_string=""><![CDATA[Archive Auction]]></phrase>
     <phrase title="auction" version_id="0" version_string=""><![CDATA[Auction]]></phrase>
     <phrase title="auctions" global_cache="1" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
+    <phrase title="auction_has_expired" version_id="16" version_string="1.2 Beta 1"><![CDATA[Auction has expired]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
     <phrase title="auction_notification_signature" version_id="0" version_string=""><![CDATA[]]></phrase>
@@ -723,7 +724,7 @@ label[for="ctrl_tags"]
 		width: {xen:calc "{xen:property overlayFormWidth} - {xen:property textCtrl.border-left-width} - {xen:property textCtrl.border-right-width} - {xen:property textCtrl.padding-left} - {xen:property textCtrl.padding-right} - 2 * {xen:property ctrlUnitEdgeSpacer}"}px;
 	}
 */]]></template>
-    <template title="auction_details" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:require css="auction_bid.css" />
+    <template title="auction_details" version_id="16" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_bid.css" />
 
 <xen:title>{$auction.title}</xen:title>
 
@@ -752,7 +753,7 @@ label[for="ctrl_tags"]
 			</xen:if>
 			<xen:if is="{$visitor.user_id}=={$auction.user_id} && ({$bid} || {xen:helper auction, hasPermission, 'editOwnAuctions'})">
 				<xen:if is="{$bid} && {$bid.completed} == 0">
-					<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_auction}</a>
+					<a class="OverlayTrigger button primary" href="{xen:link auction-process/complete, '', 'id={$bid.bid_id}'}">{xen:phrase complete_sale}</a>
 				</xen:if>
 				
 				<xen:if is="{$auction.status}=='active' && {xen:helper auction, hasPermission, 'editOwnAuctions'}">
@@ -1021,7 +1022,7 @@ new XenAuction.Create;
 	<xen:include template="auction_history_sidebar"/>
 
 </xen:sidebar>]]></template>
-    <template title="auction_history_auctions.css" version_id="15" version_string="1.1 Beta 1"><![CDATA[/* Item widths */
+    <template title="auction_history_auctions.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[/* Item widths */
 
 .historyAuctions table.auctions
 {
@@ -1067,8 +1068,6 @@ new XenAuction.Create;
 	.historyAuctions .auctionItem td.sales
 	{
 		color: {xen:property dimmedTextColor};
-		font-weight: bold;
-		text-transform: uppercase;
 	}
 
 /* Styling */
@@ -1206,7 +1205,7 @@ new XenAuction.Create;
 	<xen:include template="auction_history_sidebar"/>
 
 </xen:sidebar>]]></template>
-    <template title="auction_history_bids.css" version_id="15" version_string="1.1 Beta 1"><![CDATA[.bidHistory
+    <template title="auction_history_bids.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[.bidHistory
 {
 	width: 100%;
 }
@@ -1243,8 +1242,6 @@ new XenAuction.Create;
 	.bidHistory td.cost
 	{
 		color: {xen:property dimmedTextColor};
-		font-weight: bold;
-		text-transform: uppercase;
 	}
 
 
@@ -1354,7 +1351,7 @@ new XenAuction.Create;
 	<xen:include template="auction_history_sidebar"/>
 
 </xen:sidebar>]]></template>
-    <template title="auction_history_buyouts.css" version_id="15" version_string="1.1 Beta 1"><![CDATA[.auctionHistory
+    <template title="auction_history_buyouts.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -1393,8 +1390,6 @@ new XenAuction.Create;
 	.buyHistory td.cost
 	{
 		color: {xen:property dimmedTextColor};
-		font-weight: bold;
-		text-transform: uppercase;
 	}
 
 /* Styling */
@@ -1629,7 +1624,7 @@ $(document).ready(function() {
 	<xen:include template="auction_history_sidebar"/>
 
 </xen:sidebar>]]></template>
-    <template title="auction_history_sales.css" version_id="15" version_string="1.1 Beta 1"><![CDATA[.auctionHistory
+    <template title="auction_history_sales.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[.auctionHistory
 {
 	width: 100%;
 }
@@ -1684,8 +1679,6 @@ $(document).ready(function() {
 	.saleHistory td.cost
 	{
 		color: {xen:property dimmedTextColor};
-		font-weight: bold;
-		text-transform: uppercase;
 	}
 
 /* Styling */
@@ -1768,7 +1761,7 @@ $(document).ready(function() {
 	list-style: square;
 	margin-bottom: 5px;
 }]]></template>
-    <template title="auction_list" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
+    <template title="auction_list" version_id="16" version_string="1.2 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
@@ -1866,7 +1859,7 @@ $(document).ready(function() {
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="15" version_string="1.1 Beta 1"><![CDATA[table.auctionList
+    <template title="auction_list.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[table.auctionList
 {
 	width: 100%;
 }
@@ -1900,7 +1893,6 @@ new XenAuction.List;
  	.auctionList td.timeLeft, .auctionList td.bids, .auctionList td.price, .auctionList td.bid
 	{
 		color: {xen:property dimmedTextColor};
-		font-weight: bold;
 		text-transform: uppercase;
 	}
 
@@ -1974,12 +1966,15 @@ new XenAuction.List;
 
 	.auctionList td.bid .button
 	{
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-weight: normal;
+		font-size: 10px;
 		line-height: 20px;
 		height: 20px;
 		box-shadow: none;
 		background-color: {xen:property primaryLight};
 		color: {xen:property primaryDarker};
-		text-shadow: {xen:property primaryLightest} 0px 1px 0;
+		text-shadow: rgba(255, 255, 255, 0.4) 0px 1px 0;
 		box-shadow: 0px 1px 4px 0px rgba(200, 200, 200, 0.3);
 	}
 
@@ -2085,6 +2080,8 @@ new XenAuction.List;
 .sidebar .tagList 
 {
 	text-align: left;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 24px;
 }
 
 .sidebar .filterTags ul
@@ -2096,8 +2093,15 @@ new XenAuction.List;
 .sidebar .filterTags li
 {
 	font-size: 110%;
-	margin-left: 30px;
-	list-style: square;
+	margin-left: 10px;
+}
+
+.sidebar .filterTags li:before
+{
+	font-weight: bold;
+    content: "• ";
+    color: {xen:property primaryLightish}; 
+	margin-right: 10px;
 }
 
 .sidebar .chzn-container
