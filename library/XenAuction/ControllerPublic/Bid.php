@@ -159,7 +159,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			$fetchConditions 	= array(
 				'bid_user_id' 	=> $auction['top_bidder'],
 				'auction_id'	=> $auction['auction_id'],
-				'amount'		=> $input['bid']
+				'amount'		=> $auction['top_bid']
 			);
 			$fetchOptions 		= array(
 				'join'	=> XenAuction_Model_Auction::FETCH_BID
@@ -188,6 +188,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 				);
 				$args = array_merge($outbidUser, $args);
 				$args = array_merge($auction, $args);
+				$args['top_bid'] = $input['bid'];
 				
 				// Parse PM title and message
 				$title 		= new XenForo_Phrase('outbid_on_x', $auction);
