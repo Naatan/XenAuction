@@ -210,6 +210,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 					auction.user_id = ' . $this->_getDb()->quote($userId) . '
 				WHERE
 					' . $whereClause . ' AND
+					bid.bid_status = \'winning\' AND
 					(
 						bid.is_buyout = 1 OR
 						(
@@ -254,6 +255,7 @@ class XenAuction_Model_Auction extends XenForo_Model
 				auction.user_id = ' . $this->_getDb()->quote($userId) . '
 			WHERE
 				' . $whereClause . ' AND
+				bid.bid_status = \'winning\' AND
 				(
 					bid.is_buyout = 1 OR
 					(
