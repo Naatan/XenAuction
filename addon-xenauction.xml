@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.2 Beta 1" version_id="17" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.2 RC 1" version_id="17" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="auctionBids" parent_navigation_id="auctions" display_order="10" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
     <navigation navigation_id="auctions" parent_navigation_id="applications" display_order="100" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
@@ -923,7 +923,7 @@ dl.doubleButtons dt
 <xen:include template="auction_phrases_js"/>
 new XenAuction.Create;
 //--></script>]]></template>
-    <template title="auction_history_auctions" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:require css="auction_history_auctions.css" />
+    <template title="auction_history_auctions" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_history_auctions.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <xen:if is="{$archived}">
@@ -1001,7 +1001,7 @@ new XenAuction.Create;
 	</table>
 	
 	<div class="pageNavLinkGroup">
-		<xen:pagenav link="auction-history#_auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
+		<xen:pagenav link="auction-history/auctions" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
 	<script type="text/javascript">
@@ -1116,7 +1116,7 @@ new XenAuction.Create;
 	width: 48px;
 	height: 48px;
 }]]></template>
-    <template title="auction_history_bids" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:require css="auction_history_bids.css" />
+    <template title="auction_history_bids" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_history_bids.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <xen:title>{xen:phrase your_bids}</xen:title>
@@ -1184,7 +1184,7 @@ new XenAuction.Create;
 	</table>
 	
 	<div class="pageNavLinkGroup">
-		<xen:pagenav link="auction-history#_buyouts" page="{$page}" perpage="{$perPage}" total="{$total}" />
+		<xen:pagenav link="auction-history/bids" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
 	<script type="text/javascript">
@@ -1424,7 +1424,7 @@ new XenAuction.Create;
 {
 	display: none;
 }]]></template>
-    <template title="auction_history_sales" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:require css="auction_history_sales.css" />
+    <template title="auction_history_sales" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_history_sales.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <xen:if is="{$completed}">
@@ -1489,7 +1489,7 @@ new XenAuction.Create;
 	</table>
 	
 	<div class="pageNavLinkGroup">
-		<xen:pagenav link="auction-history#_sales" page="{$page}" perpage="{$perPage}" total="{$total}" />
+		<xen:pagenav link="auction-history/sales" page="{$page}" perpage="{$perPage}" total="{$total}" />
 	</div>
 	
 	<script type="text/javascript">
@@ -1720,7 +1720,7 @@ new XenAuction.Create;
 <div class="pageNavLinkGroup">
 	<div class="linkGroup">
 		
-		<a class="callToAction" onClick="window.print()"><span>Print This Page</span></a>
+		<a class="callToAction" href="#print" onClick="window.print(); return false;"><span>Print This Page</span></a>
 		
 	</div>
 </div>]]></template>
@@ -1848,7 +1848,7 @@ blockquote
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="16" version_string="1.2 Beta 1"><![CDATA[table.auctionList
+    <template title="auction_list.css" version_id="17" version_string="1.2 Beta 1"><![CDATA[table.auctionList
 {
 	width: 100%;
 }
@@ -1872,6 +1872,11 @@ new XenAuction.List;
 	padding: 0px !important;
 	vertical-align: middle;
 }
+
+	.auctionList td.icon
+	{
+		width: 55px;
+	}
 
 	.auctionList .timeLeft, .auctionList .bids, .auctionList .price, .auctionList .bid
 	{
