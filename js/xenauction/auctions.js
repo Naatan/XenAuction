@@ -94,6 +94,10 @@ XenAuction.Purchases.prototype = {
 	submit: function()
 	{
 		$("form.purchaseSelect input[name=selectedOnly]").val( $(this).hasClass('printSelected') ? '1' : '0' );
+		
+        window.open('', 'invoicepop', 'width=1024,height=768,resizeable,scrollbars');
+        $("form.purchaseSelect")[0].target = 'invoicepop';
+		
 		$("form.purchaseSelect").submit();
 	}
 	
