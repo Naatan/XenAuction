@@ -93,8 +93,10 @@ class XenAuction_CronEntry_Auction
 				
 				// Get user configured payment address
 				$fieldModel 			= XenForo_Model::create('XenForo_Model_UserField');
+				$args['invoice_link']	= XenForo_Link::buildPublicLink('full:auctions/invoice', '', array('id' => $bid['bid_id']));
 				$args['payment_address']= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
 				$args['payment_address']= str_replace('{bidid}', $bid['bid_id'], $args['payment_address']);
+				$args['payment_address']= str_replace('{invoice_link}', $args['invoice_link'], $args['payment_address']);
 				
 				// Parse notification title and message
 				$title 		= new XenForo_Phrase('won_auction_x', $auction);

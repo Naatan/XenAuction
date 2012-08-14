@@ -159,7 +159,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 			$fetchConditions 	= array(
 				'bid_user_id' 	=> $auction['top_bidder'],
 				'auction_id'	=> $auction['auction_id'],
-				'amount'		=> $auction['top_bid']
+				'amount'		=> $input['bid']
 			);
 			$fetchOptions 		= array(
 				'join'	=> XenAuction_Model_Auction::FETCH_BID
@@ -201,7 +201,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		// All done
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auctions')
+			$this->getDynamicRedirect()
 		);
 	}
 
@@ -283,16 +283,21 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		// Get new auction data
 		$auction = $dw->getMergedData();
 		
+		// Generate the invoice link
+		$invoiceLink = XenForo_Link::buildPublicLink('full:auctions/invoice', '', array('id' => $bid['bid_id']));
+		
 		// Get the address field setting from the auctioneer
 		$fieldModel 	= XenForo_Model::create('XenForo_Model_UserField');
 		$address 		= $fieldModel->getUserFieldValue('auctionPaymentAddress', $auction['user_id']);
 		$address 		= str_replace('{bidid}', $bid['bid_id'], $address);
+		$address 		= str_replace('{invoice_link}', $invoiceLink, $address);
 		
 		// Set notification phrase variables
 		$args = array(
 			'quantity' 			=> $input['quantity'],
 			'amount'			=> $input['quantity'] * $auction['buy_now'],
 			'bid_id'			=> $bid['bid_id'],
+			'invoice_link'		=> $invoiceLink,
 			'payment_address' 	=> $address
 		);
 		$args = array_merge($auction, $args);
@@ -313,7 +318,7 @@ class XenAuction_ControllerPublic_Bid extends XenForo_ControllerPublic_Abstract
 		// All done
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auctions')
+			$this->getDynamicRedirect()
 		);
 	}
 	

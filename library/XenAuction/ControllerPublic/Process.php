@@ -306,7 +306,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		// All done
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auction-history')
+			$this->getDynamicRedirect()
 		);
 	}
 	
@@ -352,7 +352,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		// All done
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auctions')
+			$this->getDynamicRedirect()
 		);
 	}
 	
@@ -485,7 +485,7 @@ class XenAuction_ControllerPublic_Process extends XenForo_ControllerPublic_Abstr
 		// All done
 		return $this->responseRedirect(
 			XenForo_ControllerResponse_Redirect::SUCCESS,
-			XenForo_Link::buildPublicLink('auction-history') . '#_sales'
+			$this->getDynamicRedirect()
 		);
 	}
 	

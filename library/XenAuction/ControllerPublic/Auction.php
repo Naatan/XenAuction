@@ -95,6 +95,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 			'page'		=> $input['page'],
 			'perPage'	=> $perPage,
 			'total'		=> $total,
+			'pageNavParams'	=> XenAuction_Helper_Base::pageNavParams($input, array('page')),
 			
 			'visitor' 	=> XenForo_Visitor::getInstance()->toArray()
 		));
@@ -133,6 +134,86 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 			'bid'		=> $bid,
 			'tags'		=> $tags
 		));	
+	}
+	
+	/**
+	 * Show invoice details for given purchases
+	 *
+	 * REQUEST params:
+	 *
+	 *  - search		Search string
+	 *  - selectedOnly	Only show selected sales (default)
+	 *  - ids 			ID's of sales to show (if selectedOnly is true)
+	 *  - id 			If a single ID is given then this is used instead (since phrases can't pass simple arrays)
+	 * 
+	 * @return XenForo_ViewPublic_Base    Template auction_invoice
+	 */
+	public function actionInvoice()
+	{
+		// Prepare visitor object and options
+		$visitor 		= XenForo_Visitor::getInstance();
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		
+		// Parse user input
+		$input = $this->_input->filter(array(
+			'search' 		=> XenForo_Input::STRING,
+			'selectedOnly'	=> XenForo_Input::STRING,
+			'ids'			=> XenForo_Input::ARRAY_SIMPLE,
+			'id'			=> XenForo_Input::UINT
+		));
+		
+		if ($input['selectedOnly'] == '1' OR $input['selectedOnly'] == NULL)
+		{
+			// Set fetch conditions
+			$fetchConditions = array(
+				'bid_user_id' 		=> $visitor->user_id,
+				'bid_id'			=> $input['id'] ? $input['id'] : $input['ids'],
+				'sale_date_notnull'	=> true,
+				'completed'			=> false
+			);
+		}
+		else
+		{
+			// Set fetch conditions
+			$fetchConditions = array(
+				'bid_user_id' 		=> $visitor->user_id,
+				'auction_id_search'	=> $input['search'],
+				'bid_id_search'		=> $input['search'],
+				'title'				=> $input['search'],
+				'sale_date_notnull'	=> true,
+				'completed'			=> false
+			);
+		}
+		
+		// Set fetch options
+		$fetchOptions 	= array(
+			'order'		=> 'sale_date',
+			'direction'	=> 'DESC'
+		);
+		
+		// Retrieve data
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
+		
+		$subtotal = 0;
+		foreach ($auctions AS $auction)
+		{
+			$subtotal += $auction['amount'];
+		}
+		
+		$shipping = $options->auctionShippingPrice;
+		
+		// All done
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_invoice', array(
+			'auctions'	=> $auctions,
+			'search'	=> $input['search'],
+			'subtotal'	=> $subtotal,
+			'shipping'	=> $shipping,
+			'total'		=> $subtotal + $shipping
+		), array(
+			'containerTemplate' => 'auction_print_container'
+		));
 	}
 	
 	/**

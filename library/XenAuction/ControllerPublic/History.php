@@ -96,7 +96,8 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'total'		=> $total,
 			'search'	=> $input['search'],
 			'visitor' 	=> $visitor->toArray(),
-			'archived'	=> $input['archived']
+			'archived'	=> $input['archived'],
+			'pageNavParams'	=> XenAuction_Helper_Base::pageNavParams($input, array('page'))
 		));	
 	}
 	
@@ -161,21 +162,70 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'page'		=> $input['page'],
 			'perPage'	=> $perPage,
 			'total'		=> $total,
-			'search'	=> $input['search']
-		));	
+			'search'	=> $input['search'],
+			'pageNavParams'	=> XenAuction_Helper_Base::pageNavParams($input, array('page'))
+		));
 	}
 	
 	/**
-	 * Show buyouts that were placed by the user
-	 *
-	 * Identical to self::actionBuyouts except that it gets buyouts instead of bids,
-	 * and it uses a different template to view them.
+	 * Show the users purchases
 	 * 
-	 * @return self::actionBids    
+	 * @return XenForo_ViewPublic_Base    Template auction_history_purchases
 	 */
-	public function actionBuyouts()
+	public function actionPurchases()
 	{
-		return $this->actionBids(true);
+		// Prepare visitor object and options
+		$visitor 		= XenForo_Visitor::getInstance();
+		$options 		= XenForo_Application::get('options');
+		$perPage 	 	= $options->auctionsPerPage;
+		
+		// Parse user input
+		$input = $this->_input->filter(array(
+			'page' 		=> XenForo_Input::UINT,
+			'search' 	=> XenForo_Input::STRING,
+			'completed' => XenForo_Input::UINT
+		));
+		
+		// Set fetch conditions
+		$fetchConditions = array(
+			'bid_user_id' 		=> $visitor->user_id,
+			'auction_id_search'	=> $input['search'],
+			'bid_id_search'		=> $input['search'],
+			'title'				=> $input['search'],
+			'sale_date_notnull'	=> true,
+			'completed'			=> $input['completed']
+		);
+		
+		// Set fetch options
+		$fetchOptions 	= array(
+			'page'		=> $input['page'],
+			'perPage'	=> $perPage,
+			'order'		=> 'sale_date',
+			'direction'	=> 'DESC'
+		);
+		
+		// Prepare database models
+		$userModel 		= XenForo_Model::create('XenForo_Model_User');
+		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
+		
+		// Retrieve bid data
+		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
+		$total 		 	= $auctionModel->getUserBidCount($fetchConditions, $fetchOptions);
+		
+		// Parse user id's from auctions and get relevant user profiles
+		$userIds 		= array_map( create_function('$a', 'if (!empty($a["user_id"])) return $a["user_id"];'), $auctions );
+		$users 			= $userModel->getUsersByIds($userIds);
+		
+		// All done
+		return $this->responseView('XenForo_ViewPublic_Base', 'auction_history_purchases', array(
+			'auctions'	=> $auctions,
+			'users'		=> $users,
+			'page'		=> $input['page'],
+			'perPage'	=> $perPage,
+			'total'		=> $total,
+			'search'	=> $input['search'],
+			'pageNavParams'	=> XenAuction_Helper_Base::pageNavParams($input, array('page'))
+		));
 	}
 	
 	/**
@@ -204,7 +254,7 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 		
 		// Set fetch conditions
 		$fetchConditions = array(
-			'user_id'	=> $visitor->user_id,
+			'user_id'		=> $visitor->user_id,
 			'title'			=> $input['search'],
 			'bid_id_search'	=> $input['search'],
 			'username'		=> $input['search'],
@@ -239,7 +289,8 @@ class XenAuction_ControllerPublic_History extends XenForo_ControllerPublic_Abstr
 			'perPage'	=> $perPage,
 			'total'		=> $total,
 			'search'	=> $input['search'],
-			'completed'	=> $input['completed']
+			'completed'	=> $input['completed'],
+			'pageNavParams'	=> XenAuction_Helper_Base::pageNavParams($input, array('page'))
 		));	
 	}
 	

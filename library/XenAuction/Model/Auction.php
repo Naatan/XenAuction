@@ -355,7 +355,14 @@ class XenAuction_Model_Auction extends XenForo_Model
 		// Bid ID
 		if ( isset($conditions['bid_id']))
 		{
-			$sqlConditions[] = 'bid.bid_id = ' . $db->quote($conditions['bid_id']);
+			if (is_array($conditions['bid_id']))
+			{
+				$sqlConditions[] = 'bid.bid_id IN(' . $db->quote($conditions['bid_id']) . ')';
+			}
+			else
+			{
+				$sqlConditions[] = 'bid.bid_id = ' . $db->quote($conditions['bid_id']);
+			}
 		}
 		
 		// Bid Amount
@@ -417,6 +424,11 @@ class XenAuction_Model_Auction extends XenForo_Model
 		if ( isset($conditions['completed']))
 		{
 			$sqlConditions[] = 'bid.completed = ' . $db->quote($conditions['completed'] ? 1 : 0);
+		}
+		
+		if ( isset($conditions['sale_date_notnull']))
+		{
+			$sqlConditions[] = 'bid.sale_date IS NOT NULL';
 		}
 		
 		// Title

@@ -83,6 +83,22 @@ XenAuction.List.prototype = {
 	}
 };
 
+XenAuction.Purchases = function() { this.__construct(); };
+XenAuction.Purchases.prototype = {
+	
+	__construct: function()
+	{
+		$("form.purchaseSelect .button").click(this.submit);
+	},
+	
+	submit: function()
+	{
+		$("form.purchaseSelect input[name=selectedOnly]").val( $(this).hasClass('printSelected') ? '1' : '0' );
+		$("form.purchaseSelect").submit();
+	}
+	
+};
+
 
 XenAuction.Widget = function() { this.__construct(); };
 XenAuction.Widget.prototype = {
