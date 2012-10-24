@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="xenauction" title="XenAuction" version_string="1.2" version_id="17" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
+<addon addon_id="xenauction" title="XenAuction" version_string="1.2.2" version_id="19" url="" install_callback_class="XenAuction_Install" install_callback_method="install" uninstall_callback_class="XenAuction_Install" uninstall_callback_method="uninstall">
   <admin_navigation>
     <navigation navigation_id="auctionBids" parent_navigation_id="auctions" display_order="10" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
     <navigation navigation_id="auctions" parent_navigation_id="applications" display_order="100" link="auction-bids" admin_permission_id="option" debug_only="0" hide_no_children="0"/>
@@ -48,7 +48,7 @@
 				<div class="DateTime muted">{xen:date {$auction.bid_date}} {xen:time {$auction.bid_date}}</div>
 			</td>
 			<td class="dataOptions">
-				<xen:if is="{$auction.bid_status}=='winning' && {$auction.status}=='active'">
+				<xen:if is="{$auction.top_bid}=={$auction.amount} && {$auction.status}=='active'">
 					<a href="{xen:adminlink auction-bids/reject, '', 'id={$auction.bid_id}'}" class="secondaryContent OverlayTrigger">{xen:phrase reject}</a>
 				</xen:if>
 			</td>
@@ -188,6 +188,8 @@ blacklist=Blacklist</edit_format_params>
 below|body=Below All Content
 above|page_container_content_top=Above Content Container
 below|page_container_content_top=Below Content Container
+above|ad_above_top_breadcrumb=Above Top Breadcrumb Ads
+below|ad_below_top_breadcrumb=Below Top Breadcrumb Ads
 above|page_container_breadcrumb_top=Above Top Breadcrumbs
 below|page_container_breadcrumb_top=Below Top Breadcrumbs
 above|page_container_notices=Above Notices Container
@@ -235,7 +237,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="auction_has_expired" version_id="16" version_string="1.2 Beta 1"><![CDATA[Auction has expired]]></phrase>
     <phrase title="auction_history" version_id="0" version_string=""><![CDATA[Auction History]]></phrase>
     <phrase title="auction_list" global_cache="1" version_id="0" version_string=""><![CDATA[Auction List]]></phrase>
-    <phrase title="auction_notification_signature" version_id="0" version_string=""></phrase>
+    <phrase title="auction_notification_signature" version_id="0" version_string=""><![CDATA[]]></phrase>
     <phrase title="auction_status" version_id="0" version_string=""><![CDATA[Auction Status]]></phrase>
     <phrase title="auction_title" version_id="0" version_string=""><![CDATA[Auction Title]]></phrase>
     <phrase title="availability" version_id="0" version_string=""><![CDATA[Availability]]></phrase>
@@ -310,7 +312,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="option_auctionNotificationSender" version_id="0" version_string=""><![CDATA[User ID that sends notifications]]></phrase>
     <phrase title="option_auctionNotificationSender_explain" version_id="0" version_string=""><![CDATA[Enter the ID of the user that will be used to send auction notifications. Note that this user should NOT participate in any other part of the auctions (eg. bidding, buying and creating auctions).]]></phrase>
     <phrase title="option_auctionShippingPrice" version_id="17" version_string="1.2 Beta 1"><![CDATA[Shipping Price]]></phrase>
-    <phrase title="option_auctionShippingPrice_explain" version_id="17" version_string="1.2 Beta 1"></phrase>
+    <phrase title="option_auctionShippingPrice_explain" version_id="17" version_string="1.2 Beta 1"><![CDATA[]]></phrase>
     <phrase title="option_auctionsPerPage" version_id="0" version_string=""><![CDATA[Auctions Per Page]]></phrase>
     <phrase title="option_auctionsPerPage_explain" version_id="0" version_string=""><![CDATA[Auctions to show per page]]></phrase>
     <phrase title="option_auctionTagMode" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Tag Display Mode]]></phrase>
@@ -326,7 +328,7 @@ below|page_container_breadcrumb_bottom=Below Bottom Breadcrumbs</edit_format_par
     <phrase title="option_auctionWidgetPlacement" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Widget Placement]]></phrase>
     <phrase title="option_auctionWidgetPlacement_explain" version_id="12" version_string="1.0 Beta 4 (build 1)"><![CDATA[Choose the template hook where the auction widget should be placed]]></phrase>
     <phrase title="option_group_auctions" version_id="0" version_string=""><![CDATA[Auctions]]></phrase>
-    <phrase title="option_group_auctions_description" version_id="0" version_string=""></phrase>
+    <phrase title="option_group_auctions_description" version_id="0" version_string=""><![CDATA[]]></phrase>
     <phrase title="outbid" version_id="0" version_string=""><![CDATA[Outbid]]></phrase>
     <phrase title="outbid_message" version_id="13" version_string="1.0 Beta 5 (build 1)"><![CDATA[Unfortunately, you have been outbid on [url='{link}']{title}[/url]. 
 
@@ -1664,7 +1666,7 @@ new XenAuction.Create;
 	margin-top: 10px;
 	margin-bottom: 5px;
 }]]></template>
-    <template title="auction_invoice" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_invoice.css"/>
+    <template title="auction_invoice" version_id="18" version_string="1.2.1"><![CDATA[<xen:require css="auction_invoice.css"/>
 
 <xen:title>Invoice for Auction Purchases</xen:title>
 
@@ -1694,7 +1696,7 @@ new XenAuction.Create;
 		<xen:foreach loop="$auctions" value="$auction">
 			<tr class="dataRow">
 				<td class="entryId">#{$auction.bid_id}</td>
-				<td class="title">{$auction.title}</td>
+				<td class="title">{$auction.title} <span class="tags">{xen:helper auction, tags, {$tags.{$auction.auction_id}}, '(', ')'}</span></td>
 				<td class="quantity">{xen:number $auction.quantity}</td>
 				<td class="cost">${xen:number $auction.amount}</td>
 			</tr>
@@ -1731,7 +1733,7 @@ new XenAuction.Create;
 		
 	</div>
 </div>]]></template>
-    <template title="auction_invoice.css" version_id="17" version_string="1.2 Beta 1"><![CDATA[h1
+    <template title="auction_invoice.css" version_id="18" version_string="1.2.1"><![CDATA[h1
 {
 	font-size: 18pt;
 }
@@ -1754,9 +1756,15 @@ p
 blockquote
 {
 	margin: 1em;
+}
+
+span.tags
+{
+	color: {xen:property dimmedTextColor};
+	font-style: italic;
 }]]></template>
-    <template title="auction_invoice_extra_above" version_id="17" version_string="1.2 Beta 1"></template>
-    <template title="auction_invoice_extra_below" version_id="0" version_string=""></template>
+    <template title="auction_invoice_extra_above" version_id="17" version_string="1.2 Beta 1"><![CDATA[]]></template>
+    <template title="auction_invoice_extra_below" version_id="0" version_string=""><![CDATA[]]></template>
     <template title="auction_list" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:title>{xen:phrase auctions}</xen:title>
 
 <xen:require css="auction_list.css" />
@@ -1855,7 +1863,7 @@ blockquote
 new XenAuction.List;
 -->
 </script>]]></template>
-    <template title="auction_list.css" version_id="17" version_string="1.2 Beta 1"><![CDATA[table.auctionList
+    <template title="auction_list.css" version_id="18" version_string="1.2.1"><![CDATA[table.auctionList
 {
 	width: 100%;
 }
@@ -1991,9 +1999,11 @@ new XenAuction.List;
 
 		.auctionList td.bid .button.buyout
 		{
+	/*
 			color: {xen:property secondaryDarker};
 			background-color: {xen:property secondaryLight};
 			text-shadow: {xen:property secondaryLightest} 0px 1px 0;
+	*/
 		}
 
 			.auctionList td.bid .button.buyout:hover
@@ -2109,7 +2119,7 @@ new XenAuction.List;
 {
 	text-align: left;
 }]]></template>
-    <template title="auction_list_item" version_id="17" version_string="1.2 Beta 1"><![CDATA[<xen:require css="auction_list.css" />
+    <template title="auction_list_item" version_id="18" version_string="1.2.1"><![CDATA[<xen:require css="auction_list.css" />
 <xen:require js="js/xenauction/auctions.js" />
 
 <tr class="primaryContent auctionItem status_{$auction.status} dataRow">
@@ -2144,7 +2154,7 @@ new XenAuction.List;
 			<div><a class="OverlayTrigger button" href="{xen:link 'auction-bid/bid', '', 'id={$auction.auction_id}'}">{xen:phrase place_bid}</a></div>
 		</xen:if>
 		<xen:if is="{$auction.buy_now}">
-			<div><a class="OverlayTrigger button buyout" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a></div>
+			<div><a class="OverlayTrigger button buyout primary" href="{xen:link 'auction-bid/buyout', '', 'id={$auction.auction_id}'}">{xen:phrase buy_now}</a></div>
 		</xen:if>
 	</td>
 	
@@ -2159,7 +2169,7 @@ new XenAuction.List;
 	</xen:if>
 	<xen:include template="auction_navigation_tab_extra" />
 </ul>]]></template>
-    <template title="auction_navigation_tab_extra" version_id="0" version_string=""></template>
+    <template title="auction_navigation_tab_extra" version_id="0" version_string=""><![CDATA[]]></template>
     <template title="auction_phrases_js" version_id="0" version_string=""><![CDATA[XenAuction.Config.currentTime 			= '{xen:helper auction, time}';
 XenAuction.Config.phrases.secondsLeft 	= '{xen:phrase seconds_left}';
 XenAuction.Config.phrases.minutesLeft 	= '{xen:phrase minutes_left}';
@@ -2580,44 +2590,48 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 }
 /* @end */
 ]]></template>
-    <template title="auction_widget" version_id="15" version_string="1.1 Beta 1"><![CDATA[<xen:if is="{$auctions}">
+    <template title="auction_widget" version_id="17" version_string="1.2 RC 1"><![CDATA[<xen:if is="{$auctions}">
 
 	<xen:require js="js/xenauction/auctions.js" />
 	<xen:require css="auction_widget.css" />
 	
 	<div id="auctionWidgetWrap">
+		
+		<div id="auctionWidgetContent">
 
-		<a href="{xen:link auctions}" class="callToAction"><span>{xen:phrase view_more}</span></a>
-		
-		<h2>{xen:phrase random_auctions}</h2>
-		
-		<hr/>
-		
-		<div id="auctionWidgetOuter" class="primaryContent">
+			<a href="{xen:link auctions}" class="callToAction"><span>{xen:phrase view_more}</span></a>
 			
-			<ul id="auctionWidget">
+			<h2>{xen:phrase random_auctions}</h2>
+			
+			<hr/>
+			
+			<div id="auctionWidgetOuter" class="primaryContent">
 				
-				<xen:foreach loop="$auctions" value="$auction">
-					<li class="secondaryContent">
-						<a href="{xen:link auctions/details, '', 'id={$auction.auction_id}'}" class="OverlayTrigger">
-							{xen:helper auction, image, $auction, 'm', 0}
-							<h3>
-								{$auction.title}
-							</h3>
-							<h5>
-								<xen:if is="{$auction.top_bid}">
-									<span class="muted">$</span>{xen:number $auction.top_bid}
-								<xen:elseif is="{$auction.min_bid}"/>
-									<span class="muted">$</span>{xen:number $auction.min_bid}
-								<xen:else/>
-									<span class="muted">$</span>{xen:number $auction.buy_now}
-								</xen:if>
-							</h5>
-						</a>
-					</li>
-				</xen:foreach>
-				
-			</ul>
+				<ul id="auctionWidget">
+					
+					<xen:foreach loop="$auctions" value="$auction">
+						<li class="secondaryContent">
+							<a href="{xen:link auctions/details, '', 'id={$auction.auction_id}'}" class="OverlayTrigger">
+								{xen:helper auction, image, $auction, 'm', 0}
+								<h3>
+									{$auction.title}
+								</h3>
+								<h5>
+									<xen:if is="{$auction.top_bid}">
+										<span class="muted">$</span>{xen:number $auction.top_bid}
+									<xen:elseif is="{$auction.min_bid}"/>
+										<span class="muted">$</span>{xen:number $auction.min_bid}
+									<xen:else/>
+										<span class="muted">$</span>{xen:number $auction.buy_now}
+									</xen:if>
+								</h5>
+							</a>
+						</li>
+					</xen:foreach>
+					
+				</ul>
+			</div>
+			
 		</div>
 		
 	</div>
@@ -2629,7 +2643,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 	</script>
 	
 </xen:if>]]></template>
-    <template title="auction_widget.css" version_id="13" version_string="1.0 Beta 5 (build 2)"><![CDATA[#auctionWidgetWrap
+    <template title="auction_widget.css" version_id="18" version_string="1.2.1"><![CDATA[#auctionWidgetWrap
 {
 	{xen:property sectionMain}
 }
@@ -2642,7 +2656,7 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 	margin: 5px 0;
 }
 
-#auctionWidgetWrap > h2
+#auctionWidgetWrap > #auctionWidgetContent > h2
 {
 	font-size: 16pt;
 }
@@ -2696,4 +2710,5 @@ background: url({xen:property imagePath}/../../js/xenauction/chosen/chosen-sprit
 }]]></template>
   </templates>
   <bb_code_media_sites/>
+  <template_modifications/>
 </addon>

@@ -196,6 +196,11 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		$auctionModel 	= XenForo_Model::create('XenAuction_Model_Auction');
 		$auctions  		= $auctionModel->getUserBids($fetchConditions, $fetchOptions);
 		
+		// Retrieve relevant tags
+		$tagModel 		= XenForo_Model::create('XenAuction_Model_Tag');
+		$auctionIds 	= array_map( create_function('$a', 'return $a["auction_id"];'), $auctions );
+		$tags 			= $tagModel->getTagsByAuctions($auctionIds);
+		
 		$subtotal = 0;
 		foreach ($auctions AS $auction)
 		{
@@ -207,6 +212,7 @@ class XenAuction_ControllerPublic_Auction extends XenForo_ControllerPublic_Abstr
 		// All done
 		return $this->responseView('XenForo_ViewPublic_Base', 'auction_invoice', array(
 			'auctions'	=> $auctions,
+			'tags'		=> $tags,
 			'search'	=> $input['search'],
 			'subtotal'	=> $subtotal,
 			'shipping'	=> $shipping,

@@ -111,7 +111,7 @@ class XenAuction_TemplateHelpers_Base
 	 * 
 	 * @return string    
 	 */
-	public static function helperTags($tags)
+	public static function helperTags($tags, $prepend = '', $append = '')
 	{
 		if (empty($tags))
 		{
@@ -119,7 +119,7 @@ class XenAuction_TemplateHelpers_Base
 		}
 		
 		$tags = array_map( create_function('$a', 'return $a["name"];'), $tags);
-		return implode(', ', $tags);
+		return $prepend . implode(', ', $tags) . $append;
 	}
 	
 	/**
